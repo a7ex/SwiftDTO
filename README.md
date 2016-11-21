@@ -21,7 +21,7 @@ Using a JSON-to-Swift code generator is very different from using a JSON library
 
 ## How to get it
 
-- Download the `SwiftDTO` app binary from the latest [release](https://github.com/a7ex/SwiftDTO/releases)
+- Download the `SwiftDTO` app binary from the latest [release](https://github.com/a7ex/SwiftDTO/release)
 - Copy `SwiftDTO` to your desktop
 - Open a Terminal window and run this command to give the app permission to execute:
 
