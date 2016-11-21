@@ -20,14 +20,27 @@ public protocol PrettyJson {
 
 public protocol DictionaryConvertible: PrettyJson {
     var jsobjRepresentation: JSOBJ { get }
-    //    init()
 }
 
 public protocol JSOBJSerializable {
     init?(jsonData: JSOBJ?)
 }
 
-class ConversionHelper {
+struct ConversionHelper {
+    
+    /**
+     Convert an NSDate object to a string representing a date in ISO 8601 format (default)
+     
+     - parameter dateObj: NSDate object
+     - parameter format: Format string for date (default is ISO 8601 format)
+     
+     - returns: String representing a date in the chosen format (default: ISO 8601)
+     */
+    static func stringFromDate(_ dateObj:Date, withFormat format: String="yyyy-MM-dd'T'HH:mm:ss.sZZZZZ") -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        return dateFormatter.string(from: dateObj)
+    }
     
     /**
      Try to convert an Any value to a NSDate object
@@ -38,14 +51,15 @@ class ConversionHelper {
      
      - returns: NSDate object corresponding to input
      */
-    class func dateFromAny(_ dateObj: Any?) -> Date? {
-        if let inputString = dateObj as? String { return dateFromString(inputString) }
-        if let doubleVal = dateObj as? Double { return dateFromDouble(doubleVal) }
-        if let intVal = dateObj as? Int { return dateFromLong(intVal) }
+    static func dateFromAny(_ dateObj: Any?) -> Date? {
+        let helper = ConversionHelper()
+        if let inputString = dateObj as? String { return helper.dateFromString(inputString) }
+        if let doubleVal = dateObj as? Double { return helper.dateFromDouble(doubleVal) }
+        if let intVal = dateObj as? Int { return helper.dateFromLong(intVal) }
         return nil
     }
     
-    /**
+    /*
      Try to convert a string representing a date to a NSDate object
      
      Start with ISO 8601 format, then our "Conrad German date format", then a timestamp
@@ -54,7 +68,7 @@ class ConversionHelper {
      
      - returns: NSDate object corresponding to input string
      */
-    class func dateFromString(_ dateString: String?) -> Date? {
+    private func dateFromString(_ dateString: String?) -> Date? {
         guard let inputString = dateString else { return nil }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.ssZZZZZ"
@@ -68,39 +82,17 @@ class ConversionHelper {
         return nil
     }
     
-    /**
-     Convert an NSDate object to a string representing a date in ISO 8601 format (default)
-     
-     - parameter dateObj: NSDate object
-     - parameter format: Format string for date (default is ISO 8601 format)
-     
-     - returns: String representing a date in the chosen format (default: ISO 8601)
-     */
-    class func stringFromDate(_ dateObj:Date, withFormat format: String="yyyy-MM-dd'T'HH:mm:ss.sZZZZZ") -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = format
-        return dateFormatter.string(from: dateObj)
-    }
-    
-    class func dateFromDouble(_ timestamp: Double?) -> Date? {
+    private func dateFromDouble(_ timestamp: Double?) -> Date? {
         guard let timestamp = timestamp else {
             return nil
         }
         return Date(timeIntervalSince1970: (timestamp/1000.0))
     }
     
-    class func doubleFromDate(_ dateObj:Date) -> Double {
-        return dateObj.timeIntervalSince1970 as Double
-    }
-    
-    class func dateFromLong(_ timestamp: Int?) -> Date? {
+    private func dateFromLong(_ timestamp: Int?) -> Date? {
         guard let timestamp = timestamp else {
             return nil
         }
         return Date(timeIntervalSince1970: TimeInterval(timestamp))
-    }
-    
-    class func longFromDate(_ dateObj:Date) -> Int {
-        return Int(dateObj.timeIntervalSince1970)
     }
 }
