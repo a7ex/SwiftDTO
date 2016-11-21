@@ -73,6 +73,12 @@ The source code download includes an `example` directory with a `CDData` CoreDat
 
 ## Structure and property names
 
+For each entity found in the provided CoreData XML file `SwiftDTO` creates a swift file with either: 
+- the corresponding struct for the DTO (Data Transfer Object)
+- the corresponding enum type, if the entity is marked as being an enum (User Info for that entity has a key "isEnum" with a value of "1").
+- the corresponding protocol, if the entity is an abstract entity
+
+
 
 
 ## Date parsing
