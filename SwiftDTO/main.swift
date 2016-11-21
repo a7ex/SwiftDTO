@@ -12,7 +12,7 @@
 import Foundation
 
 /// adjust it for your needs, it is used for the header of each swift file
-let copyRightString = "Copyright (c) 2016 Conrad Electronics SE. All rights reserved."
+let copyRightString = "Copyright (c) 2016 Farbflash. All rights reserved."
 
 func writeToStdError(_ str: String) {
     let handle = FileHandle.standardError
