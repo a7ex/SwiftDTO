@@ -18,7 +18,7 @@ struct RESTProperty {
         static let ToManyAttributeName = "toMany"
         static let UserInfoKeyName = "userInfo"
         static let JsonPropertyOverrideName = "jsonPropertyName"
-        static let InnerProxyType = "innerType"
+//        static let InnerProxyType = "innerType"
     }
     let name: String
     let type: String
@@ -37,7 +37,8 @@ struct RESTProperty {
           isEnum: Bool,
           withEnumNames enums: Set<String>,
           withProtocolNames protocolNames: Set<String>,
-          withProtocols protocols: [ProtocolDeclaration]?) {
+          withProtocols protocols: [ProtocolDeclaration]?,
+          withPrimitiveProxyNames proxyNames: Set<String>) {
         
         guard let xmlElement = xmlElement,
             let name = xmlElement.attribute(forName: "name")?.stringValue else { return nil }
@@ -104,6 +105,8 @@ struct RESTProperty {
             value = ""
         }
         
+        typeIsProxyType = proxyNames.contains(isArray ? type.trimmingCharacters(in: CharacterSet(charactersIn: "[]")): type)
+        
         // Override 1 to 1 name mapping by defining custom property for json property:
         if let children = xmlElement.children as? [XMLElement],
             let userInfo = children.filter({ $0.name == Constants.UserInfoKeyName }).first,
@@ -112,11 +115,20 @@ struct RESTProperty {
             let jsProp = jsProps.filter({ $0.attribute(forName: "key")?.stringValue == Constants.JsonPropertyOverrideName }).first
             jsonProperty = "\(jsProp?.attribute(forName: "value")?.stringValue ??  name)"
             
-            typeIsProxyType = (jsProps.filter({ $0.attribute(forName: "key")?.stringValue == Constants.InnerProxyType }).first) != nil
+//            print("is singletype: \((isArray ? type.trimmingCharacters(in: CharacterSet(charactersIn: "[]")): type)) contained in: \(proxyNames)? \(proxyNames.contains(isArray ? type.trimmingCharacters(in: CharacterSet(charactersIn: "[]")): type))")
+//            typeIsProxyType = proxyNames.contains(isArray ? type.trimmingCharacters(in: CharacterSet(charactersIn: "[]")): type)
+//            typeIsProxyType = (jsProps.filter({ $0.attribute(forName: "key")?.stringValue == Constants.InnerProxyType }).first) != nil
         }
         else {
             jsonProperty = name
-            typeIsProxyType = false
+//            typeIsProxyType = false
+        }
+        
+        if typeIsProxyType {
+            print("type: \(type) is contained in: \(proxyNames)")
+        }
+        else {
+            print("type: \(type) is NOT contained in: \(proxyNames)")
         }
         
         isOptional = (xmlElement.attribute(forName: Constants.OptionalAttributeName)?.objectValue as? Bool) ?? true // default to optional

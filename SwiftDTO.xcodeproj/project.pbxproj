@@ -12,6 +12,12 @@
 		FA8207901DE2DA6C00333F8D /* XCModelTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078C1DE2DA6C00333F8D /* XCModelTranslator.swift */; };
 		FA8207921DE2DA6C00333F8D /* ProtocolDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078E1DE2DA6C00333F8D /* ProtocolDeclaration.swift */; };
 		FA8207931DE2DAAB00333F8D /* DTO_Globals.swift in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA82078D1DE2DA6C00333F8D /* DTO_Globals.swift */; };
+		FA8207A91DE3132D00333F8D /* Animal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82079D1DE30E2400333F8D /* Animal.swift */; };
+		FA8207AA1DE3132D00333F8D /* AnimalType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82079E1DE30E2400333F8D /* AnimalType.swift */; };
+		FA8207AB1DE3132D00333F8D /* Dog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82079F1DE30E2400333F8D /* Dog.swift */; };
+		FA8207AC1DE3132D00333F8D /* DTO_Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207A01DE30E2400333F8D /* DTO_Globals.swift */; };
+		FA8207AD1DE3132D00333F8D /* Fish.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207A11DE30E2400333F8D /* Fish.swift */; };
+		FA8207AE1DE3132D00333F8D /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207A21DE30E2400333F8D /* Person.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,6 +42,13 @@
 		FA82078E1DE2DA6C00333F8D /* ProtocolDeclaration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtocolDeclaration.swift; sourceTree = "<group>"; };
 		FA8207941DE2DFC600333F8D /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		FA8207951DE2DFC600333F8D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		FA82079A1DE30D8B00333F8D /* CDData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CDData.xcdatamodel; sourceTree = "<group>"; };
+		FA82079D1DE30E2400333F8D /* Animal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animal.swift; sourceTree = "<group>"; };
+		FA82079E1DE30E2400333F8D /* AnimalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalType.swift; sourceTree = "<group>"; };
+		FA82079F1DE30E2400333F8D /* Dog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dog.swift; sourceTree = "<group>"; };
+		FA8207A01DE30E2400333F8D /* DTO_Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTO_Globals.swift; sourceTree = "<group>"; };
+		FA8207A11DE30E2400333F8D /* Fish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fish.swift; sourceTree = "<group>"; };
+		FA8207A21DE30E2400333F8D /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +88,31 @@
 				FA82078B1DE2DA6C00333F8D /* RESTProperty.swift */,
 				FA82078E1DE2DA6C00333F8D /* ProtocolDeclaration.swift */,
 				FA82078D1DE2DA6C00333F8D /* DTO_Globals.swift */,
+				FA8207971DE2FE7500333F8D /* example */,
 			);
 			path = SwiftDTO;
+			sourceTree = "<group>";
+		};
+		FA8207971DE2FE7500333F8D /* example */ = {
+			isa = PBXGroup;
+			children = (
+				FA82079C1DE30E2400333F8D /* GeneratedFiles */,
+				FA82079A1DE30D8B00333F8D /* CDData.xcdatamodel */,
+			);
+			path = example;
+			sourceTree = "<group>";
+		};
+		FA82079C1DE30E2400333F8D /* GeneratedFiles */ = {
+			isa = PBXGroup;
+			children = (
+				FA82079D1DE30E2400333F8D /* Animal.swift */,
+				FA82079E1DE30E2400333F8D /* AnimalType.swift */,
+				FA82079F1DE30E2400333F8D /* Dog.swift */,
+				FA8207A01DE30E2400333F8D /* DTO_Globals.swift */,
+				FA8207A11DE30E2400333F8D /* Fish.swift */,
+				FA8207A21DE30E2400333F8D /* Person.swift */,
+			);
+			path = GeneratedFiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,10 +174,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA8207AE1DE3132D00333F8D /* Person.swift in Sources */,
 				FA82078F1DE2DA6C00333F8D /* RESTProperty.swift in Sources */,
+				FA8207AB1DE3132D00333F8D /* Dog.swift in Sources */,
 				FA8207851DE2D7DF00333F8D /* main.swift in Sources */,
 				FA8207921DE2DA6C00333F8D /* ProtocolDeclaration.swift in Sources */,
 				FA8207901DE2DA6C00333F8D /* XCModelTranslator.swift in Sources */,
+				FA8207A91DE3132D00333F8D /* Animal.swift in Sources */,
+				FA8207AC1DE3132D00333F8D /* DTO_Globals.swift in Sources */,
+				FA8207AD1DE3132D00333F8D /* Fish.swift in Sources */,
+				FA8207AA1DE3132D00333F8D /* AnimalType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

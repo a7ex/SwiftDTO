@@ -12,6 +12,7 @@ class XCModelTranslator {
     let model: XMLNode
     var enumNames: Set<String>?
     var protocolNames = Set<String>()
+    var primitiveProxyNames = Set<String>()
     var protocols: [ProtocolDeclaration]?
     var enumsWithRelations = Set<String>()
     
@@ -29,6 +30,23 @@ class XCModelTranslator {
         let workingDirectory = info.environment["PWD"]
         
         let pwd = folderPath ?? workingDirectory
+        
+        var primitiveProxies = Set<String>()
+        for thisEntity in entities {
+            guard let children2 = thisEntity.children as? [XMLElement],
+                let userInfo = children2.filter({ $0.name == "userInfo" }).first,
+                let theseInfos = userInfo.children as? [XMLElement] else {
+                    continue
+            }
+            if let elementInfo = theseInfos.filter({ $0.attribute(forName: "key")?.stringValue == "isPrimitiveProxy" }).first {
+                if elementInfo.attribute(forName: "value")?.stringValue == "1" {
+                    if let entityName = (thisEntity as? XMLElement)?.attribute(forName: "name")?.stringValue {
+                        primitiveProxies.insert(entityName)
+                    }
+                }
+            }
+        }
+        primitiveProxyNames = primitiveProxies
         
         var enums = Set<String>()
         for thisEntity in entities {
@@ -64,7 +82,8 @@ class XCModelTranslator {
                                                       isEnum: false,
                                                       withEnumNames: enums,
                                                       withProtocolNames: protocolNames,
-                                                      withProtocols: nil) {
+                                                      withProtocols: nil,
+                                                      withPrimitiveProxyNames: primitiveProxyNames) {
                 protocols?.append(thisProtocol)
             }
         }
@@ -87,7 +106,8 @@ class XCModelTranslator {
                                                       isEnum: false,
                                                       withEnumNames: enums,
                                                       withProtocolNames: protocolNames,
-                                                      withProtocols: protocols) {
+                                                      withProtocols: protocols,
+                                                      withPrimitiveProxyNames: primitiveProxyNames) {
                 newProts.append(thisProtocol)
             }
         }
@@ -274,7 +294,8 @@ class XCModelTranslator {
                                                             isEnum: false,
                                                             withEnumNames: enumNames ?? Set<String>(),
                                                             withProtocolNames: protocolNames,
-                                                            withProtocols: protocols) }
+                                                            withProtocols: protocols,
+                                                            withPrimitiveProxyNames: primitiveProxyNames) }
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
                 classString += "\(property.declarationString)\n"
@@ -402,7 +423,8 @@ class XCModelTranslator {
                                                             isEnum: true,
                                                             withEnumNames: enumNames ?? Set<String>(),
                                                             withProtocolNames: protocolNames,
-                                                            withProtocols: protocols) }
+                                                            withProtocols: protocols,
+                                                            withPrimitiveProxyNames: primitiveProxyNames) }
         
         let indent = "\t"
         var hasRelations = false

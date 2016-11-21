@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="16B2555" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Animal" representedClassName="Animal" isAbstract="YES" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="animalType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AnimalType" syncable="YES"/>
+    </entity>
+    <entity name="AnimalType" representedClassName="AnimalType" syncable="YES" codeGenerationType="class">
+        <attribute name="aquatic" optional="YES" attributeType="String" defaultValueString="Aquatic" syncable="YES"/>
+        <attribute name="mammal" optional="YES" attributeType="String" defaultValueString="Mammal" syncable="YES"/>
+        <relationship name="sAQUATIC" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Fish" syncable="YES"/>
+        <relationship name="sMAMMAL" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Dog" syncable="YES"/>
+        <userInfo>
+            <entry key="isEnum" value="1"/>
+        </userInfo>
+    </entity>
+    <entity name="Dog" representedClassName="Dog" parentEntity="Animal" syncable="YES" codeGenerationType="class">
+        <attribute name="numberOfLegs" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="Fish" representedClassName="Fish" parentEntity="Animal" syncable="YES" codeGenerationType="class">
+        <attribute name="numberOfFins" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="Person" representedClassName="Person" syncable="YES" codeGenerationType="class">
+        <attribute name="birthdate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="features" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="String" syncable="YES"/>
+        <relationship name="pets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Animal" syncable="YES"/>
+    </entity>
+    <entity name="String" representedClassName="String" syncable="YES" codeGenerationType="class">
+        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+        <userInfo>
+            <entry key="isPrimitiveProxy" value="1"/>
+        </userInfo>
+    </entity>
+    <elements>
+        <element name="Animal" positionX="81" positionY="-282" width="128" height="73"/>
+        <element name="Dog" positionX="151" positionY="-189" width="128" height="60"/>
+        <element name="Fish" positionX="-27" positionY="-150" width="128" height="60"/>
+        <element name="AnimalType" positionX="358" positionY="-162" width="128" height="103"/>
+        <element name="Person" positionX="-117" positionY="-378" width="128" height="103"/>
+        <element name="String" positionX="250" positionY="-477" width="128" height="58"/>
+    </elements>
+</model>

@@ -14,7 +14,8 @@ class ProtocolDeclaration {
 //    let constructorEnumName: String
     var consumers = Set<String>()
     
-    init?(xmlElement: XMLElement, isEnum: Bool, withEnumNames enums: Set<String>, withProtocolNames protocolNames: Set<String>, withProtocols protocols: [ProtocolDeclaration]?) {
+    init?(xmlElement: XMLElement, isEnum: Bool, withEnumNames enums: Set<String>, withProtocolNames protocolNames: Set<String>, withProtocols protocols: [ProtocolDeclaration]?,
+          withPrimitiveProxyNames primitiveProxyNames: Set<String>) {
         guard let name = xmlElement.attribute(forName: "name")?.stringValue else {
                 return nil
         }
@@ -24,7 +25,8 @@ class ProtocolDeclaration {
                                                             isEnum: false,
                                                             withEnumNames: enums,
                                                             withProtocolNames: protocolNames,
-                                                            withProtocols: protocols) }
+                                                            withProtocols: protocols,
+                                                            withPrimitiveProxyNames: primitiveProxyNames) }
         
         guard restProps.count > 0 else { return nil }
         
