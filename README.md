@@ -5,16 +5,15 @@
 Generate swift DTO files from CoreData model
 
 A macOS command line tool that generates Swift data models based on one or more CoreData model files in XML format.
+Much in the same way as you can generate CoreData classes within Xcode ("Create NSManagedObject subclass...").
 
 Written in Swift 3.
 
 ## Features
 
+- Processes XML files, which represent a CoreData model, which was created with Xcodes CoreData editor
 - Generates immutable Swift struct definitions
-- Generates thread-safe code to create structs from JSON data
 - Converts JSON Date representations to Swift Date objects
-- Creates graceful DTO objects. All properties are optionals
-- Processes XML files, which represent a CoreData model, created with Xcodes CoreData editor
 
 ## What is code generation?
 
