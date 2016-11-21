@@ -31,7 +31,7 @@ public struct Person: JSOBJSerializable, DictionaryConvertible, CustomStringConv
 	// Object creation using JSON dictionary representation from NSJSONSerializer:
 	public init?(jsonData: JSOBJ?) {
 		guard let jsonData = jsonData else { return nil }
-		birthdate = ConversionHelper.dateFromAny(jsonData["birthdate"])
+		birthdate = ConversionHelper.dateFromAny(jsonData["b_date"])
 		name = jsonData["name"] as? String
 		features = jsonData["features"] as? [String]
 		pets = (jsonData["pets"] as? JSARR)?.flatMap() { Fish.createWith(jsonData: $0) }
@@ -40,7 +40,7 @@ public struct Person: JSOBJSerializable, DictionaryConvertible, CustomStringConv
 	// dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
 	public var jsobjRepresentation: JSOBJ {
 		var jsonData = JSOBJ()
-		if birthdate != nil { jsonData["birthdate"] = ConversionHelper.stringFromDate(birthdate!) }
+		if birthdate != nil { jsonData["b_date"] = ConversionHelper.stringFromDate(birthdate!) }
 		if name != nil { jsonData["name"] = name! }
 		if features != nil { jsonData["features"] = features! }
 
@@ -59,8 +59,8 @@ public struct Person: JSOBJSerializable, DictionaryConvertible, CustomStringConv
 	public func jsonString(paddingPrefix prefix: String = "", printNulls: Bool = false) -> String {
 		var returnString = "{\n"
 
-		if let birthdate = birthdate { returnString = "\(returnString)\t\(prefix)\"birthdate\": \"\(ConversionHelper.stringFromDate(birthdate))\",\n" }
-		else if printNulls { returnString = "\(returnString)\t\(prefix)\"birthdate\": null,\n" }
+		if let birthdate = birthdate { returnString = "\(returnString)\t\(prefix)\"b_date\": \"\(ConversionHelper.stringFromDate(birthdate))\",\n" }
+		else if printNulls { returnString = "\(returnString)\t\(prefix)\"b_date\": null,\n" }
 
 		if let name = name { returnString = "\(returnString)\t\(prefix)\"name\": \"\(name)\",\n" }
 		else if printNulls { returnString = "\(returnString)\t\(prefix)\"name\": null,\n" }

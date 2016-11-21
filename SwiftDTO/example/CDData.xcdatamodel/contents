@@ -20,7 +20,11 @@
         <attribute name="numberOfFins" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES" codeGenerationType="class">
-        <attribute name="birthdate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="birthdate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES">
+            <userInfo>
+                <entry key="jsonPropertyName" value="b_date"/>
+            </userInfo>
+        </attribute>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="features" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="String" syncable="YES"/>
         <relationship name="pets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Animal" syncable="YES"/>
@@ -33,10 +37,10 @@
     </entity>
     <elements>
         <element name="Animal" positionX="81" positionY="-282" width="128" height="73"/>
+        <element name="AnimalType" positionX="358" positionY="-162" width="128" height="103"/>
         <element name="Dog" positionX="151" positionY="-189" width="128" height="60"/>
         <element name="Fish" positionX="-27" positionY="-150" width="128" height="60"/>
-        <element name="AnimalType" positionX="358" positionY="-162" width="128" height="103"/>
-        <element name="Person" positionX="-117" positionY="-378" width="128" height="103"/>
+        <element name="Person" positionX="-117" positionY="-378" width="128" height="105"/>
         <element name="String" positionX="250" positionY="-477" width="128" height="58"/>
     </elements>
 </model>
