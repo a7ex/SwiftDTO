@@ -11,7 +11,6 @@ import Foundation
 class ProtocolDeclaration {
     let name: String
     let restProperties: [RESTProperty]
-//    let constructorEnumName: String
     var consumers = Set<String>()
     
     init?(xmlElement: XMLElement, isEnum: Bool, withEnumNames enums: Set<String>, withProtocolNames protocolNames: Set<String>, withProtocols protocols: [ProtocolDeclaration]?,
@@ -32,7 +31,6 @@ class ProtocolDeclaration {
         
         self.name = name
         self.restProperties = restProps
-//        self.constructorEnumName = (restProps.filter { $0.isEnumProperty }).first?.name ?? ""
     }
     
     var declarationString: String {

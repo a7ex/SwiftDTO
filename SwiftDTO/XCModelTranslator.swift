@@ -16,6 +16,8 @@ class XCModelTranslator {
     var protocols: [ProtocolDeclaration]?
     var enumsWithRelations = Set<String>()
     
+    let indent = "    "
+    
     init?(xmlData: XMLDocument) {
         guard let children = xmlData.children , children.count > 0,
             let mo = children.filter({ $0.name == "model" }).first else { return nil }
@@ -182,11 +184,6 @@ class XCModelTranslator {
         let helperClassName = "DTO_Globals"
         if let swfilePath = Bundle.main.path(forResource: helperClassName, ofType: "swift"),
             let helperClass = try? String(contentsOfFile: swfilePath, encoding: String.Encoding.utf8) {
-            
-//            if let protocolInitializers = generateProtocolInitializers() {
-//                helperClass += "\n\n\(protocolInitializers)"
-//            }
-            
             if let fpath = pathForClassName(helperClassName, inFolder: pwd) {
                 do {
                     try helperClass.write(toFile: fpath, atomically: false, encoding: String.Encoding.utf8)
@@ -201,24 +198,6 @@ class XCModelTranslator {
             }
         }
     }
-    
-     /*
-    fileprivate final func generateProtocolInitializers() -> String? {
-        guard let protocols = protocols else { return nil }
-        var protocolInitializers = "func instanceForProtocol(name: String, withJSON jsonData: JSOBJ) -> Any? {\n"
-        protocolInitializers += "\tswitch name {\n"
-        for thisProtocol in protocols {
-            if let thisConsumer = thisProtocol.consumers.first {
-                protocolInitializers += "\tcase \"\(thisProtocol.name)\":\n\t\treturn \(thisConsumer).createWith(jsonData: jsonData)\n"
-            }
-        }
-        protocolInitializers += "\tdefault:\n\t\treturn nil\n"
-        protocolInitializers += "\t}\n"
-        protocolInitializers += "}\n"
-        return protocolInitializers
-         }
-         
-         */
     
     fileprivate final func pathForClassName(_ className: String, inFolder target: String?) -> String? {
         guard let target = target else { return nil }
@@ -280,7 +259,7 @@ class XCModelTranslator {
         
         classString += "import Foundation\n\npublic struct \(className): \((parentProtocol == nil) ? "": parentProtocol!.name + ", ")JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {\n"
         
-        var indent = "\t"
+        var indent = "    "
         
         classString += "\n\(indent)// DTO properties:\n"
         
@@ -341,6 +320,29 @@ class XCModelTranslator {
                 classString += "\(property.initializeString)\n"
             }
         }
+        classString += "\n\(indent)\(indent)#if DEBUG\n\(indent)\(indent)\(indent)DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: \"\(className)\")\n\(indent)\(indent)#endif\n"
+        classString += "\(indent)}\n"
+        
+        var hasProperties = false
+        
+        classString += "\n\(indent)// all expected keys (for diagnostics in debug mode):\n"
+        classString += "\(indent)public var allExpectedKeys: Set<String> {\n\(indent)\(indent)return Set(["
+        for property in parentProtocol?.restProperties ?? [RESTProperty]() {
+            classString += "\"\(property.jsonProperty)\", "
+            hasProperties = true
+        }
+        for property in restprops {
+            if !parentPropertyNames.contains(property.name) {
+                classString += "\"\(property.jsonProperty)\", "
+                hasProperties = true
+            }
+        }
+        if hasProperties {
+            classString.remove(at: classString.characters.index(classString.endIndex, offsetBy: -1))
+            classString.remove(at: classString.characters.index(classString.endIndex, offsetBy: -1))
+        }
+        classString += "])\n"
+
         classString += "\(indent)}\n"
         
         classString += "\n\(indent)// dictionary representation (for use with NSJSONSerializer or as parameters for URL request):\n"
@@ -371,18 +373,21 @@ class XCModelTranslator {
         classString += "\(indent)var returnString = \"{\\n\"\n"
         classString += "\n"
 
+        hasProperties = false
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\(property.jsonString)\n"
+            hasProperties = true
         }
         if parentProtocol != nil { classString += "\n" }
 
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
                 classString += "\(property.jsonString)\n"
+                hasProperties = true
             }
         }
 
-        if restprops.count > 0 {
+        if hasProperties {
             classString = removeCommaAtPos(-5, sourceString: classString)
         }
         
@@ -426,7 +431,7 @@ class XCModelTranslator {
                                                             withProtocols: protocols,
                                                             withPrimitiveProxyNames: primitiveProxyNames) }
         
-        let indent = "\t"
+        let indent = "    "
         var hasRelations = false
         for property in restprops {
             if property.isPrimitiveType {
@@ -445,6 +450,9 @@ class XCModelTranslator {
             }
         }
         classString += indent + indent + "default:\n"
+        classString += indent + indent + indent + "#if DEBUG\n"
+        classString += indent + indent + indent + indent + "DTODiagnostics.unknownEnumCase(typeAsString, inEnum: \"\(className)\")\n"
+        classString += indent + indent + indent + "#endif\n"
         classString += indent + indent + indent + "return nil\n"
         classString += indent + indent + "}\n"
         classString += indent + "}\n"
@@ -474,15 +482,15 @@ class XCModelTranslator {
                 enumsWithRelations.insert(className)
                 
                 classString += indent + "func conditionalInstance(withJSON jsonData: JSOBJ) -> \(commonProtocol!)? {\n"
-                classString += indent + "\tswitch self {\n"
+                classString += indent + "\(indent)switch self {\n"
                 
                 for property in restprops {
                     if !property.isPrimitiveType {
-                        classString += indent + "\tcase .\(String(property.name.characters.dropFirst())):\n"
-                        classString += indent + "\t\treturn \(property.primitiveType)(jsonData: jsonData)\n"
+                        classString += indent + "\(indent)case .\(String(property.name.characters.dropFirst())):\n"
+                        classString += indent + "\(indent)\(indent)return \(property.primitiveType)(jsonData: jsonData)\n"
                     }
                 }
-                classString += indent + "\t}\n"
+                classString += indent + "\(indent)}\n"
                 classString += indent + "}\n"
             }
         }
@@ -518,23 +526,23 @@ class XCModelTranslator {
             if enumsWithRelations.contains(prop.primitiveType) {
                 
                 classString += "\n\nextension \(protocolName) {\n"
-                classString += "\tstatic func createWith(jsonData json: JSOBJ) -> \(protocolName)? {\n"
-                classString += "\t\tif let enumValue = json[\"\(prop.jsonProperty)\"] as? String,\n\t\t\tlet enumProp = \(prop.primitiveType)(rawValue: enumValue) {\n"
-                classString += "\t\t\treturn enumProp.conditionalInstance(withJSON: json)\n"
-                classString += "\t\t}\n"
-                classString += "\t\telse {\n"
-                classString += "\t\t\treturn nil\n"
-                classString += "\t\t}\n"
-                classString += "\t}\n"
+                classString += "\(indent)static func createWith(jsonData json: JSOBJ) -> \(protocolName)? {\n"
+                classString += "\(indent)\(indent)if let enumValue = json[\"\(prop.jsonProperty)\"] as? String,\n\(indent)\(indent)\(indent)let enumProp = \(prop.primitiveType)(rawValue: enumValue) {\n"
+                classString += "\(indent)\(indent)\(indent)return enumProp.conditionalInstance(withJSON: json)\n"
+                classString += "\(indent)\(indent)}\n"
+                classString += "\(indent)\(indent)else {\n"
+                classString += "\(indent)\(indent)\(indent)return nil\n"
+                classString += "\(indent)\(indent)}\n"
+                classString += "\(indent)}\n"
                 classString += "}"
                 
                 return classString
             }
         }
         classString += "\n\nextension \(protocolName) {\n"
-        classString += "\tstatic func createWith(jsonData json: JSOBJ) -> \(protocolName)? {\n"
-        classString += "\t\treturn \(consumer)(jsonData: json)\n"
-        classString += "\t}\n"
+        classString += "\(indent)static func createWith(jsonData json: JSOBJ) -> \(protocolName)? {\n"
+        classString += "\(indent)\(indent)return \(consumer)(jsonData: json)\n"
+        classString += "\(indent)}\n"
         classString += "}"
         
         return classString
