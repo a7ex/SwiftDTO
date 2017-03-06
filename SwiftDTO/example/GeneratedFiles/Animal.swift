@@ -13,18 +13,18 @@
 import Foundation
 
 public protocol Animal: DictionaryConvertible {
-	var name: String? { get }
-	var animalType: AnimalType? { get }
+    var name: String? { get }
+    var animalType: AnimalType? { get }
 }
 
 extension Animal {
-	static func createWith(jsonData json: JSOBJ) -> Animal? {
-		if let enumValue = json["animalType"] as? String,
-			let enumProp = AnimalType(rawValue: enumValue) {
-			return enumProp.conditionalInstance(withJSON: json)
-		}
-		else {
-			return nil
-		}
-	}
+    static func createWith(jsonData json: JSOBJ) -> Animal? {
+        if let enumValue = json["animalType"] as? String,
+            let enumProp = AnimalType(rawValue: enumValue) {
+            return enumProp.conditionalInstance(withJSON: json)
+        }
+        else {
+            return nil
+        }
+    }
 }

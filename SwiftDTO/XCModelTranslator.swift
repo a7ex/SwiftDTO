@@ -259,9 +259,9 @@ class XCModelTranslator {
         
         classString += "import Foundation\n\npublic struct \(className): \((parentProtocol == nil) ? "": parentProtocol!.name + ", ")JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {\n"
         
-        var indent = "    "
+        var ind = indent
         
-        classString += "\n\(indent)// DTO properties:\n"
+        classString += "\n\(ind)// DTO properties:\n"
         
         let parentPropertyNames = Set(parentProtocol?.restProperties.flatMap { $0.name } ?? [String]())
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
@@ -281,8 +281,8 @@ class XCModelTranslator {
             }
         }
         
-        classString += "\n\(indent)// Default initializer:\n"
-        classString += "\(indent)public init("
+        classString += "\n\(ind)// Default initializer:\n"
+        classString += "\(ind)public init("
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\(property.defaultInitializeParameter), "
         }
@@ -303,12 +303,12 @@ class XCModelTranslator {
                 classString += "\(property.defaultInitializeString)\n"
             }
         }
-        classString += "\(indent)}\n"
+        classString += "\(ind)}\n"
         
         
-        classString += "\n\(indent)// Object creation using JSON dictionary representation from NSJSONSerializer:\n"
-        classString += "\(indent)public init?(jsonData: JSOBJ?) {\n"
-        classString += "\(indent)\(indent)guard let jsonData = jsonData else { return nil }\n"
+        classString += "\n\(ind)// Object creation using JSON dictionary representation from NSJSONSerializer:\n"
+        classString += "\(ind)public init?(jsonData: JSOBJ?) {\n"
+        classString += "\(ind)\(ind)guard let jsonData = jsonData else { return nil }\n"
         
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\(property.initializeString)\n"
@@ -320,13 +320,13 @@ class XCModelTranslator {
                 classString += "\(property.initializeString)\n"
             }
         }
-        classString += "\n\(indent)\(indent)#if DEBUG\n\(indent)\(indent)\(indent)DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: \"\(className)\")\n\(indent)\(indent)#endif\n"
-        classString += "\(indent)}\n"
+        classString += "\n\(ind)\(ind)#if DEBUG\n\(ind)\(ind)\(ind)DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: \"\(className)\")\n\(ind)\(ind)#endif\n"
+        classString += "\(ind)}\n"
         
         var hasProperties = false
         
-        classString += "\n\(indent)// all expected keys (for diagnostics in debug mode):\n"
-        classString += "\(indent)public var allExpectedKeys: Set<String> {\n\(indent)\(indent)return Set(["
+        classString += "\n\(ind)// all expected keys (for diagnostics in debug mode):\n"
+        classString += "\(ind)public var allExpectedKeys: Set<String> {\n\(ind)\(ind)return Set(["
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\"\(property.jsonProperty)\", "
             hasProperties = true
@@ -343,12 +343,12 @@ class XCModelTranslator {
         }
         classString += "])\n"
 
-        classString += "\(indent)}\n"
+        classString += "\(ind)}\n"
         
-        classString += "\n\(indent)// dictionary representation (for use with NSJSONSerializer or as parameters for URL request):\n"
-        classString += "\(indent)public var jsobjRepresentation: JSOBJ {\n"
-        indent = indent + indent
-        classString += "\(indent)var jsonData = JSOBJ()\n"
+        classString += "\n\(ind)// dictionary representation (for use with NSJSONSerializer or as parameters for URL request):\n"
+        classString += "\(ind)public var jsobjRepresentation: JSOBJ {\n"
+        ind = ind + indent
+        classString += "\(ind)var jsonData = JSOBJ()\n"
         
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\(property.exportString)\n"
@@ -360,17 +360,17 @@ class XCModelTranslator {
                 classString += "\(property.exportString)\n"
             }
         }
-        classString += "\(indent)return jsonData\n"
-        indent.remove(at: indent.characters.index(before: indent.endIndex))
-        classString += "\(indent)}\n"
+        classString += "\(ind)return jsonData\n"
+        ind = ind.substring(start: 0, end: (indent.characters.count * -1))
+        classString += "\(ind)}\n"
         
-        classString += "\n\(indent)// printable protocol conformance:\n"
-        classString += "\(indent)public var description: String { return \"\\(jsonString())\" }\n"
+        classString += "\n\(ind)// printable protocol conformance:\n"
+        classString += "\(ind)public var description: String { return \"\\(jsonString())\" }\n"
         
-        classString += "\n\(indent)// pretty print JSON string representation:\n"
-        classString += "\(indent)public func jsonString(paddingPrefix prefix: String = \"\", printNulls: Bool = false) -> String {\n"
-        indent = indent + indent
-        classString += "\(indent)var returnString = \"{\\n\"\n"
+        classString += "\n\(ind)// pretty print JSON string representation:\n"
+        classString += "\(ind)public func jsonString(paddingPrefix prefix: String = \"\", printNulls: Bool = false) -> String {\n"
+        ind = ind + indent
+        classString += "\(ind)var returnString = \"{\\n\"\n"
         classString += "\n"
 
         hasProperties = false
@@ -393,12 +393,12 @@ class XCModelTranslator {
         
         classString = classString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         classString += "\n"
-        classString += "\(indent)returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: \"\\n\"))\n"
-        classString += "\(indent)returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: \",\"))\n"
-        classString += "\(indent)returnString = returnString + \"\\n\\(prefix)}\"\n"
-        classString += "\(indent)return returnString\n"
-        indent.remove(at: indent.characters.index(before: indent.endIndex))
-        classString += "\(indent)}\n"
+        classString += "\(ind)returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: \"\\n\"))\n"
+        classString += "\(ind)returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: \",\"))\n"
+        classString += "\(ind)returnString = returnString + \"\\n\\(prefix)}\"\n"
+        classString += "\(ind)return returnString\n"
+        ind = ind.substring(start: 0, end: (indent.characters.count * -1))
+        classString += "\(ind)}\n"
         
         classString += "}"
         
@@ -431,7 +431,6 @@ class XCModelTranslator {
                                                             withProtocols: protocols,
                                                             withPrimitiveProxyNames: primitiveProxyNames) }
         
-        let indent = "    "
         var hasRelations = false
         for property in restprops {
             if property.isPrimitiveType {
@@ -559,4 +558,15 @@ class XCModelTranslator {
         + "// to create the corresponding DTO source files automatically\n\n"
     }
     
+}
+
+extension String {
+    func substring(start: Int, end: Int) -> String {
+        let strLength = characters.count
+        let startPos = start < 0 ? characters.count + start: start
+        guard startPos < strLength else { return "" }
+        let endPos = end < 0 ? characters.count + end: end
+        guard endPos >= Int(startPos) else { return "" }
+        return self[index(startIndex, offsetBy: Int(startPos))..<index(startIndex, offsetBy: min(endPos, characters.count))]
+    }
 }

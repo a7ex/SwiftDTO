@@ -26,8 +26,53 @@ public protocol JSOBJSerializable {
     init?(jsonData: JSOBJ?)
 }
 
-struct ConversionHelper {
+struct DTODiagnostics {
     
+    /// If in DEBUG mode we call this in order to list differences between
+    /// the expected JSON and the actually received JSON
+    /// If there are any, print the differences into the console
+    static func analize(jsonData: JSOBJ, expectedKeys: Set<String>, inClassWithName clsName: String) {
+        let allKeys = Set(jsonData.keys)
+        let additionalKeys = allKeys.subtracting(expectedKeys)
+        
+        // set the following boolean to false to also get diagnostic console output
+        // for keys, which exits in the DTO, but not in the JSON
+        // Since that is more often the case, the default for 'onlyShowAdditionKeys' is true
+        let onlyShowAdditionKeys = true
+        
+        let missingKeys = onlyShowAdditionKeys ? Set<String>(): expectedKeys.subtracting(allKeys)
+        if missingKeys.isEmpty, additionalKeys.isEmpty { return }
+        print("\n-------------------\nConradDTO debug data for \"\(clsName)\":")
+        if !missingKeys.isEmpty { print("Missing in JSON: \(missingKeys)") }
+        if !additionalKeys.isEmpty { print("Missing in code: \(additionalKeys)") }
+        print("-------------------\n")
+    }
+    
+    static func unknownEnumCase(_ enumCase: String?, inEnum enumName: String) {
+        print("\n-------------------\nConradDTO debug data: Missing case \"\(enumCase)\" in Enum: \"\(enumName)\":")
+        print("-------------------\n")
+    }
+}
+
+struct ConversionHelper {
+
+    /**
+     Try to convert an Any value to a NSDate object
+
+     Try to convert the input to a String, Int or Double and call the corresponding date creator
+
+     - parameter dateObj: Any representing a date in either String or Timestamp
+
+     - returns: NSDate object corresponding to input
+     */
+    static func dateFromAny(_ dateObj: Any?) -> Date? {
+        let helper = ConversionHelper()
+        if let inputString = dateObj as? String { return helper.dateFromString(inputString) }
+        if let doubleVal = dateObj as? Double { return helper.dateFromDouble(doubleVal) }
+        if let intVal = dateObj as? Int { return helper.dateFromLong(intVal) }
+        return nil
+    }
+
     /**
      Convert an NSDate object to a string representing a date in ISO 8601 format (default)
      
@@ -43,29 +88,27 @@ struct ConversionHelper {
     }
     
     /**
-     Try to convert an Any value to a NSDate object
+     Parsing a String is a bit more complicated, because if a property of type string is e.g. "true" it will appear as boolean after NSJSONSerialization and so "jsonObject as? String" will be nil. Thanks to automatic type casting if the string is "true", "false" or "1" or "2.3"
      
-     Try to convert the input to a String, Int or Double and call the corresponding date creator
+     - parameter jsonObject: Any or nil (one value in the dictionary, which NSJSONSerialization produces)
      
-     - parameter dateObj: Any representing a date in either String or Timestamp
-     
-     - returns: NSDate object corresponding to input
+     - returns: String or nil
      */
-    static func dateFromAny(_ dateObj: Any?) -> Date? {
-        let helper = ConversionHelper()
-        if let inputString = dateObj as? String { return helper.dateFromString(inputString) }
-        if let doubleVal = dateObj as? Double { return helper.dateFromDouble(doubleVal) }
-        if let intVal = dateObj as? Int { return helper.dateFromLong(intVal) }
+    static func stringFromAny(_ jsonObject:Any?) -> String? {
+        if let val = jsonObject as? String { return val }
+        if let val = jsonObject as? Bool { return String(describing: val) }
+        if let val = jsonObject as? Int { return String(describing: val) }
+        if let val = jsonObject as? Double { return String(describing: val) }
         return nil
     }
-    
-    /*
+
+    /**
      Try to convert a string representing a date to a NSDate object
-     
+
      Start with ISO 8601 format, then our "Conrad German date format", then a timestamp
-     
+
      - parameter dateString: String representing a date in ISO 8601 format
-     
+
      - returns: NSDate object corresponding to input string
      */
     private func dateFromString(_ dateString: String?) -> Date? {
@@ -75,20 +118,24 @@ struct ConversionHelper {
         if let retVal = dateFormatter.date(from: inputString) { return retVal }
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZZZ"
         if let retVal = dateFormatter.date(from: inputString) { return retVal }
+        dateFormatter.dateFormat = "yyyy'-'MM'-'ddZZZZZ"
+        if let retVal = dateFormatter.date(from: inputString) { return retVal }
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd"
+        if let retVal = dateFormatter.date(from: inputString) { return retVal }
         dateFormatter.dateFormat = "dd'-'MM'-'yyyy"
         if let retVal = dateFormatter.date(from: inputString) { return retVal }
         if let doubleVal = Double(inputString) { return dateFromDouble(doubleVal) }
         if let intVal = Int(inputString) { return dateFromLong(intVal) }
         return nil
     }
-    
+
     private func dateFromDouble(_ timestamp: Double?) -> Date? {
         guard let timestamp = timestamp else {
             return nil
         }
         return Date(timeIntervalSince1970: (timestamp/1000.0))
     }
-    
+
     private func dateFromLong(_ timestamp: Int?) -> Date? {
         guard let timestamp = timestamp else {
             return nil

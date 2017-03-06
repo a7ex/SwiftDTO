@@ -13,27 +13,30 @@
 import Foundation
 
 public enum AnimalType: String {
-	case AQUATIC = "Aquatic"
-	case MAMMAL = "Mammal"
+    case AQUATIC = "Aquatic"
+    case MAMMAL = "Mammal"
 
-	public static func byString(_ typeAsString: String?) -> AnimalType? {
-		switch (typeAsString ?? "").uppercased() {
-		case "AQUATIC":
-			return .AQUATIC
-		case "MAMMAL":
-			return .MAMMAL
-		default:
-			return nil
-		}
-	}
+    public static func byString(_ typeAsString: String?) -> AnimalType? {
+        switch (typeAsString ?? "").uppercased() {
+        case "AQUATIC":
+            return .AQUATIC
+        case "MAMMAL":
+            return .MAMMAL
+        default:
+            #if DEBUG
+                DTODiagnostics.unknownEnumCase(typeAsString, inEnum: "AnimalType")
+            #endif
+            return nil
+        }
+    }
 
 
-	func conditionalInstance(withJSON jsonData: JSOBJ) -> Animal? {
-		switch self {
-		case .AQUATIC:
-			return Fish(jsonData: jsonData)
-		case .MAMMAL:
-			return Dog(jsonData: jsonData)
-		}
-	}
+    func conditionalInstance(withJSON jsonData: JSOBJ) -> Animal? {
+        switch self {
+        case .AQUATIC:
+            return Fish(jsonData: jsonData)
+        case .MAMMAL:
+            return Dog(jsonData: jsonData)
+        }
+    }
 }
