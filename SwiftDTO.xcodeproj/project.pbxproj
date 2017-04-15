@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		369F5BEF1EA285F8005A229A /* Readme.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 369F5BEE1EA285CD005A229A /* Readme.txt */; };
 		FA8207851DE2D7DF00333F8D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207841DE2D7DF00333F8D /* main.swift */; };
 		FA82078F1DE2DA6C00333F8D /* RESTProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078B1DE2DA6C00333F8D /* RESTProperty.swift */; };
 		FA8207901DE2DA6C00333F8D /* XCModelTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078C1DE2DA6C00333F8D /* XCModelTranslator.swift */; };
@@ -28,12 +29,14 @@
 			dstSubfolderSpec = 7;
 			files = (
 				FA8207931DE2DAAB00333F8D /* DTO_Globals.swift in CopyFiles */,
+				369F5BEF1EA285F8005A229A /* Readme.txt in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		369F5BEE1EA285CD005A229A /* Readme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
 		FA8207811DE2D7DF00333F8D /* SwiftDTO */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SwiftDTO; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA8207841DE2D7DF00333F8D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		FA82078B1DE2DA6C00333F8D /* RESTProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTProperty.swift; sourceTree = "<group>"; };
@@ -88,6 +91,7 @@
 				FA82078B1DE2DA6C00333F8D /* RESTProperty.swift */,
 				FA82078E1DE2DA6C00333F8D /* ProtocolDeclaration.swift */,
 				FA82078D1DE2DA6C00333F8D /* DTO_Globals.swift */,
+				369F5BEE1EA285CD005A229A /* Readme.txt */,
 				FA8207971DE2FE7500333F8D /* example */,
 			);
 			path = SwiftDTO;
@@ -282,6 +286,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = GNGL9A39VR;
+				INSTALL_PATH = /;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -291,6 +296,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = GNGL9A39VR;
+				INSTALL_PATH = /;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
