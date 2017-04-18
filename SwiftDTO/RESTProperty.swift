@@ -120,12 +120,12 @@ struct RESTProperty {
             jsonProperty = name
         }
         
-        if typeIsProxyType {
-            print("type: \(type) is contained in: \(proxyNames)")
-        }
-        else {
-            print("type: \(type) is NOT contained in: \(proxyNames)")
-        }
+//        if typeIsProxyType {
+//            print("type: \(type) is contained in: \(proxyNames)")
+//        }
+//        else {
+//            print("type: \(type) is NOT contained in: \(proxyNames)")
+//        }
         
         isOptional = (xmlElement.attribute(forName: Constants.OptionalAttributeName)?.objectValue as? Bool) ?? true // default to optional
     }

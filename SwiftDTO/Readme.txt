@@ -1,7 +1,7 @@
 In order to translate the XCModel file with the DTO definitions:
 In the terminal change into this directory and execute:
 
-./SwiftDTO ../myDTO.xcdatamodel/contents ../GeneratedDTOs
+./SwiftDTO myDTO.xcdatamodel/contents GeneratedDTOs
 
 That will read in the xml file <1st parameter> and output the generated swift files into the folder <2nd parameter>
 
