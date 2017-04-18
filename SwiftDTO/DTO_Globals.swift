@@ -187,7 +187,7 @@ public struct DTOParser {
     ///
     /// - Parameter data: Data, String, Dictionary or Array
     /// - Returns: a DTOResult object with either the result or the error as associated value
-    public func parse<T: JSOBJSerializable>(_ data: Any) -> DTOResult<T, NSError> {
+    public func parse<T: JSOBJSerializable>(_ data: Any) -> DTOResult<[T], NSError> {
         let decodedData = decodeData(data)
         return decodedData.flatMap({ (obj: Any) -> DTOResult<[T], NSError> in
             guard let array = obj as? [Any] else {
