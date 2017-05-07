@@ -16,7 +16,7 @@ let copyRightString = "Copyright (c) 2016 Farbflash. All rights reserved."
 
 func writeToStdError(_ str: String) {
     let handle = FileHandle.standardError
-    
+
     if let data = str.data(using: String.Encoding.utf8) {
         handle.write(data)
     }
@@ -24,7 +24,7 @@ func writeToStdError(_ str: String) {
 
 func writeToStdOut(_ str: String) {
     let handle = FileHandle.standardOutput
-    
+
     if let data = "\(str)\n".data(using: String.Encoding.utf8) {
         handle.write(data)
     }
@@ -50,7 +50,7 @@ let targetFolder: String? = (CommandLine.arguments.count > 2) ? CommandLine.argu
 
 do {
     let xml = try XMLDocument(contentsOf: url, options: 0)
-    
+
     if let parser = XCModelTranslator(xmlData: xml) {
         parser.generateFiles(inFolder: targetFolder)
     }
@@ -62,4 +62,3 @@ catch let err as NSError {
 
 // Finally, exit
 exit(EXIT_SUCCESS)
-

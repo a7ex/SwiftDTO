@@ -13,13 +13,13 @@
 import Foundation
 
 public struct Person: JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
-    
+
     // DTO properties:
     public let birthdate: Date?
     public let name: String?
     public let features: [String]?
     public let pets: [Animal]?
-    
+
     // Default initializer:
     public init(birthdate: Date?, name: String?, features: [String]?, pets: [Animal]?) {
         self.birthdate = birthdate
@@ -27,32 +27,32 @@ public struct Person: JSOBJSerializable, DictionaryConvertible, CustomStringConv
         self.features = features
         self.pets = pets
     }
-    
+
     // Object creation using JSON dictionary representation from NSJSONSerializer:
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
         birthdate = ConversionHelper.dateFromAny(jsonData["b_date"])
         name = ConversionHelper.stringFromAny(jsonData["name"])
         features = jsonData["features"] as? [String]
-        pets = (jsonData["pets"] as? JSARR)?.flatMap() { Fish.createWith(jsonData: $0) }
-        
+        pets = (jsonData["pets"] as? JSARR)?.flatMap { Fish.createWith(jsonData: $0) }
+
         #if DEBUG
             DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: "Person")
         #endif
     }
-    
+
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
         return Set(["b_date", "name", "features", "pets"])
     }
-    
+
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
         if birthdate != nil { jsonData["b_date"] = ConversionHelper.stringFromDate(birthdate!) }
         if name != nil { jsonData["name"] = name! }
         if features != nil { jsonData["features"] = features! }
-        
+
         if let pets = pets {
             var tmp = [JSOBJ]()
             for this in pets { tmp.append(this.jsobjRepresentation) }
@@ -60,41 +60,40 @@ public struct Person: JSOBJSerializable, DictionaryConvertible, CustomStringConv
         }
         return jsonData
     }
-    
+
     // printable protocol conformance:
     public var description: String { return "\(jsonString())" }
-    
+
     // pretty print JSON string representation:
     public func jsonString(paddingPrefix prefix: String = "", printNulls: Bool = false) -> String {
         var returnString = "{\n"
-        
+
         if let birthdate = birthdate { returnString.append("    \(prefix)\"b_date\": \"\(ConversionHelper.stringFromDate(birthdate))\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"b_date\": null,\n") }
-        
+
         if let name = name { returnString.append("    \(prefix)\"name\": \"\(name)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"name\": null,\n") }
-        
+
         if let features = features {
             returnString.append("    \(prefix)\"features\": [\n")
             for thisObj in features {
                 returnString.append("        \(prefix)\("\("\(prefix)        " + "\(thisObj)")"),\n")
             }
-            if features.count > 0 { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }
+            if !features.isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }
             returnString.append("    \(prefix)],\n")
         }
         else if printNulls { returnString.append("        \(prefix)\"features\": null\n") }
-        
+
         if let pets = pets {
             returnString.append("    \(prefix)\"pets\": [\n")
             for thisObj in pets {
                 returnString.append("        \(prefix)\("\(thisObj.jsonString(paddingPrefix: "\(prefix)        ", printNulls: printNulls))"),\n")
             }
-            if pets.count > 0 { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }
+            if !pets.isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }
             returnString.append("    \(prefix)],\n")
         }
         else if printNulls { returnString.append("        \(prefix)\"pets\": null\n") }
-        
-        
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString = returnString + "\n\(prefix)}"

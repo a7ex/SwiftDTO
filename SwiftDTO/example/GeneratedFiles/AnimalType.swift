@@ -30,7 +30,6 @@ public enum AnimalType: String {
         }
     }
 
-
     func conditionalInstance(withJSON jsonData: JSOBJ) -> Animal? {
         switch self {
         case .AQUATIC:

@@ -9,7 +9,7 @@
 import Foundation
 
 struct RESTProperty {
-    
+
     struct Constants {
         static let OptionalAttributeName = "optional"
         static let DestinationEntityAttributeName = "destinationEntity"
@@ -31,22 +31,22 @@ struct RESTProperty {
     let isEnumProperty: Bool
     let typeIsProxyType: Bool
     let protocolInitializerType: String
-    
+
     let indent = "    "
-    
+
     init?(xmlElement: XMLElement?,
           isEnum: Bool,
           withEnumNames enums: Set<String>,
           withProtocolNames protocolNames: Set<String>,
           withProtocols protocols: [ProtocolDeclaration]?,
           withPrimitiveProxyNames proxyNames: Set<String>) {
-        
+
         guard let xmlElement = xmlElement,
             let name = xmlElement.attribute(forName: "name")?.stringValue else { return nil }
-        
+
         self.name = name
         self.isEnum = isEnum
-        
+
         // map the type
         if let ttype = xmlElement.attribute(forName: Constants.TypeAttributeName)?.stringValue {
             switch ttype {
@@ -98,42 +98,42 @@ struct RESTProperty {
             primitiveType = type
             protocolInitializerType = ""
         }
-        
+
         if let defaultValue = xmlElement.attribute(forName: Constants.DefaultValueStringAttributeName)?.stringValue {
             value = defaultValue
         }
         else {
             value = ""
         }
-        
+
         typeIsProxyType = proxyNames.contains(isArray ? type.trimmingCharacters(in: CharacterSet(charactersIn: "[]")): type)
-        
+
         // Override 1 to 1 name mapping by defining custom property for json property:
         if let children = xmlElement.children as? [XMLElement],
-            let userInfo = children.filter({ $0.name == Constants.UserInfoKeyName }).first,
+            let userInfo = children.first(where: { $0.name == Constants.UserInfoKeyName }),
             let jsProps = userInfo.children as? [XMLElement] {
-            
-            let jsProp = jsProps.filter({ $0.attribute(forName: "key")?.stringValue == Constants.JsonPropertyOverrideName }).first
+
+            let jsProp = jsProps.first(where: { $0.attribute(forName: "key")?.stringValue == Constants.JsonPropertyOverrideName })
             jsonProperty = "\(jsProp?.attribute(forName: "value")?.stringValue ??  name)"
         }
         else {
             jsonProperty = name
         }
-        
+
 //        if typeIsProxyType {
 //            print("type: \(type) is contained in: \(proxyNames)")
 //        }
 //        else {
 //            print("type: \(type) is NOT contained in: \(proxyNames)")
 //        }
-        
+
         isOptional = (xmlElement.attribute(forName: Constants.OptionalAttributeName)?.objectValue as? Bool) ?? true // default to optional
     }
-    
+
     fileprivate var typeSingular: String {
         return isArray ? type.trimmingCharacters(in: CharacterSet(charactersIn: "[]")): type
     }
-    
+
     var declarationString: String {
         if isEnum {
             return "case \(name.uppercased()) = \"\(value)\""
@@ -142,7 +142,7 @@ struct RESTProperty {
             return "\(indent)public let \(name): \(type)\(isOptional ? "?": "")"
         }
     }
-    
+
     var upperCasedInitializer: String {
         if isEnum {
             return "\(indent)\(indent)case \"\(value.uppercased())\":\n\(indent)\(indent)\(indent)return .\(name.uppercased())"
@@ -151,7 +151,7 @@ struct RESTProperty {
             return ""
         }
     }
-    
+
     var protocolDeclarationString: String {
         if isEnum {
             return ""
@@ -160,15 +160,15 @@ struct RESTProperty {
             return "\(indent)var \(name): \(type)\(isOptional ? "?": "") { get }"
         }
     }
-    
+
     var defaultInitializeString: String {
         return "\(indent)\(indent)self.\(name) = \(name)"
     }
-    
+
     var defaultInitializeParameter: String {
         return "\(name): \(type)\(isOptional ? "?": "")"
     }
-    
+
     var initializeString: String {
         if isPrimitiveType {
             if type == "Date" {
@@ -235,7 +235,7 @@ struct RESTProperty {
             }
         }
     }
-    
+
     var exportString: String {
         if isPrimitiveType {
             if type == "Date" {
@@ -252,7 +252,7 @@ struct RESTProperty {
                 }
                 else {
                     if isEnumProperty {
-                        
+
                         return "\(indent)\(indent)if let \(name) = \(name) {\n\(indent)\(indent)\(indent)var tmp = [String]()\n\(indent)\(indent)\(indent)for this in \(name) { tmp.append(this.rawValue) }\n\(indent)\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = tmp\n\(indent)\(indent)}"
                     }
                     else {
@@ -288,7 +288,7 @@ struct RESTProperty {
             }
         }
     }
-    
+
     var jsonString: String {
         if isPrimitiveType {
             if type == "Date" {

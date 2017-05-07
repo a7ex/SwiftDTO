@@ -15,32 +15,32 @@ class XCModelTranslator {
     var primitiveProxyNames = Set<String>()
     var protocols: [ProtocolDeclaration]?
     var enumsWithRelations = Set<String>()
-    
+
     let indent = "    "
-    
+
     init?(xmlData: XMLDocument) {
-        guard let children = xmlData.children , children.count > 0,
-            let mo = children.filter({ $0.name == "model" }).first else { return nil }
+        guard let children = xmlData.children, !children.isEmpty,
+            let mo = children.first(where: { $0.name == "model" }) else { return nil }
         self.model = mo
     }
-    
+
     final func generateFiles(inFolder folderPath: String? = nil) {
         guard let children = model.children else { return }
-        let entities = children.filter() { $0.name == "entity" }
-        
+        let entities = children.filter { $0.name == "entity" }
+
         let info = ProcessInfo.processInfo
         let workingDirectory = info.environment["PWD"]
-        
+
         let pwd = folderPath ?? workingDirectory
-        
+
         var primitiveProxies = Set<String>()
         for thisEntity in entities {
             guard let children2 = thisEntity.children as? [XMLElement],
-                let userInfo = children2.filter({ $0.name == "userInfo" }).first,
+                let userInfo = children2.first(where: { $0.name == "userInfo" }),
                 let theseInfos = userInfo.children as? [XMLElement] else {
                     continue
             }
-            if let elementInfo = theseInfos.filter({ $0.attribute(forName: "key")?.stringValue == "isPrimitiveProxy" }).first {
+            if let elementInfo = theseInfos.first(where: { $0.attribute(forName: "key")?.stringValue == "isPrimitiveProxy" }) {
                 if elementInfo.attribute(forName: "value")?.stringValue == "1" {
                     if let entityName = (thisEntity as? XMLElement)?.attribute(forName: "name")?.stringValue {
                         primitiveProxies.insert(entityName)
@@ -49,15 +49,15 @@ class XCModelTranslator {
             }
         }
         primitiveProxyNames = primitiveProxies
-        
+
         var enums = Set<String>()
         for thisEntity in entities {
             guard let children2 = thisEntity.children as? [XMLElement],
-                let userInfo = children2.filter({ $0.name == "userInfo" }).first,
+                let userInfo = children2.first(where: { $0.name == "userInfo" }),
                 let isEnumInfos = userInfo.children as? [XMLElement] else {
                     continue
             }
-            if let enumInfo = isEnumInfos.filter({ $0.attribute(forName: "key")?.stringValue == "isEnum" }).first {
+            if let enumInfo = isEnumInfos.first(where: { $0.attribute(forName: "key")?.stringValue == "isEnum" }) {
                 if enumInfo.attribute(forName: "value")?.stringValue == "1" {
                     if let entityName = (thisEntity as? XMLElement)?.attribute(forName: "name")?.stringValue {
                         enums.insert(entityName)
@@ -66,8 +66,7 @@ class XCModelTranslator {
             }
         }
         enumNames = enums
-        
-        
+
         for thisEntity in entities {
             guard let isAbstractNode = (thisEntity as? XMLElement)?.attribute(forName: "isAbstract"),
                 isAbstractNode.stringValue == "YES" else { continue }
@@ -75,12 +74,13 @@ class XCModelTranslator {
             guard let className = classNameNode?.stringValue else { continue }
             protocolNames.insert(className)
         }
-        
+
         protocols = [ProtocolDeclaration]()
         for thisEntity in entities {
             guard let isAbstractNode = (thisEntity as? XMLElement)?.attribute(forName: "isAbstract"),
-                isAbstractNode.stringValue == "YES" else { continue }
-            if let thisProtocol = ProtocolDeclaration(xmlElement: thisEntity as! XMLElement,
+                isAbstractNode.stringValue == "YES",
+                let unwrappedEntity = thisEntity as? XMLElement else { continue }
+            if let thisProtocol = ProtocolDeclaration(xmlElement: unwrappedEntity,
                                                       isEnum: false,
                                                       withEnumNames: enums,
                                                       withProtocolNames: protocolNames,
@@ -89,22 +89,24 @@ class XCModelTranslator {
                 protocols?.append(thisProtocol)
             }
         }
-        
+
         for thisEntity in entities {
             let classNameNode = (thisEntity as? XMLElement)?.attribute(forName: "name")
-            guard let className = classNameNode?.stringValue else { continue }
-            if let protocolName = (thisEntity as! XMLElement).attribute(forName: "parentEntity")?.stringValue {
+            guard let className = classNameNode?.stringValue,
+                let unwrappedEntity = thisEntity as? XMLElement else { continue }
+            if let protocolName = unwrappedEntity.attribute(forName: "parentEntity")?.stringValue {
                 let parentProtocol = (protocols?.filter { $0.name == protocolName })?.first
                 parentProtocol?.addConsumer(structName: className)
             }
         }
-        
+
         // now do the first step again in order to have the information of all other protocols
         var newProts = [ProtocolDeclaration]()
         for thisEntity in entities {
             guard let isAbstractNode = (thisEntity as? XMLElement)?.attribute(forName: "isAbstract"),
-                isAbstractNode.stringValue == "YES" else { continue }
-            if let thisProtocol = ProtocolDeclaration(xmlElement: thisEntity as! XMLElement,
+                isAbstractNode.stringValue == "YES",
+                let unwrappedEntity = thisEntity as? XMLElement else { continue }
+            if let thisProtocol = ProtocolDeclaration(xmlElement: unwrappedEntity,
                                                       isEnum: false,
                                                       withEnumNames: enums,
                                                       withProtocolNames: protocolNames,
@@ -115,19 +117,20 @@ class XCModelTranslator {
         }
         for thisEntity in entities {
             let classNameNode = (thisEntity as? XMLElement)?.attribute(forName: "name")
-            guard let className = classNameNode?.stringValue else { continue }
-            if let protocolName = (thisEntity as! XMLElement).attribute(forName: "parentEntity")?.stringValue {
-                let parentProtocol = (newProts.filter { $0.name == protocolName }).first
+            guard let className = classNameNode?.stringValue,
+                let unwrappedEntity = thisEntity as? XMLElement else { continue }
+            if let protocolName = unwrappedEntity.attribute(forName: "parentEntity")?.stringValue {
+                let parentProtocol = newProts.first(where: { $0.name == protocolName })
                 parentProtocol?.addConsumer(structName: className)
             }
         }
         protocols = newProts
-        
-        
+
         for thisEntity in entities {
             let classNameNode = (thisEntity as? XMLElement)?.attribute(forName: "name")
-            guard let className = classNameNode?.stringValue else { continue }
-            if let content = generateEnumFileFor(entity: thisEntity as! XMLElement, withName: className) {
+            guard let className = classNameNode?.stringValue,
+                let unwrappedEntity = thisEntity as? XMLElement else { continue }
+            if let content = generateEnumFileFor(entity: unwrappedEntity, withName: className) {
                 if let fpath = pathForClassName(className, inFolder: pwd) {
                     do {
                         try content.write(toFile: fpath, atomically: false, encoding: String.Encoding.utf8)
@@ -142,11 +145,12 @@ class XCModelTranslator {
                 }
             }
         }
-        
+
         for thisEntity in entities {
             let classNameNode = (thisEntity as? XMLElement)?.attribute(forName: "name")
-            guard let className = classNameNode?.stringValue else { continue }
-            if let content = generateProtocolFileForEntity(thisEntity as! XMLElement, withName: className) {
+            guard let className = classNameNode?.stringValue,
+                let unwrappedEntity = thisEntity as? XMLElement else { continue }
+            if let content = generateProtocolFileForEntity(unwrappedEntity, withName: className) {
                 if let fpath = pathForClassName(className, inFolder: pwd) {
                     do {
                         try content.write(toFile: fpath, atomically: false, encoding: String.Encoding.utf8)
@@ -161,11 +165,12 @@ class XCModelTranslator {
                 }
             }
         }
-        
+
         for thisEntity in entities {
             let classNameNode = (thisEntity as? XMLElement)?.attribute(forName: "name")
-            guard let className = classNameNode?.stringValue else { continue }
-            if let content = generateClassFileForEntity(thisEntity as! XMLElement, withName: className) {
+            guard let className = classNameNode?.stringValue,
+                let unwrappedEntity = thisEntity as? XMLElement else { continue }
+            if let content = generateClassFileForEntity(unwrappedEntity, withName: className) {
                 if let fpath = pathForClassName(className, inFolder: pwd) {
                     do {
                         try content.write(toFile: fpath, atomically: false, encoding: String.Encoding.utf8)
@@ -180,7 +185,7 @@ class XCModelTranslator {
                 }
             }
         }
-        
+
         let helperClassName = "DTO_Globals"
         if let swfilePath = Bundle.main.path(forResource: helperClassName, ofType: "swift"),
             let helperClass = try? String(contentsOfFile: swfilePath, encoding: String.Encoding.utf8) {
@@ -198,55 +203,54 @@ class XCModelTranslator {
             }
         }
     }
-    
+
     fileprivate final func pathForClassName(_ className: String, inFolder target: String?) -> String? {
         guard let target = target else { return nil }
         let fileurl = URL(fileURLWithPath: target)
         let newUrl = fileurl.appendingPathComponent(className).appendingPathExtension("swift")
         return newUrl.path
     }
-    
-    
+
     fileprivate final func generateProtocolFileForEntity(_ entity: XMLElement, withName className: String) -> String? {
         guard (entity.children as? [XMLElement]) != nil else { return nil }
-        
+
         if protocolNames.contains(className) {
             return generateProtocolFileForProtocol(className)
         }
         return nil
     }
-    
+
     fileprivate final func generateEnumFileFor(entity: XMLElement, withName className: String) -> String? {
         guard (entity.children as? [XMLElement]) != nil else { return nil }
-        
+
         if let enums = enumNames,
             enums.contains(className) {
             return generateEnumFileForEntity(entity, withName: className)
         }
         return nil
     }
-    
+
     fileprivate final func generateClassFileForEntity(_ entity: XMLElement, withName className: String) -> String? {
         guard let properties = entity.children as? [XMLElement] else { return nil }
-        
+
         if let enums = enumNames,
             enums.contains(className) {
             return nil
         }
-        
+
         if protocolNames.contains(className) {
             return nil
         }
-        
-        if let userInfo = properties.filter({ $0.name == RESTProperty.Constants.UserInfoKeyName }).first,
+
+        if let userInfo = properties.first(where: { $0.name == RESTProperty.Constants.UserInfoKeyName }),
             let jsProps = userInfo.children as? [XMLElement] {
-            
-            if let isProxy = jsProps.filter({ $0.attribute(forName: "key")?.stringValue == "isPrimitiveProxy" }).first,
+
+            if let isProxy = jsProps.first(where: { $0.attribute(forName: "key")?.stringValue == "isPrimitiveProxy" }),
                 (isProxy.attribute(forName: "value")?.stringValue ?? "") == "1" {
                 return nil
             }
         }
-        
+
         let parentProtocol: ProtocolDeclaration?
         if let protocolName = entity.attribute(forName: "parentEntity")?.stringValue {
             parentProtocol = (protocols?.filter { $0.name == protocolName })?.first
@@ -254,22 +258,22 @@ class XCModelTranslator {
         else {
             parentProtocol = nil
         }
-        
+
         var classString = headerStringFor(filename: className)
-        
+
         classString += "import Foundation\n\npublic struct \(className): \((parentProtocol == nil) ? "": parentProtocol!.name + ", ")JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {\n"
-        
+
         var ind = indent
-        
+
         classString += "\n\(ind)// DTO properties:\n"
-        
+
         let parentPropertyNames = Set(parentProtocol?.restProperties.flatMap { $0.name } ?? [String]())
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\(property.declarationString)\n"
         }
         if parentProtocol != nil { classString += "\n" }
-        
-        let restprops = properties.flatMap() { RESTProperty(xmlElement: $0,
+
+        let restprops = properties.flatMap { RESTProperty(xmlElement: $0,
                                                             isEnum: false,
                                                             withEnumNames: enumNames ?? Set<String>(),
                                                             withProtocolNames: protocolNames,
@@ -280,13 +284,13 @@ class XCModelTranslator {
                 classString += "\(property.declarationString)\n"
             }
         }
-        
+
         classString += "\n\(ind)// Default initializer:\n"
         classString += "\(ind)public init("
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\(property.defaultInitializeParameter), "
         }
-        
+
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
                 classString += "\(property.defaultInitializeParameter), "
@@ -297,24 +301,23 @@ class XCModelTranslator {
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\(property.defaultInitializeString)\n"
         }
-        
+
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
                 classString += "\(property.defaultInitializeString)\n"
             }
         }
         classString += "\(ind)}\n"
-        
-        
+
         classString += "\n\(ind)// Object creation using JSON dictionary representation from NSJSONSerializer:\n"
         classString += "\(ind)public init?(jsonData: JSOBJ?) {\n"
         classString += "\(ind)\(ind)guard let jsonData = jsonData else { return nil }\n"
-        
+
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\(property.initializeString)\n"
         }
         if parentProtocol != nil { classString += "\n" }
-        
+
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
                 classString += "\(property.initializeString)\n"
@@ -322,9 +325,9 @@ class XCModelTranslator {
         }
         classString += "\n\(ind)\(ind)#if DEBUG\n\(ind)\(ind)\(ind)DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: \"\(className)\")\n\(ind)\(ind)#endif\n"
         classString += "\(ind)}\n"
-        
+
         var hasProperties = false
-        
+
         classString += "\n\(ind)// all expected keys (for diagnostics in debug mode):\n"
         classString += "\(ind)public var allExpectedKeys: Set<String> {\n\(ind)\(ind)return Set(["
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
@@ -344,17 +347,17 @@ class XCModelTranslator {
         classString += "])\n"
 
         classString += "\(ind)}\n"
-        
+
         classString += "\n\(ind)// dictionary representation (for use with NSJSONSerializer or as parameters for URL request):\n"
         classString += "\(ind)public var jsobjRepresentation: JSOBJ {\n"
         ind = ind + indent
         classString += "\(ind)var jsonData = JSOBJ()\n"
-        
+
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
             classString += "\(property.exportString)\n"
         }
         if parentProtocol != nil { classString += "\n" }
-        
+
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
                 classString += "\(property.exportString)\n"
@@ -363,10 +366,10 @@ class XCModelTranslator {
         classString += "\(ind)return jsonData\n"
         ind = ind.substring(start: 0, end: (indent.characters.count * -1))
         classString += "\(ind)}\n"
-        
+
         classString += "\n\(ind)// printable protocol conformance:\n"
         classString += "\(ind)public var description: String { return \"\\(jsonString())\" }\n"
-        
+
         classString += "\n\(ind)// pretty print JSON string representation:\n"
         classString += "\(ind)public func jsonString(paddingPrefix prefix: String = \"\", printNulls: Bool = false) -> String {\n"
         ind = ind + indent
@@ -390,7 +393,7 @@ class XCModelTranslator {
         if hasProperties {
             classString = removeCommaAtPos(-5, sourceString: classString)
         }
-        
+
         classString = classString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         classString += "\n"
         classString += "\(ind)returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: \"\\n\"))\n"
@@ -399,12 +402,12 @@ class XCModelTranslator {
         classString += "\(ind)return returnString\n"
         ind = ind.substring(start: 0, end: (indent.characters.count * -1))
         classString += "\(ind)}\n"
-        
+
         classString += "}"
-        
+
         return classString
     }
-    
+
     private final func removeCommaAtPos(_ pos: Int, sourceString: String) -> String {
         var sourceString = sourceString
         let startInd = sourceString.characters.index(sourceString.endIndex, offsetBy: pos)
@@ -416,21 +419,21 @@ class XCModelTranslator {
         }
         return sourceString
     }
-    
+
     private final func generateEnumFileForEntity(_ entity: XMLElement, withName className: String) -> String? {
         guard let properties = entity.children as? [XMLElement] else { return nil }
-        
+
         var classString = headerStringFor(filename: className)
-        
+
         classString += "import Foundation\n\npublic enum \(className): String {\n"
-        
-        let restprops = properties.flatMap() { RESTProperty(xmlElement: $0,
+
+        let restprops = properties.flatMap { RESTProperty(xmlElement: $0,
                                                             isEnum: true,
                                                             withEnumNames: enumNames ?? Set<String>(),
                                                             withProtocolNames: protocolNames,
                                                             withProtocols: protocols,
                                                             withPrimitiveProxyNames: primitiveProxyNames) }
-        
+
         var hasRelations = false
         for property in restprops {
             if property.isPrimitiveType {
@@ -456,7 +459,7 @@ class XCModelTranslator {
         classString += indent + indent + "}\n"
         classString += indent + "}\n"
         classString += "\n"
-        
+
         if hasRelations {
             var commonProtocol: String?
             for property in restprops {
@@ -471,18 +474,18 @@ class XCModelTranslator {
                             fatalError("Relations in enum \"\(className)\" have different protocol dependencies!")
                         }
                     }
-                    
+
                 }
             }
-            
+
             if commonProtocol != nil {
                 classString += "\n"
-                
+
                 enumsWithRelations.insert(className)
-                
+
                 classString += indent + "func conditionalInstance(withJSON jsonData: JSOBJ) -> \(commonProtocol!)? {\n"
                 classString += indent + "\(indent)switch self {\n"
-                
+
                 for property in restprops {
                     if !property.isPrimitiveType {
                         classString += indent + "\(indent)case .\(String(property.name.characters.dropFirst())):\n"
@@ -493,11 +496,11 @@ class XCModelTranslator {
                 classString += indent + "}\n"
             }
         }
-        
+
         classString += "}"
         return classString
     }
-    
+
     private final func protocolNameFor(_ childName: String) -> String {
         for thisProtocol in protocols ?? [ProtocolDeclaration]() {
             if thisProtocol.consumers.contains(childName) {
@@ -506,24 +509,24 @@ class XCModelTranslator {
         }
         return ""
     }
-    
+
     private final func generateProtocolFileForProtocol(_ protocolName: String) -> String? {
-        
+
         guard let protocolData = (protocols?.filter { $0.name == protocolName })?.first else {
             fatalError("generateProtocolFileForProtocol() was called with an argument where there is no data for in protocols array!")
         }
         var classString = headerStringFor(filename: protocolName)
-        
+
         classString += "import Foundation\n\npublic protocol \(protocolName): DictionaryConvertible {\n"
         classString += protocolData.declarationString
         classString += "}"
-        
+
         guard let consumer = protocolData.consumers.first else {
             return classString
         }
-        if let prop = (protocolData.restProperties.filter { $0.isEnumProperty == true }).first {
+        if let prop = protocolData.restProperties.first(where: { $0.isEnumProperty == true }) {
             if enumsWithRelations.contains(prop.primitiveType) {
-                
+
                 classString += "\n\nextension \(protocolName) {\n"
                 classString += "\(indent)static func createWith(jsonData json: JSOBJ) -> \(protocolName)? {\n"
                 classString += "\(indent)\(indent)if let enumValue = json[\"\(prop.jsonProperty)\"] as? String,\n\(indent)\(indent)\(indent)let enumProp = \(prop.primitiveType)(rawValue: enumValue) {\n"
@@ -534,7 +537,7 @@ class XCModelTranslator {
                 classString += "\(indent)\(indent)}\n"
                 classString += "\(indent)}\n"
                 classString += "}"
-                
+
                 return classString
             }
         }
@@ -543,10 +546,10 @@ class XCModelTranslator {
         classString += "\(indent)\(indent)return \(consumer)(jsonData: json)\n"
         classString += "\(indent)}\n"
         classString += "}"
-        
+
         return classString
     }
-    
+
     private func headerStringFor(filename: String) -> String {
         return "//\n//  \(filename).swift\n"
         + "//  conradkiosk\n//\n"
@@ -557,7 +560,7 @@ class XCModelTranslator {
         + "// Edit the source coredata model (in the CoreData editor) and then use the SwiftDTO\n"
         + "// to create the corresponding DTO source files automatically\n\n"
     }
-    
+
 }
 
 extension String {

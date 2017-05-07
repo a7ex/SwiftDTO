@@ -12,7 +12,7 @@ class ProtocolDeclaration {
     let name: String
     let restProperties: [RESTProperty]
     var consumers = Set<String>()
-    
+
     init?(xmlElement: XMLElement, isEnum: Bool, withEnumNames enums: Set<String>, withProtocolNames protocolNames: Set<String>, withProtocols protocols: [ProtocolDeclaration]?,
           withPrimitiveProxyNames primitiveProxyNames: Set<String>) {
         guard let name = xmlElement.attribute(forName: "name")?.stringValue else {
@@ -20,19 +20,19 @@ class ProtocolDeclaration {
         }
         guard let properties = xmlElement.children as? [XMLElement] else { return nil }
 
-        let restProps = properties.flatMap() { RESTProperty(xmlElement: $0,
+        let restProps = properties.flatMap { RESTProperty(xmlElement: $0,
                                                             isEnum: false,
                                                             withEnumNames: enums,
                                                             withProtocolNames: protocolNames,
                                                             withProtocols: protocols,
                                                             withPrimitiveProxyNames: primitiveProxyNames) }
-        
-        guard restProps.count > 0 else { return nil }
-        
+
+        guard !restProps.isEmpty else { return nil }
+
         self.name = name
         self.restProperties = restProps
     }
-    
+
     var declarationString: String {
         var declareString = ""
         for property in restProperties {
@@ -40,9 +40,9 @@ class ProtocolDeclaration {
         }
         return declareString
     }
-    
+
     func addConsumer(structName: String) {
         consumers.insert(structName)
     }
-    
+
 }

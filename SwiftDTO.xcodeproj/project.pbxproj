@@ -38,6 +38,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		363EC5A31EBF8AC200B7C0B0 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
+		363EC5A41EBF8ACF00B7C0B0 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		369F5BEE1EA285CD005A229A /* Readme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
 		369F5BF51EA287EC005A229A /* myDTO.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = myDTO.xcdatamodel; sourceTree = "<group>"; };
 		FA8207811DE2D7DF00333F8D /* SwiftDTO */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SwiftDTO; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -71,6 +73,8 @@
 		FA8207781DE2D7DF00333F8D = {
 			isa = PBXGroup;
 			children = (
+				363EC5A41EBF8ACF00B7C0B0 /* .gitignore */,
+				363EC5A31EBF8AC200B7C0B0 /* .swiftlint.yml */,
 				FA8207941DE2DFC600333F8D /* LICENSE */,
 				FA8207951DE2DFC600333F8D /* README.md */,
 				FA8207831DE2D7DF00333F8D /* SwiftDTO */,
@@ -133,6 +137,7 @@
 				FA82077D1DE2D7DF00333F8D /* Sources */,
 				FA82077E1DE2D7DF00333F8D /* Frameworks */,
 				FA82077F1DE2D7DF00333F8D /* CopyFiles */,
+				363EC5A51EBF8B1F00B7C0B0 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -150,7 +155,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Farbflash;
 				TargetAttributes = {
 					FA8207801DE2D7DF00333F8D = {
@@ -176,6 +181,22 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		363EC5A51EBF8B1F00B7C0B0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint autocorrect\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		FA82077D1DE2D7DF00333F8D /* Sources */ = {
@@ -216,6 +237,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -264,6 +286,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -283,6 +306,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
