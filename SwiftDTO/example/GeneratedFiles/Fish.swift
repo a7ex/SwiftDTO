@@ -73,7 +73,7 @@ public struct Fish: Animal, JSOBJSerializable, DictionaryConvertible, CustomStri
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
-        returnString = returnString + "\n\(prefix)}"
+        returnString += "\n\(prefix)}"
         return returnString
     }
 }

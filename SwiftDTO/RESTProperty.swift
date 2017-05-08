@@ -81,11 +81,9 @@ struct RESTProperty {
             primitiveType = ttype
             var tmp = ""
             if protocolNames.contains(ttype) {
-                for thisProtocol in protocols ?? [ProtocolDeclaration]() {
-                    if thisProtocol.name == ttype {
-                        tmp = thisProtocol.consumers.first ?? ""
-                        break
-                    }
+                for thisProtocol in protocols ?? [ProtocolDeclaration]() where thisProtocol.name == ttype {
+                    tmp = thisProtocol.consumers.first ?? ""
+                    break
                 }
             }
             protocolInitializerType = tmp

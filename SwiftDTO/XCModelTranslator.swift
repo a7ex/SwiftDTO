@@ -274,11 +274,11 @@ class XCModelTranslator {
         if parentProtocol != nil { classString += "\n" }
 
         let restprops = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                            isEnum: false,
-                                                            withEnumNames: enumNames ?? Set<String>(),
-                                                            withProtocolNames: protocolNames,
-                                                            withProtocols: protocols,
-                                                            withPrimitiveProxyNames: primitiveProxyNames) }
+                                                          isEnum: false,
+                                                          withEnumNames: enumNames ?? Set<String>(),
+                                                          withProtocolNames: protocolNames,
+                                                          withProtocols: protocols,
+                                                          withPrimitiveProxyNames: primitiveProxyNames) }
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
                 classString += "\(property.declarationString)\n"
@@ -350,7 +350,7 @@ class XCModelTranslator {
 
         classString += "\n\(ind)// dictionary representation (for use with NSJSONSerializer or as parameters for URL request):\n"
         classString += "\(ind)public var jsobjRepresentation: JSOBJ {\n"
-        ind = ind + indent
+        ind += indent
         classString += "\(ind)var jsonData = JSOBJ()\n"
 
         for property in parentProtocol?.restProperties ?? [RESTProperty]() {
@@ -372,7 +372,7 @@ class XCModelTranslator {
 
         classString += "\n\(ind)// pretty print JSON string representation:\n"
         classString += "\(ind)public func jsonString(paddingPrefix prefix: String = \"\", printNulls: Bool = false) -> String {\n"
-        ind = ind + indent
+        ind += indent
         classString += "\(ind)var returnString = \"{\\n\"\n"
         classString += "\n"
 
@@ -398,7 +398,7 @@ class XCModelTranslator {
         classString += "\n"
         classString += "\(ind)returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: \"\\n\"))\n"
         classString += "\(ind)returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: \",\"))\n"
-        classString += "\(ind)returnString = returnString + \"\\n\\(prefix)}\"\n"
+        classString += "\(ind)returnString += \"\\n\\(prefix)}\"\n"
         classString += "\(ind)return returnString\n"
         ind = ind.substring(start: 0, end: (indent.characters.count * -1))
         classString += "\(ind)}\n"
@@ -428,11 +428,11 @@ class XCModelTranslator {
         classString += "import Foundation\n\npublic enum \(className): String {\n"
 
         let restprops = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                            isEnum: true,
-                                                            withEnumNames: enumNames ?? Set<String>(),
-                                                            withProtocolNames: protocolNames,
-                                                            withProtocols: protocols,
-                                                            withPrimitiveProxyNames: primitiveProxyNames) }
+                                                          isEnum: true,
+                                                          withEnumNames: enumNames ?? Set<String>(),
+                                                          withProtocolNames: protocolNames,
+                                                          withProtocols: protocols,
+                                                          withPrimitiveProxyNames: primitiveProxyNames) }
 
         var hasRelations = false
         for property in restprops {
@@ -446,10 +446,8 @@ class XCModelTranslator {
         classString += "\n"
         classString += indent + "public static func byString(_ typeAsString: String?) -> \(className)? {\n"
         classString += indent + indent + "switch (typeAsString ?? \"\").uppercased() {\n"
-        for property in restprops {
-            if property.isPrimitiveType {
-                classString += "\(property.upperCasedInitializer)\n"
-            }
+        for property in restprops where property.isPrimitiveType {
+            classString += "\(property.upperCasedInitializer)\n"
         }
         classString += indent + indent + "default:\n"
         classString += indent + indent + indent + "#if DEBUG\n"
@@ -462,19 +460,16 @@ class XCModelTranslator {
 
         if hasRelations {
             var commonProtocol: String?
-            for property in restprops {
-                if !property.isPrimitiveType {
-                    let protocolName = protocolNameFor(property.primitiveType)
-                    if protocolName.isEmpty { continue }
-                    if commonProtocol == nil {
-                        commonProtocol = protocolName
+            for property in restprops where !property.isPrimitiveType {
+                let protocolName = protocolNameFor(property.primitiveType)
+                if protocolName.isEmpty { continue }
+                if commonProtocol == nil {
+                    commonProtocol = protocolName
+                }
+                else {
+                    if protocolName != commonProtocol {
+                        fatalError("Relations in enum \"\(className)\" have different protocol dependencies!")
                     }
-                    else {
-                        if protocolName != commonProtocol {
-                            fatalError("Relations in enum \"\(className)\" have different protocol dependencies!")
-                        }
-                    }
-
                 }
             }
 
@@ -486,11 +481,9 @@ class XCModelTranslator {
                 classString += indent + "func conditionalInstance(withJSON jsonData: JSOBJ) -> \(commonProtocol!)? {\n"
                 classString += indent + "\(indent)switch self {\n"
 
-                for property in restprops {
-                    if !property.isPrimitiveType {
-                        classString += indent + "\(indent)case .\(String(property.name.characters.dropFirst())):\n"
-                        classString += indent + "\(indent)\(indent)return \(property.primitiveType)(jsonData: jsonData)\n"
-                    }
+                for property in restprops where !property.isPrimitiveType {
+                    classString += indent + "\(indent)case .\(String(property.name.characters.dropFirst())):\n"
+                    classString += indent + "\(indent)\(indent)return \(property.primitiveType)(jsonData: jsonData)\n"
                 }
                 classString += indent + "\(indent)}\n"
                 classString += indent + "}\n"
@@ -552,13 +545,13 @@ class XCModelTranslator {
 
     private func headerStringFor(filename: String) -> String {
         return "//\n//  \(filename).swift\n"
-        + "//  conradkiosk\n//\n"
-        + "//  Automatically created by SwiftDTO.\n"
-        + "//  \(copyRightString)\n\n"
-        + "// DO NOT EDIT THIS FILE!\n"
-        + "// This file was automatically generated from a xcmodel file (CoreData XML Scheme)\n"
-        + "// Edit the source coredata model (in the CoreData editor) and then use the SwiftDTO\n"
-        + "// to create the corresponding DTO source files automatically\n\n"
+            + "//  conradkiosk\n//\n"
+            + "//  Automatically created by SwiftDTO.\n"
+            + "//  \(copyRightString)\n\n"
+            + "// DO NOT EDIT THIS FILE!\n"
+            + "// This file was automatically generated from a xcmodel file (CoreData XML Scheme)\n"
+            + "// Edit the source coredata model (in the CoreData editor) and then use the SwiftDTO\n"
+            + "// to create the corresponding DTO source files automatically\n\n"
     }
 
 }

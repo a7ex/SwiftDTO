@@ -96,7 +96,7 @@ public struct Person: JSOBJSerializable, DictionaryConvertible, CustomStringConv
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
-        returnString = returnString + "\n\(prefix)}"
+        returnString += "\n\(prefix)}"
         return returnString
     }
 }

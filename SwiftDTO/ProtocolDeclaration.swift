@@ -36,7 +36,7 @@ class ProtocolDeclaration {
     var declarationString: String {
         var declareString = ""
         for property in restProperties {
-            declareString = declareString + "\(property.protocolDeclarationString)\n"
+            declareString += "\(property.protocolDeclarationString)\n"
         }
         return declareString
     }
