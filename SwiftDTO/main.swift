@@ -42,7 +42,7 @@ print("\(path)")
 let url = URL(fileURLWithPath: path)
 
 // Check if the file exists, exit if not
-var error: NSError? = nil
+var error: NSError?
 if !(url as NSURL).checkResourceIsReachableAndReturnError(&error) {
     exit(EXIT_FAILURE)
 }

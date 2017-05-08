@@ -27,6 +27,15 @@ public protocol JSOBJSerializable {
 }
 
 struct DTODiagnostics {
+    private enum DebugMode {
+        case none, sparse, full
+    }
+
+    // set the following enum value to .full to also get diagnostic console output
+    // for keys, which exits in the DTO, but not in the JSON
+    // to .sparse in order to get only console output for missing keys
+    // or to .none, to not clutter the console at all
+    private static let silentMode = DebugMode.none
 
     /// If in DEBUG mode we call this in order to list differences between
     /// the expected JSON and the actually received JSON
@@ -35,12 +44,7 @@ struct DTODiagnostics {
         let allKeys = Set(jsonData.keys)
         let additionalKeys = allKeys.subtracting(expectedKeys)
 
-        // set the following boolean to false to also get diagnostic console output
-        // for keys, which exits in the DTO, but not in the JSON
-        // Since that is more often the case, the default for 'onlyShowAdditionKeys' is true
-        let onlyShowAdditionKeys = true
-
-        let missingKeys = onlyShowAdditionKeys ? Set<String>(): expectedKeys.subtracting(allKeys)
+        let missingKeys = (silentMode == .sparse) ? Set<String>(): expectedKeys.subtracting(allKeys)
         if missingKeys.isEmpty, additionalKeys.isEmpty { return }
         print("\n-------------------\nConradDTO debug data for \"\(clsName)\":")
         if !missingKeys.isEmpty { print("Missing in JSON: \(missingKeys)") }
@@ -49,7 +53,7 @@ struct DTODiagnostics {
     }
 
     static func unknownEnumCase(_ enumCase: String?, inEnum enumName: String) {
-        print("\n-------------------\nConradDTO debug data: Missing case \"\(enumCase)\" in Enum: \"\(enumName)\":")
+        print("\n-------------------\nConradDTO debug data: Missing case \"\(String(describing: enumCase))\" in Enum: \"\(enumName)\":")
         print("-------------------\n")
     }
 }
