@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="16B2555" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16E195" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Animal" representedClassName="Animal" isAbstract="YES" syncable="YES" codeGenerationType="class">
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
         <relationship name="animalType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AnimalType" syncable="YES"/>
     </entity>
     <entity name="AnimalType" representedClassName="AnimalType" syncable="YES" codeGenerationType="class">
@@ -20,7 +20,7 @@
         <attribute name="numberOfFins" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES" codeGenerationType="class">
-        <attribute name="birthdate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES">
+        <attribute name="birthdate" optional="YES" attributeType="Date" defaultDateTimeInterval="515880300" usesScalarValueType="NO" syncable="YES">
             <userInfo>
                 <entry key="jsonPropertyName" value="b_date"/>
             </userInfo>
@@ -36,7 +36,7 @@
         </userInfo>
     </entity>
     <elements>
-        <element name="Animal" positionX="81" positionY="-282" width="128" height="73"/>
+        <element name="Animal" positionX="81" positionY="-282" width="128" height="75"/>
         <element name="AnimalType" positionX="358" positionY="-162" width="128" height="103"/>
         <element name="Dog" positionX="151" positionY="-189" width="128" height="60"/>
         <element name="Fish" positionX="-27" positionY="-150" width="128" height="60"/>

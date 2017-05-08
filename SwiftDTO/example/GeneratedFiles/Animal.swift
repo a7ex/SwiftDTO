@@ -13,7 +13,7 @@
 import Foundation
 
 public protocol Animal: DictionaryConvertible {
-    var name: String? { get }
+    var name: String { get }
     var animalType: AnimalType? { get }
 }
 

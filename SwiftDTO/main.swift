@@ -38,6 +38,7 @@ if CommandLine.arguments.count < 2 {
 }
 
 let path = CommandLine.arguments[1]
+print("\(path)")
 let url = URL(fileURLWithPath: path)
 
 // Check if the file exists, exit if not

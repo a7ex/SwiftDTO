@@ -15,13 +15,13 @@ import Foundation
 public struct Fish: Animal, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
-    public let name: String?
+    public let name: String
     public let animalType: AnimalType?
 
     public let numberOfFins: Int?
 
     // Default initializer:
-    public init(name: String?, animalType: AnimalType?, numberOfFins: Int?) {
+    public init(name: String, animalType: AnimalType?, numberOfFins: Int?) {
         self.name = name
         self.animalType = animalType
         self.numberOfFins = numberOfFins
@@ -48,7 +48,7 @@ public struct Fish: Animal, JSOBJSerializable, DictionaryConvertible, CustomStri
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
-        if name != nil { jsonData["name"] = name! }
+        jsonData["name"] = name
         if animalType != nil { jsonData["animalType"] = animalType!.rawValue }
 
         if numberOfFins != nil { jsonData["numberOfFins"] = numberOfFins! }
@@ -62,14 +62,13 @@ public struct Fish: Animal, JSOBJSerializable, DictionaryConvertible, CustomStri
     public func jsonString(paddingPrefix prefix: String = "", printNulls: Bool = false) -> String {
         var returnString = "{\n"
 
-        if let name = name { returnString.append("    \(prefix)\"name\": \"\(name)\",\n") }
-        else if printNulls { returnString.append("    \(prefix)\"name\": null,\n") }
-
+        returnString.append("    \(prefix)\"name\": \"\(name)\",\n")
         if let animalType = animalType { returnString.append("    \(prefix)\"animalType\": \("\"\(animalType.rawValue)\""),\n") }
         else if printNulls { returnString.append("    \(prefix)\"animalType\": null,\n") }
 
         if let numberOfFins = numberOfFins { returnString.append("    \(prefix)\"numberOfFins\": \(numberOfFins),\n") }
         else if printNulls { returnString.append("    \(prefix)\"numberOfFins\": null,\n") }
+
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
