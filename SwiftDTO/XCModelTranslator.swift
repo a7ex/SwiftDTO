@@ -40,11 +40,9 @@ class XCModelTranslator {
                 let theseInfos = userInfo.children as? [XMLElement] else {
                     continue
             }
-            if let elementInfo = theseInfos.first(where: { $0.attribute(forName: "key")?.stringValue == "isPrimitiveProxy" }) {
-                if elementInfo.attribute(forName: "value")?.stringValue == "1" {
-                    if let entityName = (thisEntity as? XMLElement)?.attribute(forName: "name")?.stringValue {
-                        primitiveProxies.insert(entityName)
-                    }
+            if theseInfos.first(where: { $0.attribute(forName: "key")?.stringValue == "isPrimitiveProxy" }) != nil {
+                if let entityName = (thisEntity as? XMLElement)?.attribute(forName: "name")?.stringValue {
+                    primitiveProxies.insert(entityName)
                 }
             }
         }
@@ -57,11 +55,9 @@ class XCModelTranslator {
                 let isEnumInfos = userInfo.children as? [XMLElement] else {
                     continue
             }
-            if let enumInfo = isEnumInfos.first(where: { $0.attribute(forName: "key")?.stringValue == "isEnum" }) {
-                if enumInfo.attribute(forName: "value")?.stringValue == "1" {
-                    if let entityName = (thisEntity as? XMLElement)?.attribute(forName: "name")?.stringValue {
-                        enums.insert(entityName)
-                    }
+            if isEnumInfos.first(where: { $0.attribute(forName: "key")?.stringValue == "isEnum" }) != nil {
+                if let entityName = (thisEntity as? XMLElement)?.attribute(forName: "name")?.stringValue {
+                    enums.insert(entityName)
                 }
             }
         }
@@ -245,8 +241,7 @@ class XCModelTranslator {
         if let userInfo = properties.first(where: { $0.name == RESTProperty.Constants.UserInfoKeyName }),
             let jsProps = userInfo.children as? [XMLElement] {
 
-            if let isProxy = jsProps.first(where: { $0.attribute(forName: "key")?.stringValue == "isPrimitiveProxy" }),
-                (isProxy.attribute(forName: "value")?.stringValue ?? "") == "1" {
+            if jsProps.first(where: { $0.attribute(forName: "key")?.stringValue == "isPrimitiveProxy" }) != nil {
                 return nil
             }
         }
@@ -553,7 +548,7 @@ class XCModelTranslator {
             + "// Edit the source coredata model (in the CoreData editor) and then use the SwiftDTO\n"
             + "// to create the corresponding DTO source files automatically\n\n"
     }
-
+    
 }
 
 extension String {

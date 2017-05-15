@@ -8,12 +8,14 @@
         <attribute name="aquatic" optional="YES" attributeType="String" defaultValueString="Aquatic" syncable="YES"/>
         <attribute name="mammal" optional="YES" attributeType="String" defaultValueString="Mammal" syncable="YES"/>
         <relationship name="sAQUATIC" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Fish" syncable="YES"/>
-        <relationship name="sMAMMAL" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Dog" syncable="YES"/>
         <userInfo>
             <entry key="isEnum" value="1"/>
         </userInfo>
     </entity>
-    <entity name="Dog" representedClassName="Dog" parentEntity="Animal" syncable="YES" codeGenerationType="class">
+    <entity name="Dino" representedClassName="Dino" parentEntity="Animal" syncable="YES" codeGenerationType="class">
+        <attribute name="tailSize" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="Dog" representedClassName="Dog" parentEntity="Dino" syncable="YES" codeGenerationType="class">
         <attribute name="numberOfLegs" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="Fish" representedClassName="Fish" parentEntity="Animal" syncable="YES" codeGenerationType="class">
@@ -37,10 +39,11 @@
     </entity>
     <elements>
         <element name="Animal" positionX="81" positionY="-282" width="128" height="75"/>
-        <element name="AnimalType" positionX="358" positionY="-162" width="128" height="103"/>
-        <element name="Dog" positionX="151" positionY="-189" width="128" height="60"/>
+        <element name="AnimalType" positionX="358" positionY="-162" width="128" height="88"/>
+        <element name="Dog" positionX="151" positionY="-189" width="128" height="58"/>
         <element name="Fish" positionX="-27" positionY="-150" width="128" height="60"/>
         <element name="Person" positionX="-117" positionY="-378" width="128" height="105"/>
         <element name="String" positionX="250" positionY="-477" width="128" height="58"/>
+        <element name="Dino" positionX="295" positionY="-277" width="128" height="58"/>
     </elements>
 </model>

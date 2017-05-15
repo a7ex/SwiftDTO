@@ -167,38 +167,93 @@ struct RESTProperty {
     }
 
     var initializeString: String {
+        var returnIfNil = ""
+        if !isOptional,
+            value == nil {
+            if type == "String" {
+                returnIfNil = "\(indent)\(indent)guard let val = ConversionHelper.stringFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+            } else if type == "Date" {
+                returnIfNil = "\(indent)\(indent)guard let val = ConversionHelper.dateFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+            } else if isPrimitiveType {
+                returnIfNil = "\(indent)\(indent)guard let val = jsonData[\"\(jsonProperty)\"] as? \(type) else { return  nil }\n"
+            } else {
+                returnIfNil = "\n\(indent)\(indent)else { return nil }"
+            }
+        }
+
+        var defaultValueSuffix = ""
+        if value != nil {
+            if type == "Date" {
+                defaultValueSuffix = value!
+            } else if type == "String" {
+                defaultValueSuffix = " ?? \"\(value!)\""
+            } else if type == "Int" {
+                if let val = Int(value!) {
+                    defaultValueSuffix = " ?? \(val)"
+                }
+            } else if type == "Double" {
+                if let val = Double(value!) {
+                    defaultValueSuffix = " ?? \(val)"
+                }
+            } else if type == "Bool" {
+                if value == "YES" || value == "true" {
+                    defaultValueSuffix = " ?? true"
+                } else if value == "NO" || value == "false" {
+                    defaultValueSuffix = " ?? false"
+                }
+            }
+        }
+
         if isPrimitiveType {
             if type == "Date" {
-                return "\(indent)\(indent)\(name) = ConversionHelper.dateFromAny(jsonData[\"\(jsonProperty)\"])"
+                if !returnIfNil.isEmpty {
+                    return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                } else {
+                    return "\(indent)\(indent)\(name) = ConversionHelper.dateFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                }
             }
             else {
                 if type == "String" { // exception for String, because if a property of type string is e.g. "true" it will appear as boolean after NSJSONSerialization :-(
-                    return "\(indent)\(indent)\(name) = ConversionHelper.stringFromAny(jsonData[\"\(jsonProperty)\"])"
+                    if !returnIfNil.isEmpty {
+                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                    } else {
+                        return "\(indent)\(indent)\(name) = ConversionHelper.stringFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                    }
                 }
                 else {
-                    return "\(indent)\(indent)\(name) = jsonData[\"\(jsonProperty)\"] as? \(type)"
+                    if !returnIfNil.isEmpty {
+                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                    } else {
+                        return "\(indent)\(indent)\(name) = jsonData[\"\(jsonProperty)\"] as? \(type)\(defaultValueSuffix)"
+                    }
                 }
             }
         }
         else {
+            if !isOptional,
+                value == nil {
+                returnIfNil = "\n\(indent)\(indent)else { return nil }"
+            } else {
+                returnIfNil = "\n\(indent)\(indent)else { \(name) = nil }"
+            }
             if isArray {
                 if isEnum {
-                    return "\(indent)\(indent)\(name) = (jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap() { \(typeSingular).byString($0) }"
+                    return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
                 }
                 else {
                     if isEnumProperty {
-                        return "\(indent)\(indent)\(name) = (jsonData[\"\(jsonProperty)\"] as? [String])?.flatMap() { \(typeSingular).byString($0) }"
+                        return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
                     }
                     else {
                         if typeIsProxyType {
-                            return "\(indent)\(indent)\(name) = jsonData[\"\(jsonProperty)\"] as? [\(typeSingular)]"
+                            return "\(indent)\(indent)if let val = jsonData[\"\(jsonProperty)\"] as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
                         }
                         else {
                             if !protocolInitializerType.isEmpty {
-                                return "\(indent)\(indent)\(name) = (jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap() { \(protocolInitializerType).createWith(jsonData: $0) }"
+                                return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
                             }
                             else {
-                                return "\(indent)\(indent)\(name) = (jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap() { \(typeSingular)(jsonData: $0) }"
+                                return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(typeSingular)(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
                             }
                         }
                     }
@@ -206,15 +261,23 @@ struct RESTProperty {
             }
             else {
                 if isEnum {
-                    return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String)"
+                    if !defaultValueSuffix.isEmpty {
+                        return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String)\(defaultValueSuffix)"
+                    } else {
+                        return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String) { self.\(name) = val }\(returnIfNil)"
+                    }
                 }
                 else {
                     if isEnumProperty {
-                        return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String)"
+                        if !defaultValueSuffix.isEmpty {
+                            return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String)\(defaultValueSuffix)"
+                        } else {
+                            return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String) { self.\(name) = val }\(returnIfNil)"
+                        }
                     }
                     else {
                         if !protocolInitializerType.isEmpty {
-                            return "\(indent)\(indent)\(name) = \(protocolInitializerType).createWith(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ)"
+                            return "\(indent)\(indent)if let val = \(protocolInitializerType).createWith(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
                         }
                         else {
                             if typeSingular == "NSAttributedString" {
@@ -224,7 +287,7 @@ struct RESTProperty {
                                 return "\(indent)\(indent)\(name) = nil"
                             }
                             else {
-                                return "\(indent)\(indent)\(name) = \(typeSingular)(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ)"
+                                return "\(indent)\(indent)if let val = \(typeSingular)(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
                             }
                         }
                     }
@@ -254,9 +317,9 @@ struct RESTProperty {
             if isArray {
                 if isEnum {
                     if isOptional {
-                        return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = \(name)!.flatMap() { $0.rawValue } }\n"
+                        return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = \(name)!.flatMap { $0.rawValue } }\n"
                     } else {
-                        return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = \(name).flatMap() { $0.rawValue }\n"
+                        return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = \(name).flatMap { $0.rawValue }\n"
                     }
                 }
                 else {
@@ -325,8 +388,8 @@ struct RESTProperty {
         if isPrimitiveType {
             if type == "Date" {
                 if isOptional {
-                return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\\"\\(ConversionHelper.stringFromDate(\(name)))\\\",\\n\") }"
-                    + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }\n"
+                    return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\\"\\(ConversionHelper.stringFromDate(\(name)))\\\",\\n\") }"
+                        + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }\n"
                 } else {
                     return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\\"\\(ConversionHelper.stringFromDate(\(name)))\\\",\\n\")"
                 }
@@ -340,8 +403,8 @@ struct RESTProperty {
                     valueString = "\\(\(name))"
                 }
                 if isOptional {
-                return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \(valueString),\\n\") }"
-                    + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }\n"
+                    return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \(valueString),\\n\") }"
+                        + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }\n"
                 } else {
                     return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \(valueString),\\n\")"
                 }
@@ -351,14 +414,14 @@ struct RESTProperty {
             if isArray {
                 if isEnumProperty {
                     if isOptional {
-                    return "\(indent)\(indent)if let \(name) = \(name) {\n"
-                        + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
-                        + "\(indent)\(indent)\(indent)for thisObj in \(name) {\n"
-                        + "\(indent)\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\\(\"\\\"\\(thisObj.rawValue)\\\"\"),\\n\")\n"
-                        + "\(indent)\(indent)\(indent)}\n"
-                        + "\(indent)\(indent)\(indent)if !\(name).isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }\n"
-                        + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)],\\n\")\n"
-                        + "\(indent)\(indent)}\n\(indent)\(indent)else if printNulls { returnString = \"\\(returnString)\(indent)\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null\\n\" }\n"
+                        return "\(indent)\(indent)if let \(name) = \(name) {\n"
+                            + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
+                            + "\(indent)\(indent)\(indent)for thisObj in \(name) {\n"
+                            + "\(indent)\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\\(\"\\\"\\(thisObj.rawValue)\\\"\"),\\n\")\n"
+                            + "\(indent)\(indent)\(indent)}\n"
+                            + "\(indent)\(indent)\(indent)if !\(name).isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }\n"
+                            + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)],\\n\")\n"
+                            + "\(indent)\(indent)}\n\(indent)\(indent)else if printNulls { returnString = \"\\(returnString)\(indent)\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null\\n\" }\n"
                     } else {
                         return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
                             + "\(indent)\(indent)for thisObj in \(name) {\n"
@@ -372,14 +435,14 @@ struct RESTProperty {
                 else {
                     if typeIsProxyType {
                         if isOptional {
-                        return "\(indent)\(indent)if let \(name) = \(name) {\n"
-                            + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
-                            + "\(indent)\(indent)\(indent)for thisObj in \(name) {\n"
-                            + "\(indent)\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\\(\"\\(\"\\(prefix)\(indent)\(indent)\" + \"\\(thisObj)\")\"),\\n\")\n"
-                            + "\(indent)\(indent)\(indent)}\n"
-                            + "\(indent)\(indent)\(indent)if !\(name).isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }\n"
-                            + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)],\\n\")\n"
-                            + "\(indent)\(indent)}\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null\\n\") }\n"
+                            return "\(indent)\(indent)if let \(name) = \(name) {\n"
+                                + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
+                                + "\(indent)\(indent)\(indent)for thisObj in \(name) {\n"
+                                + "\(indent)\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\\(\"\\(\"\\(prefix)\(indent)\(indent)\" + \"\\(thisObj)\")\"),\\n\")\n"
+                                + "\(indent)\(indent)\(indent)}\n"
+                                + "\(indent)\(indent)\(indent)if !\(name).isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }\n"
+                                + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)],\\n\")\n"
+                                + "\(indent)\(indent)}\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null\\n\") }\n"
                         } else {
                             return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
                                 + "\(indent)\(indent)for thisObj in \(name) {\n"
@@ -392,14 +455,14 @@ struct RESTProperty {
                     }
                     else {
                         if isOptional {
-                        return "\(indent)\(indent)if let \(name) = \(name) {\n"
-                            + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
-                            + "\(indent)\(indent)\(indent)for thisObj in \(name) {\n"
-                            + "\(indent)\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\\(\"\\(thisObj.jsonString(paddingPrefix: \"\\(prefix)\(indent)\(indent)\", printNulls: printNulls))\"),\\n\")\n"
-                            + "\(indent)\(indent)\(indent)}\n"
-                            + "\(indent)\(indent)\(indent)if !\(name).isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }\n"
-                            + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)],\\n\")\n"
-                            + "\(indent)\(indent)}\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null\\n\") }\n"
+                            return "\(indent)\(indent)if let \(name) = \(name) {\n"
+                                + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
+                                + "\(indent)\(indent)\(indent)for thisObj in \(name) {\n"
+                                + "\(indent)\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\\(\"\\(thisObj.jsonString(paddingPrefix: \"\\(prefix)\(indent)\(indent)\", printNulls: printNulls))\"),\\n\")\n"
+                                + "\(indent)\(indent)\(indent)}\n"
+                                + "\(indent)\(indent)\(indent)if !\(name).isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }\n"
+                                + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)],\\n\")\n"
+                                + "\(indent)\(indent)}\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null\\n\") }\n"
                         } else {
                             return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
                                 + "\(indent)\(indent)for thisObj in \(name) {\n"
@@ -415,8 +478,8 @@ struct RESTProperty {
             else {
                 if isEnumProperty {
                     if isOptional {
-                    return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\(\"\\\"\\(\(name).rawValue)\\\"\"),\\n\") }"
-                        + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }"
+                        return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\(\"\\\"\\(\(name).rawValue)\\\"\"),\\n\") }"
+                            + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }"
                     } else {
                         return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\(\"\\\"\\(\(name).rawValue)\\\"\"),\\n\")"
                     }
@@ -430,10 +493,10 @@ struct RESTProperty {
                     }
                     else {
                         if isOptional {
-                        return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\(\"\\(\(name).jsonString(paddingPrefix: \"\\(prefix)\(indent)\", printNulls: printNulls))\"),\\n\") }"
-                            + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }\n"
+                            return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\(\"\\(\(name).jsonString(paddingPrefix: \"\\(prefix)\(indent)\", printNulls: printNulls))\"),\\n\") }"
+                                + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }\n"
                         } else {
-return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\(\"\\(\(name).jsonString(paddingPrefix: \"\\(prefix)\(indent)\", printNulls: printNulls))\"),\\n\")"
+                            return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\(\"\\(\(name).jsonString(paddingPrefix: \"\\(prefix)\(indent)\", printNulls: printNulls))\"),\\n\")"
                         }
                     }
                 }

@@ -33,8 +33,10 @@ public struct Person: JSOBJSerializable, DictionaryConvertible, CustomStringConv
         guard let jsonData = jsonData else { return nil }
         birthdate = ConversionHelper.dateFromAny(jsonData["b_date"])
         name = ConversionHelper.stringFromAny(jsonData["name"])
-        features = jsonData["features"] as? [String]
-        pets = (jsonData["pets"] as? JSARR)?.flatMap() { Fish.createWith(jsonData: $0) }
+        if let val = jsonData["features"] as? [String] { self.features = val }
+        else { features = nil }
+        if let val = ((jsonData["pets"] as? JSARR)?.flatMap { Fish.createWith(jsonData: $0) }) { self.pets = val }
+        else { pets = nil }
 
         #if DEBUG
             DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: "Person")
@@ -93,7 +95,6 @@ public struct Person: JSOBJSerializable, DictionaryConvertible, CustomStringConv
             returnString.append("    \(prefix)],\n")
         }
         else if printNulls { returnString.append("        \(prefix)\"pets\": null\n") }
-
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))

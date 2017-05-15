@@ -1,5 +1,5 @@
 //
-//  Fish.swift
+//  Dino.swift
 //  conradkiosk
 //
 //  Automatically created by SwiftDTO.
@@ -12,19 +12,19 @@
 
 import Foundation
 
-public struct Fish: Animal, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct Dino: Animal, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
     public let name: String
     public let animalType: AnimalType?
 
-    public let numberOfFins: Int?
+    public let tailSize: Int?
 
     // Default initializer:
-    public init(name: String, animalType: AnimalType?, numberOfFins: Int?) {
+    public init(name: String, animalType: AnimalType?, tailSize: Int?) {
         self.name = name
         self.animalType = animalType
-        self.numberOfFins = numberOfFins
+        self.tailSize = tailSize
     }
 
     // Object creation using JSON dictionary representation from NSJSONSerializer:
@@ -35,16 +35,16 @@ public struct Fish: Animal, JSOBJSerializable, DictionaryConvertible, CustomStri
         if let val = AnimalType.byString(jsonData["animalType"] as? String) { self.animalType = val }
         else { animalType = nil }
 
-        numberOfFins = jsonData["numberOfFins"] as? Int ?? 0
+        tailSize = jsonData["tailSize"] as? Int ?? 0
 
         #if DEBUG
-            DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: "Fish")
+            DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: "Dino")
         #endif
     }
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["name", "animalType", "numberOfFins"])
+        return Set(["name", "animalType", "tailSize"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
@@ -53,7 +53,7 @@ public struct Fish: Animal, JSOBJSerializable, DictionaryConvertible, CustomStri
         jsonData["name"] = name
         if animalType != nil { jsonData["animalType"] = animalType!.rawValue }
 
-        if numberOfFins != nil { jsonData["numberOfFins"] = numberOfFins! }
+        if tailSize != nil { jsonData["tailSize"] = tailSize! }
         return jsonData
     }
 
@@ -68,8 +68,8 @@ public struct Fish: Animal, JSOBJSerializable, DictionaryConvertible, CustomStri
         if let animalType = animalType { returnString.append("    \(prefix)\"animalType\": \("\"\(animalType.rawValue)\""),\n") }
         else if printNulls { returnString.append("    \(prefix)\"animalType\": null,\n") }
 
-        if let numberOfFins = numberOfFins { returnString.append("    \(prefix)\"numberOfFins\": \(numberOfFins),\n") }
-        else if printNulls { returnString.append("    \(prefix)\"numberOfFins\": null,\n") }
+        if let tailSize = tailSize { returnString.append("    \(prefix)\"tailSize\": \(tailSize),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"tailSize\": null,\n") }
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))

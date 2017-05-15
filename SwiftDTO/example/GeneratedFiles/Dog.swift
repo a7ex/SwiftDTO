@@ -12,28 +12,20 @@
 
 import Foundation
 
-public struct Dog: Animal, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct Dog: JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
-    public let name: String
-    public let animalType: AnimalType?
-
     public let numberOfLegs: Int?
 
     // Default initializer:
-    public init(name: String, animalType: AnimalType?, numberOfLegs: Int?) {
-        self.name = name
-        self.animalType = animalType
+    public init(numberOfLegs: Int?) {
         self.numberOfLegs = numberOfLegs
     }
 
     // Object creation using JSON dictionary representation from NSJSONSerializer:
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
-        name = ConversionHelper.stringFromAny(jsonData["name"])
-        animalType = AnimalType.byString(jsonData["animalType"] as? String)
-
-        numberOfLegs = jsonData["numberOfLegs"] as? Int
+        numberOfLegs = jsonData["numberOfLegs"] as? Int ?? 0
 
         #if DEBUG
             DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: "Dog")
@@ -42,15 +34,12 @@ public struct Dog: Animal, JSOBJSerializable, DictionaryConvertible, CustomStrin
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["name", "animalType", "numberOfLegs"])
+        return Set(["numberOfLegs"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
-        jsonData["name"] = name
-        if animalType != nil { jsonData["animalType"] = animalType!.rawValue }
-
         if numberOfLegs != nil { jsonData["numberOfLegs"] = numberOfLegs! }
         return jsonData
     }
@@ -62,13 +51,8 @@ public struct Dog: Animal, JSOBJSerializable, DictionaryConvertible, CustomStrin
     public func jsonString(paddingPrefix prefix: String = "", printNulls: Bool = false) -> String {
         var returnString = "{\n"
 
-        returnString.append("    \(prefix)\"name\": \"\(name)\",\n")
-        if let animalType = animalType { returnString.append("    \(prefix)\"animalType\": \("\"\(animalType.rawValue)\""),\n") }
-        else if printNulls { returnString.append("    \(prefix)\"animalType\": null,\n") }
-
         if let numberOfLegs = numberOfLegs { returnString.append("    \(prefix)\"numberOfLegs\": \(numberOfLegs),\n") }
         else if printNulls { returnString.append("    \(prefix)\"numberOfLegs\": null,\n") }
-
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))

@@ -27,15 +27,6 @@ public protocol JSOBJSerializable {
 }
 
 struct DTODiagnostics {
-    private enum DebugMode {
-        case none, sparse, full
-    }
-
-    // set the following enum value to .full to also get diagnostic console output
-    // for keys, which exits in the DTO, but not in the JSON
-    // to .sparse in order to get only console output for missing keys
-    // or to .none, to not clutter the console at all
-    private static let silentMode = DebugMode.none
 
     /// If in DEBUG mode we call this in order to list differences between
     /// the expected JSON and the actually received JSON
@@ -44,7 +35,12 @@ struct DTODiagnostics {
         let allKeys = Set(jsonData.keys)
         let additionalKeys = allKeys.subtracting(expectedKeys)
 
-        let missingKeys = (silentMode == .sparse) ? Set<String>(): expectedKeys.subtracting(allKeys)
+        // set the following boolean to false to also get diagnostic console output
+        // for keys, which exits in the DTO, but not in the JSON
+        // Since that is more often the case, the default for 'onlyShowAdditionKeys' is true
+        let onlyShowAdditionKeys = true
+
+        let missingKeys = onlyShowAdditionKeys ? Set<String>(): expectedKeys.subtracting(allKeys)
         if missingKeys.isEmpty, additionalKeys.isEmpty { return }
         print("\n-------------------\nConradDTO debug data for \"\(clsName)\":")
         if !missingKeys.isEmpty { print("Missing in JSON: \(missingKeys)") }
@@ -53,7 +49,7 @@ struct DTODiagnostics {
     }
 
     static func unknownEnumCase(_ enumCase: String?, inEnum enumName: String) {
-        print("\n-------------------\nConradDTO debug data: Missing case \"\(String(describing: enumCase))\" in Enum: \"\(enumName)\":")
+        print("\n-------------------\nConradDTO debug data: Missing case \"\(enumCase)\" in Enum: \"\(enumName)\":")
         print("-------------------\n")
     }
 }
@@ -150,79 +146,57 @@ struct ConversionHelper {
     }
 }
 
-/// A result enum with two cases: 'success' or 'failure'
-/// The success case provides the result as associated value
-/// The failure case provides an error as associated value
-public enum DTOResult<T, E: Error> {
-    case success(T)
-    case failure(E)
-
-    func flatMap<P>(_ transformation: (T) -> DTOResult<P, NSError>) -> DTOResult<P, NSError> {
-        switch self {
-        case .success(let value):
-            return transformation(value)
-        case .failure(let error):
-            return DTOResult<P, NSError>.failure(error as NSError)
-        }
-    }
-}
-
 /// Helper struct to parse input to DTO object of array of DTO objects
 /// Input can be either Data or String or [String: Any] or [Any]
 /// Thus you can parse a network response (data or string), a json string
 /// or any Dictionary ([String: Any]) or any Array
-public struct DTOParser {
+
+public protocol DTOParsing {
+    func parse<T: JSOBJSerializable>(_ data: Any) throws -> T
+    func parse<T: JSOBJSerializable>(_ data: Any) throws  -> [T]
+}
+
+public struct DTOParser: DTOParsing {
+
+    public init() {}
 
     /// Parse a single DTO Object
     ///
     /// - Parameter data: Data, String, Dictionary or Array
-    /// - Returns: a DTOResult object with either the result or the error as associated value
-    public func parse<T: JSOBJSerializable>(_ data: Any) -> DTOResult<T, NSError> {
-        let decodedData = decodeData(data)
-        return decodedData.flatMap({ (obj: Any) -> DTOResult<T, NSError> in
-            guard let dto = T(jsonData: obj as? JSOBJ) else {
-                return .failure(createError(with: -19, message: "Object not mappable"))
-            }
-            return .success(dto)
-        })
+    /// - Returns: DTO object
+    /// - Throws: NSError
+    public func parse<T: JSOBJSerializable>(_ data: Any) throws -> T {
+        let obj = try decodeData(data)
+        guard let dto = T(jsonData: obj as? JSOBJ) else {
+            throw createError(with: -19, message: "Object not mappable")
+        }
+        return dto
     }
 
     /// Parse an array of DTO objects
     ///
     /// - Parameter data: Data, String, Dictionary or Array
-    /// - Returns: a DTOResult object with either the result or the error as associated value
-    public func parse<T: JSOBJSerializable>(_ data: Any) -> DTOResult<[T], NSError> {
-        let decodedData = decodeData(data)
-        return decodedData.flatMap({ (obj: Any) -> DTOResult<[T], NSError> in
-            guard let array = obj as? [Any] else {
-                return .failure(createError(with: -19, message: "Object not mappable"))
-            }
-            return arrayToModels(array)
-        })
+    /// - Returns: array of DTOs
+    /// - Throws: NSError
+    public func parse<T: JSOBJSerializable>(_ data: Any) throws  -> [T] {
+        let obj = try decodeData(data)
+        guard let array = obj as? [Any] else {
+            throw createError(with: -19, message: "Object not mappable")
+        }
+        return array.flatMap { T(jsonData: $0 as? JSOBJ) }
     }
 
     // MARK: - Private interface
 
-    private func arrayToModels<T: JSOBJSerializable>(_ objects: [Any]) -> DTOResult<[T], NSError> {
-        let rslt = objects.flatMap { T(jsonData: $0 as? JSOBJ) }
-        return .success(rslt)
-    }
-
-    private func decodeData(_ input: Any) -> DTOResult<Any, NSError> {
-        if let dict = input as? [String: Any] { return .success(dict) }
-        if let arr = input as? [Any] { return .success(arr) }
-        let data = input as? Data ?? (input as? String)?.data(using: .utf8)
+    private func decodeData(_ input: Any) throws -> Any {
+        if let dict = input as? [String: Any] { return dict }
+        if let arr = input as? [Any] { return arr }
 
         let defaultError = createError(with: -18, message: "No vaid data to decode to JSON!")
+        guard let data = input as? Data ?? (input as? String)?.data(using: .utf8) else { throw defaultError }
 
-        if data == nil { return .failure(defaultError) }
-        do {
-            let json = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions())
-            return .success(json)
-        }
-        catch let error {
-            return .failure(error as NSError)
-        }
+        let json = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions())
+        return json
     }
 
     private func createError(with code: Int, message: String) -> NSError {
