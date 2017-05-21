@@ -171,9 +171,11 @@ struct RESTProperty {
         if !isOptional,
             value == nil {
             if type == "String" {
-                returnIfNil = "\(indent)\(indent)guard let val = ConversionHelper.stringFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)guard let val = stringFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
             } else if type == "Date" {
-                returnIfNil = "\(indent)\(indent)guard let val = ConversionHelper.dateFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)guard let val = dateFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+            } else if type == "Bool" {
+                returnIfNil = "\(indent)\(indent)guard let val = stringFromBool(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
             } else if isPrimitiveType {
                 returnIfNil = "\(indent)\(indent)guard let val = jsonData[\"\(jsonProperty)\"] as? \(type) else { return  nil }\n"
             } else {
@@ -209,7 +211,7 @@ struct RESTProperty {
                 if !returnIfNil.isEmpty {
                     return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                 } else {
-                    return "\(indent)\(indent)\(name) = ConversionHelper.dateFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                    return "\(indent)\(indent)\(name) = dateFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
                 }
             }
             else {
@@ -217,7 +219,13 @@ struct RESTProperty {
                     if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
-                        return "\(indent)\(indent)\(name) = ConversionHelper.stringFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = stringFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                    }
+                } else if type == "Bool" {
+                    if !returnIfNil.isEmpty {
+                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                    } else {
+                        return "\(indent)\(indent)\(name) = boolFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
                     }
                 }
                 else {
@@ -300,9 +308,9 @@ struct RESTProperty {
         if isPrimitiveType {
             if type == "Date" {
                 if isOptional {
-                    return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = ConversionHelper.stringFromDate(\(name)!) }"
+                    return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = stringFromDate(\(name)!) }"
                 } else {
-                    return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = ConversionHelper.stringFromDate(\(name))"
+                    return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = stringFromDate(\(name))"
                 }
             }
             else {
@@ -388,10 +396,10 @@ struct RESTProperty {
         if isPrimitiveType {
             if type == "Date" {
                 if isOptional {
-                    return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\\"\\(ConversionHelper.stringFromDate(\(name)))\\\",\\n\") }"
+                    return "\(indent)\(indent)if let \(name) = \(name) { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\\"\\(stringFromDate(\(name)))\\\",\\n\") }"
                         + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }\n"
                 } else {
-                    return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\\"\\(ConversionHelper.stringFromDate(\(name)))\\\",\\n\")"
+                    return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\\"\\(stringFromDate(\(name)))\\\",\\n\")"
                 }
             }
             else {

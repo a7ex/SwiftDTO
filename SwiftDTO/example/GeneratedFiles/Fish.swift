@@ -30,7 +30,7 @@ public struct Fish: Animal, JSOBJSerializable, DictionaryConvertible, CustomStri
     // Object creation using JSON dictionary representation from NSJSONSerializer:
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
-        guard let val = ConversionHelper.stringFromAny(jsonData["name"]) else { return  nil }
+        guard let val = stringFromAny(jsonData["name"]) else { return  nil }
         self.name = val
         if let val = AnimalType.byString(jsonData["animalType"] as? String) { self.animalType = val }
         else { animalType = nil }

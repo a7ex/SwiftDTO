@@ -54,66 +54,86 @@ struct DTODiagnostics {
     }
 }
 
+/**
+ Try to convert an Any value to a NSDate object
+
+ Try to convert the input to a String, Int or Double and call the corresponding date creator
+
+ - parameter dateObj: Any representing a date in either String or Timestamp
+
+ - returns: NSDate object corresponding to input
+ */
+func dateFromAny(_ dateObj: Any?) -> Date? {
+    let helper = ConversionHelper()
+    if let inputString = dateObj as? String { return helper.dateFromString(inputString) }
+    if let doubleVal = dateObj as? Double { return helper.dateFromDouble(doubleVal) }
+    if let intVal = dateObj as? Int { return helper.dateFromLong(intVal) }
+    return nil
+}
+
+/**
+ Convert an NSDate object to a string representing a date in ISO 8601 format (default)
+
+ - parameter dateObj: NSDate object
+ - parameter format: Format string for date (default is ISO 8601 format)
+
+ - returns: String representing a date in the chosen format (default: ISO 8601)
+ */
+func stringFromDate(_ dateObj: Date, withFormat format: String="yyyy-MM-dd'T'HH:mm:ss.sZZZZZ") -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = format
+    return dateFormatter.string(from: dateObj)
+}
+
+/**
+ Parsing a String is a bit more complicated, because if a property of type string is e.g. "true"
+ it will appear as boolean after NSJSONSerialization and so "jsonObject as? String" will be nil.
+ Thanks to automatic type casting if the string is "true", "false" or "1" or "2.3"
+
+ - parameter jsonObject: Any or nil (one value in the dictionary, which NSJSONSerialization produces)
+
+ - returns: String or nil
+ */
+func stringFromAny(_ jsonObject:Any?) -> String? {
+    if let val = jsonObject as? String { return val }
+    if let val = jsonObject as? Bool { return String(describing: val) }
+    if let val = jsonObject as? Int { return String(describing: val) }
+    if let val = jsonObject as? Double { return String(describing: val) }
+    return nil
+}
+
+/**
+ Try to convert an Any value to a Bool
+
+ - parameter jsonObject: Any or nil (one value in the dictionary, which NSJSONSerialization produces)
+
+ - returns: String or nil
+ */
+func boolFromAny(_ jsonObject: Any?) -> Bool? {
+    if let val = jsonObject as? Bool { return val }
+    if let val = jsonObject as? String {
+        switch val.lowercased() {
+        case "true", "yes": return true
+        case "false", "no": return false
+        default: return nil
+        }
+    }
+    if let val = jsonObject as? Int { return val != 0 }
+    if let val = jsonObject as? Double { return val != 0 }
+    return nil
+}
+
 struct ConversionHelper {
-
-    /**
-     Try to convert an Any value to a NSDate object
-     
-     Try to convert the input to a String, Int or Double and call the corresponding date creator
-     
-     - parameter dateObj: Any representing a date in either String or Timestamp
-     
-     - returns: NSDate object corresponding to input
-     */
-    static func dateFromAny(_ dateObj: Any?) -> Date? {
-        let helper = ConversionHelper()
-        if let inputString = dateObj as? String { return helper.dateFromString(inputString) }
-        if let doubleVal = dateObj as? Double { return helper.dateFromDouble(doubleVal) }
-        if let intVal = dateObj as? Int { return helper.dateFromLong(intVal) }
-        return nil
-    }
-
-    /**
-     Convert an NSDate object to a string representing a date in ISO 8601 format (default)
-     
-     - parameter dateObj: NSDate object
-     - parameter format: Format string for date (default is ISO 8601 format)
-     
-     - returns: String representing a date in the chosen format (default: ISO 8601)
-     */
-    static func stringFromDate(_ dateObj: Date, withFormat format: String="yyyy-MM-dd'T'HH:mm:ss.sZZZZZ") -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = format
-        return dateFormatter.string(from: dateObj)
-    }
-
-    /**
-     Parsing a String is a bit more complicated, because if a property of type string is e.g. "true"
-     it will appear as boolean after NSJSONSerialization and so "jsonObject as? String" will be nil.
-     Thanks to automatic type casting if the string is "true", "false" or "1" or "2.3"
-     
-     - parameter jsonObject: Any or nil (one value in the dictionary, which NSJSONSerialization produces)
-     
-     - returns: String or nil
-     */
-    static func stringFromAny(_ jsonObject:Any?) -> String? {
-        if let val = jsonObject as? String { return val }
-        if let val = jsonObject as? Bool { return String(describing: val) }
-        if let val = jsonObject as? Int { return String(describing: val) }
-        if let val = jsonObject as? Double { return String(describing: val) }
-        return nil
-    }
-
     /**
      Try to convert a string representing a date to a NSDate object
-     
+
      Start with ISO 8601 format, then our "Conrad German date format", then a timestamp
      
      - parameter dateString: String representing a date in ISO 8601 format
      
      - returns: NSDate object corresponding to input string
      */
-    private func dateFromString(_ dateString: String?) -> Date? {
+    fileprivate func dateFromString(_ dateString: String?) -> Date? {
         guard let inputString = dateString else { return nil }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.ssZZZZZ"
@@ -131,14 +151,14 @@ struct ConversionHelper {
         return nil
     }
 
-    private func dateFromDouble(_ timestamp: Double?) -> Date? {
+    fileprivate func dateFromDouble(_ timestamp: Double?) -> Date? {
         guard let timestamp = timestamp else {
             return nil
         }
         return Date(timeIntervalSince1970: (timestamp/1000.0))
     }
 
-    private func dateFromLong(_ timestamp: Int?) -> Date? {
+    fileprivate func dateFromLong(_ timestamp: Int?) -> Date? {
         guard let timestamp = timestamp else {
             return nil
         }

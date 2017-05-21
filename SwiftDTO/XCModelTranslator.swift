@@ -548,7 +548,7 @@ class XCModelTranslator {
             + "// Edit the source coredata model (in the CoreData editor) and then use the SwiftDTO\n"
             + "// to create the corresponding DTO source files automatically\n\n"
     }
-    
+
 }
 
 extension String {
