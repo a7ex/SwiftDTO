@@ -13,6 +13,11 @@ class ProtocolDeclaration {
     let restProperties: [RESTProperty]
     var consumers = Set<String>()
 
+    init(name: String) {
+        self.name = name
+        restProperties = [RESTProperty]()
+    }
+
     init?(xmlElement: XMLElement, isEnum: Bool, withEnumNames enums: Set<String>, withProtocolNames protocolNames: Set<String>, withProtocols protocols: [ProtocolDeclaration]?,
           withPrimitiveProxyNames primitiveProxyNames: Set<String>) {
         guard let name = xmlElement.attribute(forName: "name")?.stringValue else {
@@ -21,7 +26,7 @@ class ProtocolDeclaration {
         guard let properties = xmlElement.children as? [XMLElement] else { return nil }
 
         let restProps = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                            isEnum: false,
+                                                            enumParentName: nil,
                                                             withEnumNames: enums,
                                                             withProtocolNames: protocolNames,
                                                             withProtocols: protocols,

@@ -37,7 +37,8 @@ if CommandLine.arguments.count < 2 {
     exit(EXIT_FAILURE)
 }
 
-let path = CommandLine.arguments[1]
+//let path = CommandLine.arguments[1]
+let path = "/Users/alexapprime/__NoBackup/user.xml"
 print("\(path)")
 let url = URL(fileURLWithPath: path)
 

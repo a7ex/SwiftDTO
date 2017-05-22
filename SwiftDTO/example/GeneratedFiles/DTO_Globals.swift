@@ -102,6 +102,27 @@ func stringFromAny(_ jsonObject:Any?) -> String? {
     return nil
 }
 
+/**
+ Try to convert an Any value to a Bool
+
+ - parameter jsonObject: Any or nil (one value in the dictionary, which NSJSONSerialization produces)
+
+ - returns: String or nil
+ */
+func boolFromAny(_ jsonObject: Any?) -> Bool? {
+    if let val = jsonObject as? Bool { return val }
+    if let val = jsonObject as? String {
+        switch val.lowercased() {
+        case "true", "yes": return true
+        case "false", "no": return false
+        default: return nil
+        }
+    }
+    if let val = jsonObject as? Int { return val != 0 }
+    if let val = jsonObject as? Double { return val != 0 }
+    return nil
+}
+
 struct ConversionHelper {
     /**
      Try to convert a string representing a date to a NSDate object

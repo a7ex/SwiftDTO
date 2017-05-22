@@ -8,8 +8,13 @@
 
 import Foundation
 
+enum XmlType {
+    case coreData, wsdl
+}
+
 class XCModelTranslator {
     let model: XMLNode
+    let xmlType: XmlType
     var enumNames: Set<String>?
     var protocolNames = Set<String>()
     var primitiveProxyNames = Set<String>()
@@ -19,19 +24,118 @@ class XCModelTranslator {
     let indent = "    "
 
     init?(xmlData: XMLDocument) {
-        guard let children = xmlData.children, !children.isEmpty,
-            let mo = children.first(where: { $0.name == "model" }) else { return nil }
-        self.model = mo
+        if let children = xmlData.children, !children.isEmpty,
+            let mo = children.first(where: { $0.name == "model" }) {
+            self.model = mo
+            xmlType = .coreData
+        } else if let children = xmlData.children, !children.isEmpty,
+            let mo = children.first(where: { $0.name == "xs:schema" }) {
+            self.model = mo
+            xmlType = .wsdl
+        } else {
+            return nil
+        }
     }
 
     final func generateFiles(inFolder folderPath: String? = nil) {
         guard let children = model.children else { return }
-        let entities = children.filter { $0.name == "entity" }
 
         let info = ProcessInfo.processInfo
         let workingDirectory = info.environment["PWD"]
-
         let pwd = folderPath ?? workingDirectory
+
+        let entities = children.filter { $0.name == "entity" }
+        let complexTypes = children.filter { $0.name == "xs:complexType" }
+        let simpleTypes = children.filter { $0.name == "xs:simpleType" }
+
+        var enums = Set<String>()
+
+        for simpType in simpleTypes {
+            guard let enuName = (simpType as? XMLElement)?.attribute(forName: "name")?.stringValue,
+                !enuName.isEmpty else { continue }
+            let capitalizedName = enuName.capitalized()
+            let enumerations: [XMLElement]?
+            let enumParentName: String
+            if let enumParent = simpType.children?.first(where: { $0.name == "xs:restriction" }) as? XMLElement { enumParentName = enumParent.attribute(forName: "base")?.stringValue ?? ""
+                enumerations = enumParent.children as? [XMLElement]
+            } else {
+                enumParentName = ""
+                enumerations = simpType.children as? [XMLElement]
+            }
+
+            var eProps = [RESTProperty]()
+            if let enumerations = enumerations {
+                for enumVal in (enumerations.filter { $0.name == "xs:enumeration" }) {
+                        if let element = RESTProperty(wsdlElement: enumVal, enumParentName: enumParentName, withEnumNames: enums) {
+                            eProps.append(element)
+                        }
+                }
+            }
+
+            if eProps.count > 0 {
+                enums.insert(capitalizedName)
+                    if let content = generateEnumFileForEntityFinally(eProps, withName: capitalizedName, enumParentName: enumParentName) {
+                        if let fpath = pathForClassName(capitalizedName, inFolder: pwd) {
+                            do {
+                                try content.write(toFile: fpath, atomically: false, encoding: String.Encoding.utf8)
+                                writeToStdOut("Successfully written file to: \(fpath)\n")
+                            }
+                            catch let error as NSError {
+                                writeToStdError("error: \(error.localizedDescription)")
+                            }
+                        }
+                        else {
+                            writeToStdOut(content)
+                        }
+                    }
+            }
+        }
+
+        for compType in complexTypes {
+            if let tName = (compType as? XMLElement)?.attribute(forName: "name")?.stringValue {
+                // print(tName)
+
+                let capitalizedName = tName.capitalized()
+
+                var baseClassName = ""
+                let paramNode: [XMLElement]?
+                if compType.children?[0].name == "xs:complexContent" {
+                    if compType.children?[0].children?[0].name == "xs:extension" {
+                        baseClassName = (compType.children?[0].children?[0] as? XMLElement)?.attribute(forName: "base")?.stringValue ?? ""
+                        paramNode = (compType.children?[0].children?[0].children?.filter { $0.name == "xs:sequence" })?.first?.children as? [XMLElement]
+                    } else {
+                        paramNode = (compType.children?[0].children?.filter { $0.name == "xs:sequence" })?.first?.children as? [XMLElement]
+                    }
+                } else {
+                    paramNode = (compType.children?.filter { $0.name == "xs:sequence" })?.first?.children as? [XMLElement]
+                }
+                print("Name: \(capitalizedName); baseClassName: \(baseClassName); param count:\(paramNode?.count ?? 0)")
+                var rProps = [RESTProperty]()
+                if let paramNode = paramNode {
+                    for prop in (paramNode.filter { $0.name == "xs:element" }) {
+                        if let element = RESTProperty(wsdlElement: prop, enumParentName: nil, withEnumNames: enums) {
+                            rProps.append(element)
+                        }
+                    }
+                }
+
+                if let content = generateClassFinally(nil, withName: capitalizedName, parentProtocol: ProtocolDeclaration(name: baseClassName), storedProperties: rProps, createClasses: true) {
+                    if let fpath = pathForClassName(capitalizedName, inFolder: pwd) {
+                        do {
+                            try content.write(toFile: fpath, atomically: false, encoding: String.Encoding.utf8)
+                            writeToStdOut("Successfully written file to: \(fpath)\n")
+                        }
+                        catch let error as NSError {
+                            writeToStdError("error: \(error.localizedDescription)")
+                        }
+                    }
+                    else {
+                        writeToStdOut(content)
+                    }
+                }
+
+            }
+        }
 
         var primitiveProxies = Set<String>()
         for thisEntity in entities {
@@ -48,7 +152,6 @@ class XCModelTranslator {
         }
         primitiveProxyNames = primitiveProxies
 
-        var enums = Set<String>()
         for thisEntity in entities {
             guard let children2 = thisEntity.children as? [XMLElement],
                 let userInfo = children2.first(where: { $0.name == "userInfo" }),
@@ -254,26 +357,44 @@ class XCModelTranslator {
             parentProtocol = nil
         }
 
+        return generateClassFinally(properties, withName: className, parentProtocol: parentProtocol, storedProperties: nil, createClasses: false)
+    }
+
+    fileprivate final func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?, createClasses: Bool) -> String? {
+
         var classString = headerStringFor(filename: className)
 
-        classString += "import Foundation\n\npublic struct \(className): \((parentProtocol == nil) ? "": parentProtocol!.name + ", ")JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {\n"
+        if createClasses {
+            classString += "import Foundation\n\nopen class \(className): \((parentProtocol == nil) ? "": parentProtocol!.name + ", ")JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {\n"
+        } else {
+            classString += "import Foundation\n\npublic struct \(className): \((parentProtocol == nil) ? "": parentProtocol!.name + ", ")JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {\n"
+        }
 
         var ind = indent
 
         classString += "\n\(ind)// DTO properties:\n"
 
+        let ppRestProps = parentProtocol?.restProperties ?? [RESTProperty]()
         let parentPropertyNames = Set(parentProtocol?.restProperties.flatMap { $0.name } ?? [String]())
-        for property in parentProtocol?.restProperties ?? [RESTProperty]() {
+        for property in ppRestProps {
             classString += "\(property.declarationString)\n"
         }
-        if parentProtocol != nil { classString += "\n" }
+        if !ppRestProps.isEmpty { classString += "\n" }
 
-        let restprops = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                          isEnum: false,
+        let restprops: [RESTProperty]
+        if let storedProperties = storedProperties {
+            restprops = storedProperties
+        } else if let properties = properties {
+            restprops = properties.flatMap { RESTProperty(xmlElement: $0,
+                                                          enumParentName: nil,
                                                           withEnumNames: enumNames ?? Set<String>(),
                                                           withProtocolNames: protocolNames,
                                                           withProtocols: protocols,
                                                           withPrimitiveProxyNames: primitiveProxyNames) }
+        } else {
+            return nil
+        }
+
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
                 classString += "\(property.declarationString)\n"
@@ -282,7 +403,7 @@ class XCModelTranslator {
 
         classString += "\n\(ind)// Default initializer:\n"
         classString += "\(ind)public init("
-        for property in parentProtocol?.restProperties ?? [RESTProperty]() {
+        for property in ppRestProps {
             classString += "\(property.defaultInitializeParameter), "
         }
 
@@ -293,7 +414,7 @@ class XCModelTranslator {
         }
         classString = classString.substring(to: classString.index(classString.endIndex, offsetBy: -2))
         classString += ") {\n"
-        for property in parentProtocol?.restProperties ?? [RESTProperty]() {
+        for property in ppRestProps {
             classString += "\(property.defaultInitializeString)\n"
         }
 
@@ -308,10 +429,10 @@ class XCModelTranslator {
         classString += "\(ind)public init?(jsonData: JSOBJ?) {\n"
         classString += "\(ind)\(ind)guard let jsonData = jsonData else { return nil }\n"
 
-        for property in parentProtocol?.restProperties ?? [RESTProperty]() {
+        for property in ppRestProps {
             classString += "\(property.initializeString)\n"
         }
-        if parentProtocol != nil { classString += "\n" }
+        if !ppRestProps.isEmpty { classString += "\n" }
 
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
@@ -325,7 +446,7 @@ class XCModelTranslator {
 
         classString += "\n\(ind)// all expected keys (for diagnostics in debug mode):\n"
         classString += "\(ind)public var allExpectedKeys: Set<String> {\n\(ind)\(ind)return Set(["
-        for property in parentProtocol?.restProperties ?? [RESTProperty]() {
+        for property in ppRestProps {
             classString += "\"\(property.jsonProperty)\", "
             hasProperties = true
         }
@@ -348,10 +469,10 @@ class XCModelTranslator {
         ind += indent
         classString += "\(ind)var jsonData = JSOBJ()\n"
 
-        for property in parentProtocol?.restProperties ?? [RESTProperty]() {
+        for property in ppRestProps {
             classString += "\(property.exportString)\n"
         }
-        if parentProtocol != nil { classString += "\n" }
+        if !ppRestProps.isEmpty { classString += "\n" }
 
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
@@ -372,11 +493,11 @@ class XCModelTranslator {
         classString += "\n"
 
         hasProperties = false
-        for property in parentProtocol?.restProperties ?? [RESTProperty]() {
+        for property in ppRestProps {
             classString += "\(property.jsonString)\n"
             hasProperties = true
         }
-        if parentProtocol != nil { classString += "\n" }
+        if !ppRestProps.isEmpty { classString += "\n" }
 
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
@@ -418,16 +539,21 @@ class XCModelTranslator {
     private final func generateEnumFileForEntity(_ entity: XMLElement, withName className: String) -> String? {
         guard let properties = entity.children as? [XMLElement] else { return nil }
 
-        var classString = headerStringFor(filename: className)
-
-        classString += "import Foundation\n\npublic enum \(className): String {\n"
-
         let restprops = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                          isEnum: true,
+                                                          enumParentName: "String",
                                                           withEnumNames: enumNames ?? Set<String>(),
                                                           withProtocolNames: protocolNames,
                                                           withProtocols: protocols,
                                                           withPrimitiveProxyNames: primitiveProxyNames) }
+
+        return generateEnumFileForEntityFinally(restprops, withName: className, enumParentName: "String")
+    }
+
+    private final func generateEnumFileForEntityFinally(_ restprops: [RESTProperty], withName className: String, enumParentName: String) -> String? {
+
+        var classString = headerStringFor(filename: className)
+
+        classString += "import Foundation\n\npublic enum \(className): \(enumParentName) {\n"
 
         var hasRelations = false
         for property in restprops {
@@ -539,8 +665,7 @@ class XCModelTranslator {
     }
 
     private func headerStringFor(filename: String) -> String {
-        return "//\n//  \(filename).swift\n"
-            + "//  conradkiosk\n//\n"
+        return "//\n//  \(filename).swift\n\n"
             + "//  Automatically created by SwiftDTO.\n"
             + "//  \(copyRightString)\n\n"
             + "// DO NOT EDIT THIS FILE!\n"

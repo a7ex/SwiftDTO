@@ -7,15 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		363EC5F81EC7890200B7C0B0 /* Dino.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363EC5F61EC7885500B7C0B0 /* Dino.swift */; };
-		363EC5F91EC7890200B7C0B0 /* Animal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82079D1DE30E2400333F8D /* Animal.swift */; };
-		363EC5FA1EC7890200B7C0B0 /* AnimalType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82079E1DE30E2400333F8D /* AnimalType.swift */; };
-		363EC5FB1EC7890200B7C0B0 /* Dog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82079F1DE30E2400333F8D /* Dog.swift */; };
-		363EC5FC1EC7890200B7C0B0 /* DTO_Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207A01DE30E2400333F8D /* DTO_Globals.swift */; };
-		363EC5FD1EC7890200B7C0B0 /* Fish.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207A11DE30E2400333F8D /* Fish.swift */; };
-		363EC5FE1EC7890200B7C0B0 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207A21DE30E2400333F8D /* Person.swift */; };
 		369F5BEF1EA285F8005A229A /* Readme.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 369F5BEE1EA285CD005A229A /* Readme.txt */; };
 		369F5BF61EA287FA005A229A /* myDTO.xcdatamodel in CopyFiles */ = {isa = PBXBuildFile; fileRef = 369F5BF51EA287EC005A229A /* myDTO.xcdatamodel */; };
+		36DCC12F1ED27BB5009E5AB7 /* defaultRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCC1031ED27BB4009E5AB7 /* defaultRequest.swift */; };
+		36DCC1321ED27BB5009E5AB7 /* DTO_Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCC1061ED27BB4009E5AB7 /* DTO_Globals.swift */; };
+		36DCC14B1ED27BB5009E5AB7 /* sessionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCC11F1ED27BB5009E5AB7 /* sessionRequest.swift */; };
 		FA8207851DE2D7DF00333F8D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207841DE2D7DF00333F8D /* main.swift */; };
 		FA82078F1DE2DA6C00333F8D /* RESTProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078B1DE2DA6C00333F8D /* RESTProperty.swift */; };
 		FA8207901DE2DA6C00333F8D /* XCModelTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078C1DE2DA6C00333F8D /* XCModelTranslator.swift */; };
@@ -41,9 +37,11 @@
 /* Begin PBXFileReference section */
 		363EC5A31EBF8AC200B7C0B0 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		363EC5A41EBF8ACF00B7C0B0 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		363EC5F61EC7885500B7C0B0 /* Dino.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dino.swift; sourceTree = "<group>"; };
 		369F5BEE1EA285CD005A229A /* Readme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
 		369F5BF51EA287EC005A229A /* myDTO.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = myDTO.xcdatamodel; sourceTree = "<group>"; };
+		36DCC1031ED27BB4009E5AB7 /* defaultRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = defaultRequest.swift; sourceTree = "<group>"; };
+		36DCC1061ED27BB4009E5AB7 /* DTO_Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTO_Globals.swift; sourceTree = "<group>"; };
+		36DCC11F1ED27BB5009E5AB7 /* sessionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = sessionRequest.swift; sourceTree = "<group>"; };
 		FA8207811DE2D7DF00333F8D /* SwiftDTO */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SwiftDTO; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA8207841DE2D7DF00333F8D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		FA82078B1DE2DA6C00333F8D /* RESTProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTProperty.swift; sourceTree = "<group>"; };
@@ -53,12 +51,6 @@
 		FA8207941DE2DFC600333F8D /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		FA8207951DE2DFC600333F8D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		FA82079A1DE30D8B00333F8D /* CDData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CDData.xcdatamodel; sourceTree = "<group>"; };
-		FA82079D1DE30E2400333F8D /* Animal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animal.swift; sourceTree = "<group>"; };
-		FA82079E1DE30E2400333F8D /* AnimalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalType.swift; sourceTree = "<group>"; };
-		FA82079F1DE30E2400333F8D /* Dog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dog.swift; sourceTree = "<group>"; };
-		FA8207A01DE30E2400333F8D /* DTO_Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTO_Globals.swift; sourceTree = "<group>"; };
-		FA8207A11DE30E2400333F8D /* Fish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fish.swift; sourceTree = "<group>"; };
-		FA8207A21DE30E2400333F8D /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,13 +111,9 @@
 		FA82079C1DE30E2400333F8D /* GeneratedFiles */ = {
 			isa = PBXGroup;
 			children = (
-				363EC5F61EC7885500B7C0B0 /* Dino.swift */,
-				FA82079D1DE30E2400333F8D /* Animal.swift */,
-				FA82079E1DE30E2400333F8D /* AnimalType.swift */,
-				FA82079F1DE30E2400333F8D /* Dog.swift */,
-				FA8207A01DE30E2400333F8D /* DTO_Globals.swift */,
-				FA8207A11DE30E2400333F8D /* Fish.swift */,
-				FA8207A21DE30E2400333F8D /* Person.swift */,
+				36DCC1031ED27BB4009E5AB7 /* defaultRequest.swift */,
+				36DCC1061ED27BB4009E5AB7 /* DTO_Globals.swift */,
+				36DCC11F1ED27BB5009E5AB7 /* sessionRequest.swift */,
 			);
 			path = GeneratedFiles;
 			sourceTree = "<group>";
@@ -206,17 +194,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				363EC5FC1EC7890200B7C0B0 /* DTO_Globals.swift in Sources */,
+				36DCC14B1ED27BB5009E5AB7 /* sessionRequest.swift in Sources */,
 				FA82078F1DE2DA6C00333F8D /* RESTProperty.swift in Sources */,
-				363EC5F81EC7890200B7C0B0 /* Dino.swift in Sources */,
+				36DCC1321ED27BB5009E5AB7 /* DTO_Globals.swift in Sources */,
 				FA8207851DE2D7DF00333F8D /* main.swift in Sources */,
-				363EC5FE1EC7890200B7C0B0 /* Person.swift in Sources */,
+				36DCC12F1ED27BB5009E5AB7 /* defaultRequest.swift in Sources */,
 				FA8207921DE2DA6C00333F8D /* ProtocolDeclaration.swift in Sources */,
-				363EC5FD1EC7890200B7C0B0 /* Fish.swift in Sources */,
 				FA8207901DE2DA6C00333F8D /* XCModelTranslator.swift in Sources */,
-				363EC5F91EC7890200B7C0B0 /* Animal.swift in Sources */,
-				363EC5FB1EC7890200B7C0B0 /* Dog.swift in Sources */,
-				363EC5FA1EC7890200B7C0B0 /* AnimalType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
