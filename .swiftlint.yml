@@ -12,6 +12,8 @@ disabled_rules: # rule identifiers to exclude from running
   - nesting
   - cyclomatic_complexity
   - line_length
+  - identifier_name
+  - redundant_string_enum_value
 opt_in_rules: # some rules are only opt-in
   # - empty_count
   - attributes

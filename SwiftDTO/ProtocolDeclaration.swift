@@ -10,16 +10,28 @@ import Foundation
 
 class ProtocolDeclaration {
     let name: String
+    let parentName: String
     let restProperties: [RESTProperty]
     var consumers = Set<String>()
 
-    init(name: String) {
+    init(name: String,
+         restProperties: [RESTProperty] = [RESTProperty](),
+         withEnumNames enums: Set<String>,
+         withProtocolNames protocolNames: Set<String>,
+         withProtocols protocols: [ProtocolDeclaration]?,
+         withPrimitiveProxyNames primitiveProxyNames: Set<String>) {
         self.name = name
-        restProperties = [RESTProperty]()
+        self.restProperties = restProperties
+        parentName = ""
     }
 
-    init?(xmlElement: XMLElement, isEnum: Bool, withEnumNames enums: Set<String>, withProtocolNames protocolNames: Set<String>, withProtocols protocols: [ProtocolDeclaration]?,
+    init?(xmlElement: XMLElement,
+          isEnum: Bool,
+          withEnumNames enums: Set<String>,
+          withProtocolNames protocolNames: Set<String>,
+          withProtocols protocols: [ProtocolDeclaration]?,
           withPrimitiveProxyNames primitiveProxyNames: Set<String>) {
+
         guard let name = xmlElement.attribute(forName: "name")?.stringValue else {
                 return nil
         }
@@ -34,6 +46,7 @@ class ProtocolDeclaration {
 
         guard !restProps.isEmpty else { return nil }
 
+        parentName = ""
         self.name = name
         self.restProperties = restProps
     }

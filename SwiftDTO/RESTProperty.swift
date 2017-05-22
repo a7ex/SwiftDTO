@@ -92,9 +92,9 @@ struct RESTProperty {
 
         var primType = ""
         var isPrimType = false
-        let proptype = nsproptype.components(separatedBy: ":").last!
+        let proptype = createClassNameFromType(nsproptype) ?? nsproptype
         switch nsproptype {
-        case "xs:int", "xs:long":
+        case "xs:int", "xs:long", "xs:unsignedShort":
             primType = "Int"
             isPrimType = true
         case "xs:float", "xs:double":

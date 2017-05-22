@@ -38,7 +38,9 @@ if CommandLine.arguments.count < 2 {
 }
 
 //let path = CommandLine.arguments[1]
-let path = "/Users/alexapprime/__NoBackup/user.xml"
+//let path = "/Users/alexapprime/__NoBackup/user.xml"
+let path = "/Users/alex/Documents/TestApps/wsdlDescriptionFiles/xsd1_schema_tracking.xml"
+
 print("\(path)")
 let url = URL(fileURLWithPath: path)
 

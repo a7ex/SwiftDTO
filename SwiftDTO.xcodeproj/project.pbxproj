@@ -9,14 +9,13 @@
 /* Begin PBXBuildFile section */
 		369F5BEF1EA285F8005A229A /* Readme.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 369F5BEE1EA285CD005A229A /* Readme.txt */; };
 		369F5BF61EA287FA005A229A /* myDTO.xcdatamodel in CopyFiles */ = {isa = PBXBuildFile; fileRef = 369F5BF51EA287EC005A229A /* myDTO.xcdatamodel */; };
-		36DCC12F1ED27BB5009E5AB7 /* defaultRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCC1031ED27BB4009E5AB7 /* defaultRequest.swift */; };
-		36DCC1321ED27BB5009E5AB7 /* DTO_Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCC1061ED27BB4009E5AB7 /* DTO_Globals.swift */; };
-		36DCC14B1ED27BB5009E5AB7 /* sessionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DCC11F1ED27BB5009E5AB7 /* sessionRequest.swift */; };
 		FA8207851DE2D7DF00333F8D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207841DE2D7DF00333F8D /* main.swift */; };
 		FA82078F1DE2DA6C00333F8D /* RESTProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078B1DE2DA6C00333F8D /* RESTProperty.swift */; };
 		FA8207901DE2DA6C00333F8D /* XCModelTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078C1DE2DA6C00333F8D /* XCModelTranslator.swift */; };
 		FA8207921DE2DA6C00333F8D /* ProtocolDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078E1DE2DA6C00333F8D /* ProtocolDeclaration.swift */; };
 		FA8207931DE2DAAB00333F8D /* DTO_Globals.swift in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA82078D1DE2DA6C00333F8D /* DTO_Globals.swift */; };
+		FA9212C21ED2FA02007A0EE3 /* String+COAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9212C11ED2FA02007A0EE3 /* String+COAdditions.swift */; };
+		FA9213EA1ED3056E007A0EE3 /* DTOError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9213CD1ED3056E007A0EE3 /* DTOError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,9 +38,6 @@
 		363EC5A41EBF8ACF00B7C0B0 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		369F5BEE1EA285CD005A229A /* Readme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
 		369F5BF51EA287EC005A229A /* myDTO.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = myDTO.xcdatamodel; sourceTree = "<group>"; };
-		36DCC1031ED27BB4009E5AB7 /* defaultRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = defaultRequest.swift; sourceTree = "<group>"; };
-		36DCC1061ED27BB4009E5AB7 /* DTO_Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTO_Globals.swift; sourceTree = "<group>"; };
-		36DCC11F1ED27BB5009E5AB7 /* sessionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = sessionRequest.swift; sourceTree = "<group>"; };
 		FA8207811DE2D7DF00333F8D /* SwiftDTO */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SwiftDTO; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA8207841DE2D7DF00333F8D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		FA82078B1DE2DA6C00333F8D /* RESTProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTProperty.swift; sourceTree = "<group>"; };
@@ -51,6 +47,8 @@
 		FA8207941DE2DFC600333F8D /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		FA8207951DE2DFC600333F8D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		FA82079A1DE30D8B00333F8D /* CDData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CDData.xcdatamodel; sourceTree = "<group>"; };
+		FA9212C11ED2FA02007A0EE3 /* String+COAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+COAdditions.swift"; sourceTree = "<group>"; };
+		FA9213CD1ED3056E007A0EE3 /* DTOError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTOError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +89,7 @@
 				FA82078C1DE2DA6C00333F8D /* XCModelTranslator.swift */,
 				FA82078B1DE2DA6C00333F8D /* RESTProperty.swift */,
 				FA82078E1DE2DA6C00333F8D /* ProtocolDeclaration.swift */,
+				FA9212C11ED2FA02007A0EE3 /* String+COAdditions.swift */,
 				FA82078D1DE2DA6C00333F8D /* DTO_Globals.swift */,
 				369F5BF51EA287EC005A229A /* myDTO.xcdatamodel */,
 				369F5BEE1EA285CD005A229A /* Readme.txt */,
@@ -111,9 +110,7 @@
 		FA82079C1DE30E2400333F8D /* GeneratedFiles */ = {
 			isa = PBXGroup;
 			children = (
-				36DCC1031ED27BB4009E5AB7 /* defaultRequest.swift */,
-				36DCC1061ED27BB4009E5AB7 /* DTO_Globals.swift */,
-				36DCC11F1ED27BB5009E5AB7 /* sessionRequest.swift */,
+				FA9213CD1ED3056E007A0EE3 /* DTOError.swift */,
 			);
 			path = GeneratedFiles;
 			sourceTree = "<group>";
@@ -194,11 +191,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36DCC14B1ED27BB5009E5AB7 /* sessionRequest.swift in Sources */,
+				FA9212C21ED2FA02007A0EE3 /* String+COAdditions.swift in Sources */,
 				FA82078F1DE2DA6C00333F8D /* RESTProperty.swift in Sources */,
-				36DCC1321ED27BB5009E5AB7 /* DTO_Globals.swift in Sources */,
+				FA9213EA1ED3056E007A0EE3 /* DTOError.swift in Sources */,
 				FA8207851DE2D7DF00333F8D /* main.swift in Sources */,
-				36DCC12F1ED27BB5009E5AB7 /* defaultRequest.swift in Sources */,
 				FA8207921DE2DA6C00333F8D /* ProtocolDeclaration.swift in Sources */,
 				FA8207901DE2DA6C00333F8D /* XCModelTranslator.swift in Sources */,
 			);
