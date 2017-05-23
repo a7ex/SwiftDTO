@@ -63,11 +63,11 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "$PROJECT_DIR/SwiftDTO/example/CDData.xcdatamodel/contents"
+            argument = "$PROJECT_DIR/SwiftDTO/example/GeneratedFiles"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "$PROJECT_DIR/SwiftDTO/example/GeneratedFiles"
+            argument = "$PROJECT_DIR/SwiftDTO/example/CDData.xcdatamodel/contents"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

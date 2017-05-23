@@ -64,6 +64,10 @@ do {
                 parser.addXMLData(xmlData: thisXML)
             }
         }
+let thisUrl = URL(fileURLWithPath: "/Users/alexapprime/Documents/TestApps/wsdlDescriptionFiles/xsd1_schema_tracking.xml")
+        if let thisXML = try? XMLDocument(contentsOf: thisUrl, options: 0) {
+            parser.addXMLData(xmlData: thisXML)
+        }
         parser.generateFiles(inFolder: targetFolder)
     }
 }
