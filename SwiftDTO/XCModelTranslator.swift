@@ -23,6 +23,11 @@ func createClassNameFromType(_ nsType: String?) -> String? {
     }
 }
 
+struct ParentRelation {
+    let subclass: String
+    let parentClass: String
+}
+
 class XCModelTranslator {
     let model: XMLNode
     let xmlType: XmlType
@@ -45,6 +50,23 @@ class XCModelTranslator {
             xmlType = .wsdl
         } else {
             return nil
+        }
+    }
+
+    func addXMLData(xmlData: XMLDocument) {
+        guard let children = xmlData.children,
+            !children.isEmpty else { return }
+        if xmlType == .coreData,
+            children.first(where: { $0.name == "model" }) != nil {
+            for thisModel in children {
+                (model as? XMLElement)?.addChild(thisModel)
+            }
+
+        } else if xmlType == .wsdl,
+            children.first(where: { $0.name == "xs:schema" }) != nil {
+            for thisModel in children {
+                (model as? XMLElement)?.addChild(thisModel)
+            }
         }
     }
 
@@ -82,7 +104,10 @@ class XCModelTranslator {
             var eProps = [RESTProperty]()
             if let enumerations = enumerations {
                 for enumVal in (enumerations.filter { $0.name == "xs:enumeration" }) {
-                    if let element = RESTProperty(wsdlElement: enumVal, enumParentName: enumParentName, withEnumNames: enums) {
+                    if let element = RESTProperty(wsdlElement: enumVal,
+                                                  enumParentName: enumParentName,
+                                                  withEnumNames: enums,
+                                                  overrideInitializers: [ParentRelation]()) {
                         eProps.append(element)
                     }
                 }
@@ -108,7 +133,7 @@ class XCModelTranslator {
         }
 
         var complexTypesInfos = [ComplexTypesInfo]()
-
+        var parentRelations = [ParentRelation]()
         for compType in complexTypes {
             guard createClassNameFromType((compType as? XMLElement)?.attribute(forName: "name")?.stringValue) != nil else { continue }
 
@@ -116,6 +141,9 @@ class XCModelTranslator {
                 compType.children?[0].children?[0].name == "xs:extension",
                 let baseClassName = createClassNameFromType((compType.children?[0].children?[0] as? XMLElement)?.attribute(forName: "base")?.stringValue) {
                 protocolNames.insert(baseClassName)
+                if let clName = createClassNameFromType((compType as? XMLElement)?.attribute(forName: "name")?.stringValue) {
+                    parentRelations.append(ParentRelation(subclass: clName, parentClass: baseClassName))
+                }
             }
         }
 
@@ -140,7 +168,10 @@ class XCModelTranslator {
             var rProps = [RESTProperty]()
             if let paramNode = paramNode {
                 for prop in (paramNode.filter { $0.name == "xs:element" }) {
-                    if let element = RESTProperty(wsdlElement: prop, enumParentName: nil, withEnumNames: enums) {
+                    if let element = RESTProperty(wsdlElement: prop,
+                                                  enumParentName: nil,
+                                                  withEnumNames: enums,
+                                                  overrideInitializers: parentRelations) {
                         rProps.append(element)
                     }
                 }

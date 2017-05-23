@@ -32,12 +32,14 @@ struct RESTProperty {
     let typeIsProxyType: Bool
     let protocolInitializerType: String
     let enumParentName: String
+    let overrideInitializers: [ParentRelation]
 
     let indent = "    "
 
     init?(wsdlElement: XMLElement,
           enumParentName: String?,
-          withEnumNames enums: Set<String>) {
+          withEnumNames enums: Set<String>,
+          overrideInitializers: [ParentRelation]) {
 
         self.isEnum = enumParentName != nil
         if isEnum {
@@ -64,6 +66,7 @@ struct RESTProperty {
             } else {
                 self.enumParentName = "String"
             }
+            self.overrideInitializers = overrideInitializers
             return
         }
 
@@ -124,6 +127,8 @@ struct RESTProperty {
         isEnumProperty = enums.contains(primType)
         typeIsProxyType = false
         self.enumParentName = "String"
+
+        self.overrideInitializers = overrideInitializers
     }
 
     init?(xmlElement: XMLElement?,
@@ -218,6 +223,8 @@ struct RESTProperty {
         //        }
 
         isOptional = xmlElement.attribute(forName: Constants.OptionalAttributeName)?.stringValue == "YES"
+
+        overrideInitializers = [ParentRelation]()
     }
 
     fileprivate var typeSingular: String {
@@ -354,7 +361,9 @@ struct RESTProperty {
                                 return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
                             }
                             else {
-                                return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(typeSingular)(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
+                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
+                                return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
                             }
                         }
                     }
@@ -388,7 +397,9 @@ struct RESTProperty {
                                 return "\(indent)\(indent)\(name) = nil"
                             }
                             else {
-                                return "\(indent)\(indent)if let val = \(typeSingular)(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
+                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
+                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
+                                return "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
                             }
                         }
                     }
