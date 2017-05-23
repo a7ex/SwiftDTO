@@ -59,12 +59,14 @@ class XCModelTranslator {
         if xmlType == .coreData,
             children.first(where: { $0.name == "model" }) != nil {
             for thisModel in children {
+                thisModel.detach()
                 (model as? XMLElement)?.addChild(thisModel)
             }
 
         } else if xmlType == .wsdl,
             children.first(where: { $0.name == "xs:schema" }) != nil {
             for thisModel in children {
+                thisModel.detach()
                 (model as? XMLElement)?.addChild(thisModel)
             }
         }

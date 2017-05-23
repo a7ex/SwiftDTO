@@ -37,9 +37,12 @@ if CommandLine.arguments.count < 3 {
     exit(EXIT_FAILURE)
 }
 
+//let homeFolderName = "alexapprime"
+let homeFolderName = "alex"
+
 //let path = CommandLine.arguments[2]
 //let path = "/Users/alexapprime/__NoBackup/user.xml"
-let path = "/Users/alexapprime/Documents/TestApps/wsdlDescriptionFiles/xsd1_schema_user.xml"
+let path = "/Users/\(homeFolderName)/Documents/TestApps/wsdlDescriptionFiles/xsd1_schema_user.xml"
 
 let url = URL(fileURLWithPath: path)
 
@@ -64,7 +67,7 @@ do {
                 parser.addXMLData(xmlData: thisXML)
             }
         }
-let thisUrl = URL(fileURLWithPath: "/Users/alexapprime/Documents/TestApps/wsdlDescriptionFiles/xsd1_schema_tracking.xml")
+let thisUrl = URL(fileURLWithPath: "/Users/\(homeFolderName)/Documents/TestApps/wsdlDescriptionFiles/xsd1_schema_tracking.xml")
         if let thisXML = try? XMLDocument(contentsOf: thisUrl, options: 0) {
             parser.addXMLData(xmlData: thisXML)
         }
