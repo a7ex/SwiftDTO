@@ -16,10 +16,6 @@ class ProtocolDeclaration {
 
     init(name: String,
          restProperties: [RESTProperty] = [RESTProperty](),
-         withEnumNames enums: Set<String>,
-         withProtocolNames protocolNames: Set<String>,
-         withProtocols protocols: [ProtocolDeclaration]?,
-         withPrimitiveProxyNames primitiveProxyNames: Set<String>,
          withParentRelations parentRelations: [ParentRelation]) {
         self.name = name
         self.restProperties = restProperties

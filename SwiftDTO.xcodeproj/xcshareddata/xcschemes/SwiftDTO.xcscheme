@@ -68,6 +68,14 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "$PROJECT_DIR/SwiftDTO/example/CDData.xcdatamodel/contents"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "$PROJECT_DIR/SwiftDTO/example/wsdl/xsd1_schema_user.xml"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "$PROJECT_DIR/SwiftDTO/example/wsdl/xsd1_schema_tracking.xml"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
