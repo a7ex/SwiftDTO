@@ -48,6 +48,7 @@ do {
                 parser.addXMLData(xmlData: thisXML)
             }
         }
+        parser.parseXMLFiles()
         let generator = XML2SwiftFiles(parser: parser)
         generator.generateFiles(inFolder: targetFolder)
     }

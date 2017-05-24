@@ -36,6 +36,7 @@ struct RESTProperty {
 
     let indent = "    "
 
+    // wsdl XML uses this initializer:
     init?(wsdlElement: XMLElement,
           enumParentName: String?,
           withEnumNames enums: Set<String>,
@@ -131,6 +132,7 @@ struct RESTProperty {
         self.overrideInitializers = overrideInitializers
     }
 
+    // coreData XML uses this initializer:
     init?(xmlElement: XMLElement?,
           enumParentName: String?,
           withEnumNames enums: Set<String>,

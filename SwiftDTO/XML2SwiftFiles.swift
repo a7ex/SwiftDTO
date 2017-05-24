@@ -24,7 +24,6 @@ class XML2SwiftFiles {
         let pwd = (folderPath ?? workingDirectory)!
 
         generateEnums(inDirectory: pwd)
-
         generateProtocolFiles(inDirectory: pwd)
         generateClassFiles(inDirectory: pwd)
         generateClassFilesFromCoreData(inDirectory: pwd)
@@ -98,21 +97,16 @@ class XML2SwiftFiles {
     }
 
     private final func generateProtocolFiles(inDirectory outputDir: String) {
-        let typeInfos = parser.complexTypesInfos
-
-        for complexType in typeInfos {
+        for complexType in parser.complexTypesInfos where parser.protocolNames.contains(complexType.name) {
             // write protocol files to disk:
-            if parser.protocolNames.contains(complexType.name) {
-                if let content = generateProtocolFileForProtocol(complexType.name) {
-                    writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir))
-                }
-                continue
+            if let content = generateProtocolFileForProtocol(complexType.name) {
+                writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir))
             }
         }
     }
 
     private final func generateClassFiles(inDirectory outputDir: String) {
-        for complexType in parser.complexTypesInfos {
+        for complexType in parser.complexTypesInfos where !parser.protocolNames.contains(complexType.name) {
             // write DTO structs to disk:
             let protoDeclaration = parser.protocols?.first(where: { $0.name == complexType.parentName })
             if let content = generateClassFinally(nil,
@@ -126,11 +120,11 @@ class XML2SwiftFiles {
 
     private final func generateEnums(inDirectory outputDir: String) {
         for enumInfo in parser.enums {
-        if let content = generateEnumFileForEntityFinally(enumInfo.restprops,
-                                                          withName: enumInfo.name,
-                                                          enumParentName: enumInfo.typeName) {
-            writeContent(content, toFileAtPath: pathForClassName(enumInfo.name, inFolder: outputDir))
-        }
+            if let content = generateEnumFileForEntityFinally(enumInfo.restprops,
+                                                              withName: enumInfo.name,
+                                                              enumParentName: enumInfo.typeName) {
+                writeContent(content, toFileAtPath: pathForClassName(enumInfo.name, inFolder: outputDir))
+            }
         }
     }
 

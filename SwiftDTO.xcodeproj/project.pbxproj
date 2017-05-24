@@ -15,52 +15,52 @@
 		FA8207921DE2DA6C00333F8D /* ProtocolDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA82078E1DE2DA6C00333F8D /* ProtocolDeclaration.swift */; };
 		FA8207931DE2DAAB00333F8D /* DTO_Globals.swift in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA82078D1DE2DA6C00333F8D /* DTO_Globals.swift */; };
 		FA9212C21ED2FA02007A0EE3 /* String+COAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9212C11ED2FA02007A0EE3 /* String+COAdditions.swift */; };
-		FAC92BFF1ED5985600D6C015 /* AbstractPoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BD31ED5985600D6C015 /* AbstractPoiRequest.swift */; };
-		FAC92C001ED5985600D6C015 /* AddPoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BD41ED5985600D6C015 /* AddPoiRequest.swift */; };
-		FAC92C011ED5985600D6C015 /* AgeGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BD51ED5985600D6C015 /* AgeGroup.swift */; };
-		FAC92C021ED5985600D6C015 /* AgeGroupPerHousehold.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BD61ED5985600D6C015 /* AgeGroupPerHousehold.swift */; };
-		FAC92C031ED5985600D6C015 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BD71ED5985600D6C015 /* Company.swift */; };
-		FAC92C041ED5985600D6C015 /* CompanyVerificationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BD81ED5985600D6C015 /* CompanyVerificationRequest.swift */; };
-		FAC92C051ED5985600D6C015 /* CompanyVerificationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BD91ED5985600D6C015 /* CompanyVerificationResponse.swift */; };
-		FAC92C061ED5985600D6C015 /* DefaultRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BDA1ED5985600D6C015 /* DefaultRequest.swift */; };
-		FAC92C071ED5985600D6C015 /* DefaultResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BDB1ED5985600D6C015 /* DefaultResponse.swift */; };
-		FAC92C081ED5985600D6C015 /* DeletePoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BDC1ED5985600D6C015 /* DeletePoiRequest.swift */; };
-		FAC92C091ED5985600D6C015 /* DTO_Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BDD1ED5985600D6C015 /* DTO_Globals.swift */; };
-		FAC92C0A1ED5985600D6C015 /* DTOError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BDE1ED5985600D6C015 /* DTOError.swift */; };
-		FAC92C0B1ED5985600D6C015 /* GeographicPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BDF1ED5985600D6C015 /* GeographicPosition.swift */; };
-		FAC92C0C1ED5985600D6C015 /* GetPersonalDataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE01ED5985600D6C015 /* GetPersonalDataResponse.swift */; };
-		FAC92C0D1ED5985600D6C015 /* GetPersonsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE11ED5985600D6C015 /* GetPersonsRequest.swift */; };
-		FAC92C0E1ED5985600D6C015 /* GetPersonsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE21ED5985600D6C015 /* GetPersonsResponse.swift */; };
-		FAC92C0F1ED5985600D6C015 /* GetPoisResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE31ED5985600D6C015 /* GetPoisResponse.swift */; };
-		FAC92C101ED5985600D6C015 /* Graduation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE41ED5985600D6C015 /* Graduation.swift */; };
-		FAC92C111ED5985600D6C015 /* Information.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE51ED5985600D6C015 /* Information.swift */; };
-		FAC92C121ED5985600D6C015 /* LoginRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE61ED5985600D6C015 /* LoginRequest.swift */; };
-		FAC92C131ED5985600D6C015 /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE71ED5985600D6C015 /* LoginResponse.swift */; };
-		FAC92C141ED5985600D6C015 /* Occupation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE81ED5985600D6C015 /* Occupation.swift */; };
-		FAC92C151ED5985600D6C015 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BE91ED5985600D6C015 /* Person.swift */; };
-		FAC92C161ED5985600D6C015 /* PersonalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BEA1ED5985600D6C015 /* PersonalData.swift */; };
-		FAC92C171ED5985600D6C015 /* PersonalStatisticPerTrafficMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BEB1ED5985600D6C015 /* PersonalStatisticPerTrafficMode.swift */; };
-		FAC92C181ED5985600D6C015 /* Poi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BEC1ED5985600D6C015 /* Poi.swift */; };
-		FAC92C191ED5985600D6C015 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BED1ED5985600D6C015 /* Profile.swift */; };
-		FAC92C1A1ED5985600D6C015 /* QuantifiableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BEE1ED5985600D6C015 /* QuantifiableError.swift */; };
-		FAC92C1B1ED5985600D6C015 /* QuantifiableWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BEF1ED5985600D6C015 /* QuantifiableWarning.swift */; };
-		FAC92C1C1ED5985600D6C015 /* RegistrationKeyDispatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF01ED5985600D6C015 /* RegistrationKeyDispatchRequest.swift */; };
-		FAC92C1D1ED5985600D6C015 /* RegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF11ED5985600D6C015 /* RegistrationRequest.swift */; };
-		FAC92C1E1ED5985600D6C015 /* ResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF21ED5985600D6C015 /* ResetPasswordRequest.swift */; };
-		FAC92C1F1ED5985600D6C015 /* Role.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF31ED5985600D6C015 /* Role.swift */; };
-		FAC92C201ED5985600D6C015 /* RoleConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF41ED5985600D6C015 /* RoleConstant.swift */; };
-		FAC92C211ED5985600D6C015 /* SalaryLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF51ED5985600D6C015 /* SalaryLevel.swift */; };
-		FAC92C221ED5985600D6C015 /* SessionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF61ED5985600D6C015 /* SessionRequest.swift */; };
-		FAC92C231ED5985600D6C015 /* SessionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF71ED5985600D6C015 /* SessionResponse.swift */; };
-		FAC92C241ED5985600D6C015 /* TrafficMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF81ED5985600D6C015 /* TrafficMode.swift */; };
-		FAC92C251ED5985600D6C015 /* TrafficModeConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BF91ED5985600D6C015 /* TrafficModeConstant.swift */; };
-		FAC92C261ED5985600D6C015 /* TripPurpose.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BFA1ED5985600D6C015 /* TripPurpose.swift */; };
-		FAC92C271ED5985600D6C015 /* UpdatePasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BFB1ED5985600D6C015 /* UpdatePasswordRequest.swift */; };
-		FAC92C281ED5985600D6C015 /* UpdatePersonalDataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BFC1ED5985600D6C015 /* UpdatePersonalDataRequest.swift */; };
-		FAC92C291ED5985600D6C015 /* UpdatePoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BFD1ED5985600D6C015 /* UpdatePoiRequest.swift */; };
-		FAC92C2A1ED5985600D6C015 /* Warning.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92BFE1ED5985600D6C015 /* Warning.swift */; };
 		FAC92C2C1ED5A26100D6C015 /* XML2SwiftFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C2B1ED5A26100D6C015 /* XML2SwiftFiles.swift */; };
 		FAC92C2E1ED5B9A300D6C015 /* HelperFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C2D1ED5B9A300D6C015 /* HelperFunctions.swift */; };
+		FAC92C5B1ED5C54B00D6C015 /* AbstractPoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C2F1ED5C54B00D6C015 /* AbstractPoiRequest.swift */; };
+		FAC92C5C1ED5C54B00D6C015 /* AddPoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C301ED5C54B00D6C015 /* AddPoiRequest.swift */; };
+		FAC92C5D1ED5C54B00D6C015 /* AgeGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C311ED5C54B00D6C015 /* AgeGroup.swift */; };
+		FAC92C5E1ED5C54B00D6C015 /* AgeGroupPerHousehold.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C321ED5C54B00D6C015 /* AgeGroupPerHousehold.swift */; };
+		FAC92C5F1ED5C54B00D6C015 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C331ED5C54B00D6C015 /* Company.swift */; };
+		FAC92C601ED5C54B00D6C015 /* CompanyVerificationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C341ED5C54B00D6C015 /* CompanyVerificationRequest.swift */; };
+		FAC92C611ED5C54B00D6C015 /* CompanyVerificationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C351ED5C54B00D6C015 /* CompanyVerificationResponse.swift */; };
+		FAC92C621ED5C54B00D6C015 /* DefaultRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C361ED5C54B00D6C015 /* DefaultRequest.swift */; };
+		FAC92C631ED5C54B00D6C015 /* DefaultResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C371ED5C54B00D6C015 /* DefaultResponse.swift */; };
+		FAC92C641ED5C54B00D6C015 /* DeletePoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C381ED5C54B00D6C015 /* DeletePoiRequest.swift */; };
+		FAC92C651ED5C54B00D6C015 /* DTO_Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C391ED5C54B00D6C015 /* DTO_Globals.swift */; };
+		FAC92C661ED5C54B00D6C015 /* DTOError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C3A1ED5C54B00D6C015 /* DTOError.swift */; };
+		FAC92C671ED5C54B00D6C015 /* GeographicPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C3B1ED5C54B00D6C015 /* GeographicPosition.swift */; };
+		FAC92C681ED5C54B00D6C015 /* GetPersonalDataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C3C1ED5C54B00D6C015 /* GetPersonalDataResponse.swift */; };
+		FAC92C691ED5C54B00D6C015 /* GetPersonsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C3D1ED5C54B00D6C015 /* GetPersonsRequest.swift */; };
+		FAC92C6A1ED5C54B00D6C015 /* GetPersonsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C3E1ED5C54B00D6C015 /* GetPersonsResponse.swift */; };
+		FAC92C6B1ED5C54B00D6C015 /* GetPoisResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C3F1ED5C54B00D6C015 /* GetPoisResponse.swift */; };
+		FAC92C6C1ED5C54B00D6C015 /* Graduation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C401ED5C54B00D6C015 /* Graduation.swift */; };
+		FAC92C6D1ED5C54B00D6C015 /* Information.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C411ED5C54B00D6C015 /* Information.swift */; };
+		FAC92C6E1ED5C54B00D6C015 /* LoginRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C421ED5C54B00D6C015 /* LoginRequest.swift */; };
+		FAC92C6F1ED5C54B00D6C015 /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C431ED5C54B00D6C015 /* LoginResponse.swift */; };
+		FAC92C701ED5C54B00D6C015 /* Occupation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C441ED5C54B00D6C015 /* Occupation.swift */; };
+		FAC92C711ED5C54B00D6C015 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C451ED5C54B00D6C015 /* Person.swift */; };
+		FAC92C721ED5C54B00D6C015 /* PersonalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C461ED5C54B00D6C015 /* PersonalData.swift */; };
+		FAC92C731ED5C54B00D6C015 /* PersonalStatisticPerTrafficMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C471ED5C54B00D6C015 /* PersonalStatisticPerTrafficMode.swift */; };
+		FAC92C741ED5C54B00D6C015 /* Poi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C481ED5C54B00D6C015 /* Poi.swift */; };
+		FAC92C751ED5C54B00D6C015 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C491ED5C54B00D6C015 /* Profile.swift */; };
+		FAC92C761ED5C54B00D6C015 /* QuantifiableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C4A1ED5C54B00D6C015 /* QuantifiableError.swift */; };
+		FAC92C771ED5C54B00D6C015 /* QuantifiableWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C4B1ED5C54B00D6C015 /* QuantifiableWarning.swift */; };
+		FAC92C781ED5C54B00D6C015 /* RegistrationKeyDispatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C4C1ED5C54B00D6C015 /* RegistrationKeyDispatchRequest.swift */; };
+		FAC92C791ED5C54B00D6C015 /* RegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C4D1ED5C54B00D6C015 /* RegistrationRequest.swift */; };
+		FAC92C7A1ED5C54B00D6C015 /* ResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C4E1ED5C54B00D6C015 /* ResetPasswordRequest.swift */; };
+		FAC92C7B1ED5C54B00D6C015 /* Role.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C4F1ED5C54B00D6C015 /* Role.swift */; };
+		FAC92C7C1ED5C54B00D6C015 /* RoleConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C501ED5C54B00D6C015 /* RoleConstant.swift */; };
+		FAC92C7D1ED5C54B00D6C015 /* SalaryLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C511ED5C54B00D6C015 /* SalaryLevel.swift */; };
+		FAC92C7E1ED5C54B00D6C015 /* SessionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C521ED5C54B00D6C015 /* SessionRequest.swift */; };
+		FAC92C7F1ED5C54B00D6C015 /* SessionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C531ED5C54B00D6C015 /* SessionResponse.swift */; };
+		FAC92C801ED5C54B00D6C015 /* TrafficMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C541ED5C54B00D6C015 /* TrafficMode.swift */; };
+		FAC92C811ED5C54B00D6C015 /* TrafficModeConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C551ED5C54B00D6C015 /* TrafficModeConstant.swift */; };
+		FAC92C821ED5C54B00D6C015 /* TripPurpose.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C561ED5C54B00D6C015 /* TripPurpose.swift */; };
+		FAC92C831ED5C54B00D6C015 /* UpdatePasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C571ED5C54B00D6C015 /* UpdatePasswordRequest.swift */; };
+		FAC92C841ED5C54B00D6C015 /* UpdatePersonalDataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C581ED5C54B00D6C015 /* UpdatePersonalDataRequest.swift */; };
+		FAC92C851ED5C54B00D6C015 /* UpdatePoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C591ED5C54B00D6C015 /* UpdatePoiRequest.swift */; };
+		FAC92C861ED5C54B00D6C015 /* Warning.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC92C5A1ED5C54B00D6C015 /* Warning.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -95,52 +95,52 @@
 		FA9212C11ED2FA02007A0EE3 /* String+COAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+COAdditions.swift"; sourceTree = "<group>"; };
 		FAC92BD11ED597E700D6C015 /* xsd1_schema_tracking.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = xsd1_schema_tracking.xml; sourceTree = "<group>"; };
 		FAC92BD21ED597E700D6C015 /* xsd1_schema_user.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = xsd1_schema_user.xml; sourceTree = "<group>"; };
-		FAC92BD31ED5985600D6C015 /* AbstractPoiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractPoiRequest.swift; sourceTree = "<group>"; };
-		FAC92BD41ED5985600D6C015 /* AddPoiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPoiRequest.swift; sourceTree = "<group>"; };
-		FAC92BD51ED5985600D6C015 /* AgeGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeGroup.swift; sourceTree = "<group>"; };
-		FAC92BD61ED5985600D6C015 /* AgeGroupPerHousehold.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeGroupPerHousehold.swift; sourceTree = "<group>"; };
-		FAC92BD71ED5985600D6C015 /* Company.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
-		FAC92BD81ED5985600D6C015 /* CompanyVerificationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompanyVerificationRequest.swift; sourceTree = "<group>"; };
-		FAC92BD91ED5985600D6C015 /* CompanyVerificationResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompanyVerificationResponse.swift; sourceTree = "<group>"; };
-		FAC92BDA1ED5985600D6C015 /* DefaultRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultRequest.swift; sourceTree = "<group>"; };
-		FAC92BDB1ED5985600D6C015 /* DefaultResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultResponse.swift; sourceTree = "<group>"; };
-		FAC92BDC1ED5985600D6C015 /* DeletePoiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeletePoiRequest.swift; sourceTree = "<group>"; };
-		FAC92BDD1ED5985600D6C015 /* DTO_Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTO_Globals.swift; sourceTree = "<group>"; };
-		FAC92BDE1ED5985600D6C015 /* DTOError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTOError.swift; sourceTree = "<group>"; };
-		FAC92BDF1ED5985600D6C015 /* GeographicPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeographicPosition.swift; sourceTree = "<group>"; };
-		FAC92BE01ED5985600D6C015 /* GetPersonalDataResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPersonalDataResponse.swift; sourceTree = "<group>"; };
-		FAC92BE11ED5985600D6C015 /* GetPersonsRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPersonsRequest.swift; sourceTree = "<group>"; };
-		FAC92BE21ED5985600D6C015 /* GetPersonsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPersonsResponse.swift; sourceTree = "<group>"; };
-		FAC92BE31ED5985600D6C015 /* GetPoisResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPoisResponse.swift; sourceTree = "<group>"; };
-		FAC92BE41ED5985600D6C015 /* Graduation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Graduation.swift; sourceTree = "<group>"; };
-		FAC92BE51ED5985600D6C015 /* Information.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Information.swift; sourceTree = "<group>"; };
-		FAC92BE61ED5985600D6C015 /* LoginRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRequest.swift; sourceTree = "<group>"; };
-		FAC92BE71ED5985600D6C015 /* LoginResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
-		FAC92BE81ED5985600D6C015 /* Occupation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Occupation.swift; sourceTree = "<group>"; };
-		FAC92BE91ED5985600D6C015 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
-		FAC92BEA1ED5985600D6C015 /* PersonalData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalData.swift; sourceTree = "<group>"; };
-		FAC92BEB1ED5985600D6C015 /* PersonalStatisticPerTrafficMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalStatisticPerTrafficMode.swift; sourceTree = "<group>"; };
-		FAC92BEC1ED5985600D6C015 /* Poi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Poi.swift; sourceTree = "<group>"; };
-		FAC92BED1ED5985600D6C015 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
-		FAC92BEE1ED5985600D6C015 /* QuantifiableError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuantifiableError.swift; sourceTree = "<group>"; };
-		FAC92BEF1ED5985600D6C015 /* QuantifiableWarning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuantifiableWarning.swift; sourceTree = "<group>"; };
-		FAC92BF01ED5985600D6C015 /* RegistrationKeyDispatchRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationKeyDispatchRequest.swift; sourceTree = "<group>"; };
-		FAC92BF11ED5985600D6C015 /* RegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationRequest.swift; sourceTree = "<group>"; };
-		FAC92BF21ED5985600D6C015 /* ResetPasswordRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordRequest.swift; sourceTree = "<group>"; };
-		FAC92BF31ED5985600D6C015 /* Role.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Role.swift; sourceTree = "<group>"; };
-		FAC92BF41ED5985600D6C015 /* RoleConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoleConstant.swift; sourceTree = "<group>"; };
-		FAC92BF51ED5985600D6C015 /* SalaryLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SalaryLevel.swift; sourceTree = "<group>"; };
-		FAC92BF61ED5985600D6C015 /* SessionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionRequest.swift; sourceTree = "<group>"; };
-		FAC92BF71ED5985600D6C015 /* SessionResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionResponse.swift; sourceTree = "<group>"; };
-		FAC92BF81ED5985600D6C015 /* TrafficMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrafficMode.swift; sourceTree = "<group>"; };
-		FAC92BF91ED5985600D6C015 /* TrafficModeConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrafficModeConstant.swift; sourceTree = "<group>"; };
-		FAC92BFA1ED5985600D6C015 /* TripPurpose.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TripPurpose.swift; sourceTree = "<group>"; };
-		FAC92BFB1ED5985600D6C015 /* UpdatePasswordRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePasswordRequest.swift; sourceTree = "<group>"; };
-		FAC92BFC1ED5985600D6C015 /* UpdatePersonalDataRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePersonalDataRequest.swift; sourceTree = "<group>"; };
-		FAC92BFD1ED5985600D6C015 /* UpdatePoiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePoiRequest.swift; sourceTree = "<group>"; };
-		FAC92BFE1ED5985600D6C015 /* Warning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warning.swift; sourceTree = "<group>"; };
 		FAC92C2B1ED5A26100D6C015 /* XML2SwiftFiles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XML2SwiftFiles.swift; sourceTree = "<group>"; };
 		FAC92C2D1ED5B9A300D6C015 /* HelperFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelperFunctions.swift; sourceTree = "<group>"; };
+		FAC92C2F1ED5C54B00D6C015 /* AbstractPoiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractPoiRequest.swift; sourceTree = "<group>"; };
+		FAC92C301ED5C54B00D6C015 /* AddPoiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPoiRequest.swift; sourceTree = "<group>"; };
+		FAC92C311ED5C54B00D6C015 /* AgeGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeGroup.swift; sourceTree = "<group>"; };
+		FAC92C321ED5C54B00D6C015 /* AgeGroupPerHousehold.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeGroupPerHousehold.swift; sourceTree = "<group>"; };
+		FAC92C331ED5C54B00D6C015 /* Company.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
+		FAC92C341ED5C54B00D6C015 /* CompanyVerificationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompanyVerificationRequest.swift; sourceTree = "<group>"; };
+		FAC92C351ED5C54B00D6C015 /* CompanyVerificationResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompanyVerificationResponse.swift; sourceTree = "<group>"; };
+		FAC92C361ED5C54B00D6C015 /* DefaultRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultRequest.swift; sourceTree = "<group>"; };
+		FAC92C371ED5C54B00D6C015 /* DefaultResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultResponse.swift; sourceTree = "<group>"; };
+		FAC92C381ED5C54B00D6C015 /* DeletePoiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeletePoiRequest.swift; sourceTree = "<group>"; };
+		FAC92C391ED5C54B00D6C015 /* DTO_Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTO_Globals.swift; sourceTree = "<group>"; };
+		FAC92C3A1ED5C54B00D6C015 /* DTOError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DTOError.swift; sourceTree = "<group>"; };
+		FAC92C3B1ED5C54B00D6C015 /* GeographicPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeographicPosition.swift; sourceTree = "<group>"; };
+		FAC92C3C1ED5C54B00D6C015 /* GetPersonalDataResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPersonalDataResponse.swift; sourceTree = "<group>"; };
+		FAC92C3D1ED5C54B00D6C015 /* GetPersonsRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPersonsRequest.swift; sourceTree = "<group>"; };
+		FAC92C3E1ED5C54B00D6C015 /* GetPersonsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPersonsResponse.swift; sourceTree = "<group>"; };
+		FAC92C3F1ED5C54B00D6C015 /* GetPoisResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPoisResponse.swift; sourceTree = "<group>"; };
+		FAC92C401ED5C54B00D6C015 /* Graduation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Graduation.swift; sourceTree = "<group>"; };
+		FAC92C411ED5C54B00D6C015 /* Information.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Information.swift; sourceTree = "<group>"; };
+		FAC92C421ED5C54B00D6C015 /* LoginRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRequest.swift; sourceTree = "<group>"; };
+		FAC92C431ED5C54B00D6C015 /* LoginResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
+		FAC92C441ED5C54B00D6C015 /* Occupation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Occupation.swift; sourceTree = "<group>"; };
+		FAC92C451ED5C54B00D6C015 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		FAC92C461ED5C54B00D6C015 /* PersonalData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalData.swift; sourceTree = "<group>"; };
+		FAC92C471ED5C54B00D6C015 /* PersonalStatisticPerTrafficMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalStatisticPerTrafficMode.swift; sourceTree = "<group>"; };
+		FAC92C481ED5C54B00D6C015 /* Poi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Poi.swift; sourceTree = "<group>"; };
+		FAC92C491ED5C54B00D6C015 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		FAC92C4A1ED5C54B00D6C015 /* QuantifiableError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuantifiableError.swift; sourceTree = "<group>"; };
+		FAC92C4B1ED5C54B00D6C015 /* QuantifiableWarning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuantifiableWarning.swift; sourceTree = "<group>"; };
+		FAC92C4C1ED5C54B00D6C015 /* RegistrationKeyDispatchRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationKeyDispatchRequest.swift; sourceTree = "<group>"; };
+		FAC92C4D1ED5C54B00D6C015 /* RegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationRequest.swift; sourceTree = "<group>"; };
+		FAC92C4E1ED5C54B00D6C015 /* ResetPasswordRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordRequest.swift; sourceTree = "<group>"; };
+		FAC92C4F1ED5C54B00D6C015 /* Role.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Role.swift; sourceTree = "<group>"; };
+		FAC92C501ED5C54B00D6C015 /* RoleConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoleConstant.swift; sourceTree = "<group>"; };
+		FAC92C511ED5C54B00D6C015 /* SalaryLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SalaryLevel.swift; sourceTree = "<group>"; };
+		FAC92C521ED5C54B00D6C015 /* SessionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionRequest.swift; sourceTree = "<group>"; };
+		FAC92C531ED5C54B00D6C015 /* SessionResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionResponse.swift; sourceTree = "<group>"; };
+		FAC92C541ED5C54B00D6C015 /* TrafficMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrafficMode.swift; sourceTree = "<group>"; };
+		FAC92C551ED5C54B00D6C015 /* TrafficModeConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrafficModeConstant.swift; sourceTree = "<group>"; };
+		FAC92C561ED5C54B00D6C015 /* TripPurpose.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TripPurpose.swift; sourceTree = "<group>"; };
+		FAC92C571ED5C54B00D6C015 /* UpdatePasswordRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePasswordRequest.swift; sourceTree = "<group>"; };
+		FAC92C581ED5C54B00D6C015 /* UpdatePersonalDataRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePersonalDataRequest.swift; sourceTree = "<group>"; };
+		FAC92C591ED5C54B00D6C015 /* UpdatePoiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePoiRequest.swift; sourceTree = "<group>"; };
+		FAC92C5A1ED5C54B00D6C015 /* Warning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warning.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,50 +205,50 @@
 		FA82079C1DE30E2400333F8D /* GeneratedFiles */ = {
 			isa = PBXGroup;
 			children = (
-				FAC92BD31ED5985600D6C015 /* AbstractPoiRequest.swift */,
-				FAC92BD41ED5985600D6C015 /* AddPoiRequest.swift */,
-				FAC92BD51ED5985600D6C015 /* AgeGroup.swift */,
-				FAC92BD61ED5985600D6C015 /* AgeGroupPerHousehold.swift */,
-				FAC92BD71ED5985600D6C015 /* Company.swift */,
-				FAC92BD81ED5985600D6C015 /* CompanyVerificationRequest.swift */,
-				FAC92BD91ED5985600D6C015 /* CompanyVerificationResponse.swift */,
-				FAC92BDA1ED5985600D6C015 /* DefaultRequest.swift */,
-				FAC92BDB1ED5985600D6C015 /* DefaultResponse.swift */,
-				FAC92BDC1ED5985600D6C015 /* DeletePoiRequest.swift */,
-				FAC92BDD1ED5985600D6C015 /* DTO_Globals.swift */,
-				FAC92BDE1ED5985600D6C015 /* DTOError.swift */,
-				FAC92BDF1ED5985600D6C015 /* GeographicPosition.swift */,
-				FAC92BE01ED5985600D6C015 /* GetPersonalDataResponse.swift */,
-				FAC92BE11ED5985600D6C015 /* GetPersonsRequest.swift */,
-				FAC92BE21ED5985600D6C015 /* GetPersonsResponse.swift */,
-				FAC92BE31ED5985600D6C015 /* GetPoisResponse.swift */,
-				FAC92BE41ED5985600D6C015 /* Graduation.swift */,
-				FAC92BE51ED5985600D6C015 /* Information.swift */,
-				FAC92BE61ED5985600D6C015 /* LoginRequest.swift */,
-				FAC92BE71ED5985600D6C015 /* LoginResponse.swift */,
-				FAC92BE81ED5985600D6C015 /* Occupation.swift */,
-				FAC92BE91ED5985600D6C015 /* Person.swift */,
-				FAC92BEA1ED5985600D6C015 /* PersonalData.swift */,
-				FAC92BEB1ED5985600D6C015 /* PersonalStatisticPerTrafficMode.swift */,
-				FAC92BEC1ED5985600D6C015 /* Poi.swift */,
-				FAC92BED1ED5985600D6C015 /* Profile.swift */,
-				FAC92BEE1ED5985600D6C015 /* QuantifiableError.swift */,
-				FAC92BEF1ED5985600D6C015 /* QuantifiableWarning.swift */,
-				FAC92BF01ED5985600D6C015 /* RegistrationKeyDispatchRequest.swift */,
-				FAC92BF11ED5985600D6C015 /* RegistrationRequest.swift */,
-				FAC92BF21ED5985600D6C015 /* ResetPasswordRequest.swift */,
-				FAC92BF31ED5985600D6C015 /* Role.swift */,
-				FAC92BF41ED5985600D6C015 /* RoleConstant.swift */,
-				FAC92BF51ED5985600D6C015 /* SalaryLevel.swift */,
-				FAC92BF61ED5985600D6C015 /* SessionRequest.swift */,
-				FAC92BF71ED5985600D6C015 /* SessionResponse.swift */,
-				FAC92BF81ED5985600D6C015 /* TrafficMode.swift */,
-				FAC92BF91ED5985600D6C015 /* TrafficModeConstant.swift */,
-				FAC92BFA1ED5985600D6C015 /* TripPurpose.swift */,
-				FAC92BFB1ED5985600D6C015 /* UpdatePasswordRequest.swift */,
-				FAC92BFC1ED5985600D6C015 /* UpdatePersonalDataRequest.swift */,
-				FAC92BFD1ED5985600D6C015 /* UpdatePoiRequest.swift */,
-				FAC92BFE1ED5985600D6C015 /* Warning.swift */,
+				FAC92C2F1ED5C54B00D6C015 /* AbstractPoiRequest.swift */,
+				FAC92C301ED5C54B00D6C015 /* AddPoiRequest.swift */,
+				FAC92C311ED5C54B00D6C015 /* AgeGroup.swift */,
+				FAC92C321ED5C54B00D6C015 /* AgeGroupPerHousehold.swift */,
+				FAC92C331ED5C54B00D6C015 /* Company.swift */,
+				FAC92C341ED5C54B00D6C015 /* CompanyVerificationRequest.swift */,
+				FAC92C351ED5C54B00D6C015 /* CompanyVerificationResponse.swift */,
+				FAC92C361ED5C54B00D6C015 /* DefaultRequest.swift */,
+				FAC92C371ED5C54B00D6C015 /* DefaultResponse.swift */,
+				FAC92C381ED5C54B00D6C015 /* DeletePoiRequest.swift */,
+				FAC92C391ED5C54B00D6C015 /* DTO_Globals.swift */,
+				FAC92C3A1ED5C54B00D6C015 /* DTOError.swift */,
+				FAC92C3B1ED5C54B00D6C015 /* GeographicPosition.swift */,
+				FAC92C3C1ED5C54B00D6C015 /* GetPersonalDataResponse.swift */,
+				FAC92C3D1ED5C54B00D6C015 /* GetPersonsRequest.swift */,
+				FAC92C3E1ED5C54B00D6C015 /* GetPersonsResponse.swift */,
+				FAC92C3F1ED5C54B00D6C015 /* GetPoisResponse.swift */,
+				FAC92C401ED5C54B00D6C015 /* Graduation.swift */,
+				FAC92C411ED5C54B00D6C015 /* Information.swift */,
+				FAC92C421ED5C54B00D6C015 /* LoginRequest.swift */,
+				FAC92C431ED5C54B00D6C015 /* LoginResponse.swift */,
+				FAC92C441ED5C54B00D6C015 /* Occupation.swift */,
+				FAC92C451ED5C54B00D6C015 /* Person.swift */,
+				FAC92C461ED5C54B00D6C015 /* PersonalData.swift */,
+				FAC92C471ED5C54B00D6C015 /* PersonalStatisticPerTrafficMode.swift */,
+				FAC92C481ED5C54B00D6C015 /* Poi.swift */,
+				FAC92C491ED5C54B00D6C015 /* Profile.swift */,
+				FAC92C4A1ED5C54B00D6C015 /* QuantifiableError.swift */,
+				FAC92C4B1ED5C54B00D6C015 /* QuantifiableWarning.swift */,
+				FAC92C4C1ED5C54B00D6C015 /* RegistrationKeyDispatchRequest.swift */,
+				FAC92C4D1ED5C54B00D6C015 /* RegistrationRequest.swift */,
+				FAC92C4E1ED5C54B00D6C015 /* ResetPasswordRequest.swift */,
+				FAC92C4F1ED5C54B00D6C015 /* Role.swift */,
+				FAC92C501ED5C54B00D6C015 /* RoleConstant.swift */,
+				FAC92C511ED5C54B00D6C015 /* SalaryLevel.swift */,
+				FAC92C521ED5C54B00D6C015 /* SessionRequest.swift */,
+				FAC92C531ED5C54B00D6C015 /* SessionResponse.swift */,
+				FAC92C541ED5C54B00D6C015 /* TrafficMode.swift */,
+				FAC92C551ED5C54B00D6C015 /* TrafficModeConstant.swift */,
+				FAC92C561ED5C54B00D6C015 /* TripPurpose.swift */,
+				FAC92C571ED5C54B00D6C015 /* UpdatePasswordRequest.swift */,
+				FAC92C581ED5C54B00D6C015 /* UpdatePersonalDataRequest.swift */,
+				FAC92C591ED5C54B00D6C015 /* UpdatePoiRequest.swift */,
+				FAC92C5A1ED5C54B00D6C015 /* Warning.swift */,
 			);
 			path = GeneratedFiles;
 			sourceTree = "<group>";
@@ -338,57 +338,57 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAC92C081ED5985600D6C015 /* DeletePoiRequest.swift in Sources */,
+				FAC92C711ED5C54B00D6C015 /* Person.swift in Sources */,
+				FAC92C6E1ED5C54B00D6C015 /* LoginRequest.swift in Sources */,
+				FAC92C651ED5C54B00D6C015 /* DTO_Globals.swift in Sources */,
+				FAC92C621ED5C54B00D6C015 /* DefaultRequest.swift in Sources */,
+				FAC92C821ED5C54B00D6C015 /* TripPurpose.swift in Sources */,
+				FAC92C831ED5C54B00D6C015 /* UpdatePasswordRequest.swift in Sources */,
+				FAC92C5B1ED5C54B00D6C015 /* AbstractPoiRequest.swift in Sources */,
 				FA9212C21ED2FA02007A0EE3 /* String+COAdditions.swift in Sources */,
-				FAC92C1C1ED5985600D6C015 /* RegistrationKeyDispatchRequest.swift in Sources */,
-				FAC92C0F1ED5985600D6C015 /* GetPoisResponse.swift in Sources */,
 				FA82078F1DE2DA6C00333F8D /* RESTProperty.swift in Sources */,
-				FAC92C0B1ED5985600D6C015 /* GeographicPosition.swift in Sources */,
-				FAC92C221ED5985600D6C015 /* SessionRequest.swift in Sources */,
-				FAC92BFF1ED5985600D6C015 /* AbstractPoiRequest.swift in Sources */,
+				FAC92C731ED5C54B00D6C015 /* PersonalStatisticPerTrafficMode.swift in Sources */,
+				FAC92C6F1ED5C54B00D6C015 /* LoginResponse.swift in Sources */,
+				FAC92C631ED5C54B00D6C015 /* DefaultResponse.swift in Sources */,
+				FAC92C661ED5C54B00D6C015 /* DTOError.swift in Sources */,
+				FAC92C7F1ED5C54B00D6C015 /* SessionResponse.swift in Sources */,
+				FAC92C701ED5C54B00D6C015 /* Occupation.swift in Sources */,
 				FAC92C2C1ED5A26100D6C015 /* XML2SwiftFiles.swift in Sources */,
-				FAC92C2A1ED5985600D6C015 /* Warning.swift in Sources */,
-				FAC92C131ED5985600D6C015 /* LoginResponse.swift in Sources */,
-				FAC92C211ED5985600D6C015 /* SalaryLevel.swift in Sources */,
-				FAC92C031ED5985600D6C015 /* Company.swift in Sources */,
-				FAC92C071ED5985600D6C015 /* DefaultResponse.swift in Sources */,
-				FAC92C091ED5985600D6C015 /* DTO_Globals.swift in Sources */,
-				FAC92C0C1ED5985600D6C015 /* GetPersonalDataResponse.swift in Sources */,
-				FAC92C281ED5985600D6C015 /* UpdatePersonalDataRequest.swift in Sources */,
-				FAC92C1D1ED5985600D6C015 /* RegistrationRequest.swift in Sources */,
-				FAC92C041ED5985600D6C015 /* CompanyVerificationRequest.swift in Sources */,
-				FAC92C011ED5985600D6C015 /* AgeGroup.swift in Sources */,
-				FAC92C271ED5985600D6C015 /* UpdatePasswordRequest.swift in Sources */,
-				FAC92C231ED5985600D6C015 /* SessionResponse.swift in Sources */,
-				FAC92C171ED5985600D6C015 /* PersonalStatisticPerTrafficMode.swift in Sources */,
-				FAC92C291ED5985600D6C015 /* UpdatePoiRequest.swift in Sources */,
+				FAC92C5E1ED5C54B00D6C015 /* AgeGroupPerHousehold.swift in Sources */,
+				FAC92C671ED5C54B00D6C015 /* GeographicPosition.swift in Sources */,
+				FAC92C6B1ED5C54B00D6C015 /* GetPoisResponse.swift in Sources */,
+				FAC92C7D1ED5C54B00D6C015 /* SalaryLevel.swift in Sources */,
+				FAC92C861ED5C54B00D6C015 /* Warning.swift in Sources */,
+				FAC92C641ED5C54B00D6C015 /* DeletePoiRequest.swift in Sources */,
+				FAC92C761ED5C54B00D6C015 /* QuantifiableError.swift in Sources */,
+				FAC92C751ED5C54B00D6C015 /* Profile.swift in Sources */,
+				FAC92C771ED5C54B00D6C015 /* QuantifiableWarning.swift in Sources */,
+				FAC92C6A1ED5C54B00D6C015 /* GetPersonsResponse.swift in Sources */,
+				FAC92C741ED5C54B00D6C015 /* Poi.swift in Sources */,
+				FAC92C811ED5C54B00D6C015 /* TrafficModeConstant.swift in Sources */,
+				FAC92C6C1ED5C54B00D6C015 /* Graduation.swift in Sources */,
+				FAC92C841ED5C54B00D6C015 /* UpdatePersonalDataRequest.swift in Sources */,
 				FA8207851DE2D7DF00333F8D /* main.swift in Sources */,
-				FAC92C0A1ED5985600D6C015 /* DTOError.swift in Sources */,
-				FAC92C101ED5985600D6C015 /* Graduation.swift in Sources */,
+				FAC92C5D1ED5C54B00D6C015 /* AgeGroup.swift in Sources */,
+				FAC92C781ED5C54B00D6C015 /* RegistrationKeyDispatchRequest.swift in Sources */,
+				FAC92C7A1ED5C54B00D6C015 /* ResetPasswordRequest.swift in Sources */,
+				FAC92C851ED5C54B00D6C015 /* UpdatePoiRequest.swift in Sources */,
+				FAC92C7E1ED5C54B00D6C015 /* SessionRequest.swift in Sources */,
 				FA8207921DE2DA6C00333F8D /* ProtocolDeclaration.swift in Sources */,
-				FAC92C021ED5985600D6C015 /* AgeGroupPerHousehold.swift in Sources */,
-				FAC92C1F1ED5985600D6C015 /* Role.swift in Sources */,
-				FAC92C151ED5985600D6C015 /* Person.swift in Sources */,
-				FAC92C061ED5985600D6C015 /* DefaultRequest.swift in Sources */,
-				FAC92C1A1ED5985600D6C015 /* QuantifiableError.swift in Sources */,
-				FAC92C121ED5985600D6C015 /* LoginRequest.swift in Sources */,
-				FAC92C181ED5985600D6C015 /* Poi.swift in Sources */,
-				FAC92C111ED5985600D6C015 /* Information.swift in Sources */,
-				FAC92C201ED5985600D6C015 /* RoleConstant.swift in Sources */,
+				FAC92C721ED5C54B00D6C015 /* PersonalData.swift in Sources */,
+				FAC92C791ED5C54B00D6C015 /* RegistrationRequest.swift in Sources */,
 				FA8207901DE2DA6C00333F8D /* XMLModelParser.swift in Sources */,
-				FAC92C191ED5985600D6C015 /* Profile.swift in Sources */,
-				FAC92C251ED5985600D6C015 /* TrafficModeConstant.swift in Sources */,
-				FAC92C0D1ED5985600D6C015 /* GetPersonsRequest.swift in Sources */,
-				FAC92C161ED5985600D6C015 /* PersonalData.swift in Sources */,
-				FAC92C261ED5985600D6C015 /* TripPurpose.swift in Sources */,
-				FAC92C001ED5985600D6C015 /* AddPoiRequest.swift in Sources */,
-				FAC92C241ED5985600D6C015 /* TrafficMode.swift in Sources */,
-				FAC92C141ED5985600D6C015 /* Occupation.swift in Sources */,
-				FAC92C1E1ED5985600D6C015 /* ResetPasswordRequest.swift in Sources */,
+				FAC92C6D1ED5C54B00D6C015 /* Information.swift in Sources */,
+				FAC92C601ED5C54B00D6C015 /* CompanyVerificationRequest.swift in Sources */,
+				FAC92C5C1ED5C54B00D6C015 /* AddPoiRequest.swift in Sources */,
+				FAC92C611ED5C54B00D6C015 /* CompanyVerificationResponse.swift in Sources */,
 				FAC92C2E1ED5B9A300D6C015 /* HelperFunctions.swift in Sources */,
-				FAC92C1B1ED5985600D6C015 /* QuantifiableWarning.swift in Sources */,
-				FAC92C051ED5985600D6C015 /* CompanyVerificationResponse.swift in Sources */,
-				FAC92C0E1ED5985600D6C015 /* GetPersonsResponse.swift in Sources */,
+				FAC92C691ED5C54B00D6C015 /* GetPersonsRequest.swift in Sources */,
+				FAC92C801ED5C54B00D6C015 /* TrafficMode.swift in Sources */,
+				FAC92C5F1ED5C54B00D6C015 /* Company.swift in Sources */,
+				FAC92C681ED5C54B00D6C015 /* GetPersonalDataResponse.swift in Sources */,
+				FAC92C7C1ED5C54B00D6C015 /* RoleConstant.swift in Sources */,
+				FAC92C7B1ED5C54B00D6C015 /* Role.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

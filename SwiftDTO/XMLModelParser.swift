@@ -147,6 +147,7 @@ class XMLModelParser {
         let simpleTypes = children.filter { $0.name == "xs:simpleType" } // soap/wsdl
 
         enumNames = Set<String>()
+        protocols = [ProtocolDeclaration]()
 
         parseEnumFilesInWSDL(with: simpleTypes)
         parseComplexTypesInWSDL(with: complexTypes)
@@ -156,20 +157,17 @@ class XMLModelParser {
     private final func parseCoreDataXML(with entities: [XMLNode]) {
 
         var primitiveProxies = Set<String>()
-        for thisEntity in entities {
-            if thisEntity.isPrimitiveProxy {
-                if let entityName = thisEntity.attributeStringValue(for: "name") {
-                    primitiveProxies.insert(entityName)
-                }
+
+        for thisEntity in entities where thisEntity.isPrimitiveProxy {
+            if let entityName = thisEntity.attributeStringValue(for: "name") {
+                primitiveProxies.insert(entityName)
             }
         }
         primitiveProxyNames = primitiveProxies
 
-        for thisEntity in entities {
-            if thisEntity.isEnum {
-                if let entityName = thisEntity.attributeStringValue(for: "name") {
-                    enumNames.insert(entityName)
-                }
+        for thisEntity in entities where thisEntity.isEnum {
+            if let entityName = thisEntity.attributeStringValue(for: "name") {
+                enumNames.insert(entityName)
             }
         }
 
@@ -179,7 +177,7 @@ class XMLModelParser {
             protocolNames.insert(className)
         }
 
-        protocols = [ProtocolDeclaration]()
+        var newProts = [ProtocolDeclaration]()
         for thisEntity in entities {
             guard thisEntity.attributeStringValue(for: "isAbstract") != "YES",
                 let unwrappedEntity = thisEntity as? XMLElement else { continue }
@@ -189,19 +187,19 @@ class XMLModelParser {
                                                       withProtocolNames: protocolNames,
                                                       withProtocols: nil,
                                                       withPrimitiveProxyNames: primitiveProxyNames) {
-                protocols?.append(thisProtocol)
+                newProts.append(thisProtocol)
             }
         }
 
         for thisEntity in entities {
             guard let className = thisEntity.attributeStringValue(for: "name"),
                 let protocolName = thisEntity.attributeStringValue(for: "parentEntity") else { continue }
-            let parentProtocol = (protocols?.filter { $0.name == protocolName })?.first
+            let parentProtocol = newProts.first(where: { $0.name == protocolName })
             parentProtocol?.addConsumer(structName: className)
         }
 
         // now do the first step again in order to have the information of all other protocols
-        var newProts = [ProtocolDeclaration]()
+
         for thisEntity in entities {
             guard thisEntity.attributeStringValue(for: "isAbstract") != "YES",
                 let unwrappedEntity = thisEntity as? XMLElement else { continue }
@@ -211,16 +209,15 @@ class XMLModelParser {
                                                       withProtocolNames: protocolNames,
                                                       withProtocols: protocols,
                                                       withPrimitiveProxyNames: primitiveProxyNames) {
-                newProts.append(thisProtocol)
+                protocols?.append(thisProtocol)
             }
         }
         for thisEntity in entities {
             guard let className = thisEntity.attributeStringValue(for: "name"),
                 let protocolName = thisEntity.attributeStringValue(for: "parentEntity") else { continue }
-            let parentProtocol = newProts.first(where: { $0.name == protocolName })
+            let parentProtocol = protocols?.first(where: { $0.name == protocolName })
             parentProtocol?.addConsumer(structName: className)
         }
-        protocols = newProts
     }
 
     private final func parseEnumFilesInWSDL(with simpleTypes: [XMLNode]) {
@@ -311,7 +308,6 @@ class XMLModelParser {
         }
 
         // go through all complex types to create ProtocolDeclarations
-        protocols = [ProtocolDeclaration]()
         for complexType in complexTypesInfos {
             let thisProtocol = ProtocolDeclaration(name: complexType.name,
                                                    restProperties: complexType.restprops,

@@ -14,6 +14,7 @@ class ProtocolDeclaration {
     let restProperties: [RESTProperty]
     var consumers = Set<String>()
 
+    // wsdl XML uses this
     init(name: String,
          restProperties: [RESTProperty] = [RESTProperty](),
          withParentRelations parentRelations: [ParentRelation]) {
@@ -22,6 +23,7 @@ class ProtocolDeclaration {
         parentName = parentRelations.first(where: { $0.subclass == name })?.parentClass ?? ""
     }
 
+    // coreData XML uses this
     init?(xmlElement: XMLElement,
           isEnum: Bool,
           withEnumNames enums: Set<String>,
