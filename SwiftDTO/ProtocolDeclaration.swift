@@ -19,10 +19,11 @@ class ProtocolDeclaration {
          withEnumNames enums: Set<String>,
          withProtocolNames protocolNames: Set<String>,
          withProtocols protocols: [ProtocolDeclaration]?,
-         withPrimitiveProxyNames primitiveProxyNames: Set<String>) {
+         withPrimitiveProxyNames primitiveProxyNames: Set<String>,
+         withParentRelations parentRelations: [ParentRelation]) {
         self.name = name
         self.restProperties = restProperties
-        parentName = ""
+        parentName = parentRelations.first(where: { $0.subclass == name })?.parentClass ?? ""
     }
 
     init?(xmlElement: XMLElement,

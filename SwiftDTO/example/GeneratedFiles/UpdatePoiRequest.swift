@@ -11,14 +11,18 @@
 
 import Foundation
 
-public struct UpdatePoiRequest: AbstractPoiRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct UpdatePoiRequest: AbstractPoiRequest, SessionRequest, DefaultRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
     public let poi: Poi?
+    public let session: String?
+    public let locale: String?
 
     // Default initializer:
-    public init(poi: Poi?) {
+    public init(poi: Poi?, session: String?, locale: String?) {
         self.poi = poi
+        self.session = session
+        self.locale = locale
     }
 
     // Object creation using JSON dictionary representation from NSJSONSerializer:
@@ -26,6 +30,8 @@ public struct UpdatePoiRequest: AbstractPoiRequest, JSOBJSerializable, Dictionar
         guard let jsonData = jsonData else { return nil }
         if let val = Poi(jsonData: jsonData["poi"] as? JSOBJ) { self.poi = val }
         else { poi = nil }
+        session = stringFromAny(jsonData["session"])
+        locale = stringFromAny(jsonData["locale"])
 
         #if DEBUG
             DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: "UpdatePoiRequest")
@@ -34,13 +40,15 @@ public struct UpdatePoiRequest: AbstractPoiRequest, JSOBJSerializable, Dictionar
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["poi"])
+        return Set(["poi", "session", "locale"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
         if poi != nil { jsonData["poi"] = poi!.jsobjRepresentation }
+        if session != nil { jsonData["session"] = session! }
+        if locale != nil { jsonData["locale"] = locale! }
 
         return jsonData
     }
@@ -54,6 +62,12 @@ public struct UpdatePoiRequest: AbstractPoiRequest, JSOBJSerializable, Dictionar
 
         if let poi = poi { returnString.append("    \(prefix)\"poi\": \("\(poi.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"poi\": null,\n") }
+
+        if let session = session { returnString.append("    \(prefix)\"session\": \"\(session)\",\n") }
+        else if printNulls { returnString.append("    \(prefix)\"session\": null,\n") }
+
+        if let locale = locale { returnString.append("    \(prefix)\"locale\": \"\(locale)\",\n") }
+        else if printNulls { returnString.append("    \(prefix)\"locale\": null,\n") }
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))

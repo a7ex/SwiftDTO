@@ -38,7 +38,7 @@ if CommandLine.arguments.count < 3 {
 }
 
 //let homeFolderName = "alexapprime"
-let homeFolderName = "alex"
+let homeFolderName = "alexapprime"
 
 //let path = CommandLine.arguments[2]
 //let path = "/Users/alexapprime/__NoBackup/user.xml"

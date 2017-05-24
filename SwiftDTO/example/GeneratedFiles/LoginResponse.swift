@@ -11,10 +11,12 @@
 
 import Foundation
 
-public struct LoginResponse: SessionResponse, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct LoginResponse: SessionResponse, DefaultResponse, Information, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
     public let sessionValidityDate: Date?
+    public let errs: QuantifiableError?
+    public let wrngs: QuantifiableWarning?
 
     public let passwordUpdateRecommended: Bool?
     public let personalDataUpdateRecommended: Bool?
@@ -22,8 +24,10 @@ public struct LoginResponse: SessionResponse, JSOBJSerializable, DictionaryConve
     public let session: String?
 
     // Default initializer:
-    public init(sessionValidityDate: Date?, passwordUpdateRecommended: Bool?, personalDataUpdateRecommended: Bool?, profile: Profile?, session: String?) {
+    public init(sessionValidityDate: Date?, errs: QuantifiableError?, wrngs: QuantifiableWarning?, passwordUpdateRecommended: Bool?, personalDataUpdateRecommended: Bool?, profile: Profile?, session: String?) {
         self.sessionValidityDate = sessionValidityDate
+        self.errs = errs
+        self.wrngs = wrngs
         self.passwordUpdateRecommended = passwordUpdateRecommended
         self.personalDataUpdateRecommended = personalDataUpdateRecommended
         self.profile = profile
@@ -34,6 +38,10 @@ public struct LoginResponse: SessionResponse, JSOBJSerializable, DictionaryConve
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
         sessionValidityDate = dateFromAny(jsonData["sessionValidityDate"])
+        if let val = QuantifiableError(jsonData: jsonData["errs"] as? JSOBJ) { self.errs = val }
+        else { errs = nil }
+        if let val = QuantifiableWarning(jsonData: jsonData["wrngs"] as? JSOBJ) { self.wrngs = val }
+        else { wrngs = nil }
 
         passwordUpdateRecommended = boolFromAny(jsonData["passwordUpdateRecommended"])
         personalDataUpdateRecommended = boolFromAny(jsonData["personalDataUpdateRecommended"])
@@ -48,13 +56,15 @@ public struct LoginResponse: SessionResponse, JSOBJSerializable, DictionaryConve
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["sessionValidityDate", "passwordUpdateRecommended", "personalDataUpdateRecommended", "profile", "session"])
+        return Set(["sessionValidityDate", "errs", "wrngs", "passwordUpdateRecommended", "personalDataUpdateRecommended", "profile", "session"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
         if sessionValidityDate != nil { jsonData["sessionValidityDate"] = stringFromDate(sessionValidityDate!) }
+        if errs != nil { jsonData["errs"] = errs!.jsobjRepresentation }
+        if wrngs != nil { jsonData["wrngs"] = wrngs!.jsobjRepresentation }
 
         if passwordUpdateRecommended != nil { jsonData["passwordUpdateRecommended"] = passwordUpdateRecommended! }
         if personalDataUpdateRecommended != nil { jsonData["personalDataUpdateRecommended"] = personalDataUpdateRecommended! }
@@ -72,6 +82,12 @@ public struct LoginResponse: SessionResponse, JSOBJSerializable, DictionaryConve
 
         if let sessionValidityDate = sessionValidityDate { returnString.append("    \(prefix)\"sessionValidityDate\": \"\(stringFromDate(sessionValidityDate))\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"sessionValidityDate\": null,\n") }
+
+        if let errs = errs { returnString.append("    \(prefix)\"errs\": \("\(errs.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"errs\": null,\n") }
+
+        if let wrngs = wrngs { returnString.append("    \(prefix)\"wrngs\": \("\(wrngs.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"wrngs\": null,\n") }
 
         if let passwordUpdateRecommended = passwordUpdateRecommended { returnString.append("    \(prefix)\"passwordUpdateRecommended\": \(passwordUpdateRecommended),\n") }
         else if printNulls { returnString.append("    \(prefix)\"passwordUpdateRecommended\": null,\n") }

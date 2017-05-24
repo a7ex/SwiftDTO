@@ -11,19 +11,29 @@
 
 import Foundation
 
-public struct CompanyVerificationResponse: DefaultResponse, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct CompanyVerificationResponse: DefaultResponse, Information, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
+    public let errs: QuantifiableError?
+    public let wrngs: QuantifiableWarning?
+
     public let regKey: String?
 
     // Default initializer:
-    public init(regKey: String?) {
+    public init(errs: QuantifiableError?, wrngs: QuantifiableWarning?, regKey: String?) {
+        self.errs = errs
+        self.wrngs = wrngs
         self.regKey = regKey
     }
 
     // Object creation using JSON dictionary representation from NSJSONSerializer:
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
+        if let val = QuantifiableError(jsonData: jsonData["errs"] as? JSOBJ) { self.errs = val }
+        else { errs = nil }
+        if let val = QuantifiableWarning(jsonData: jsonData["wrngs"] as? JSOBJ) { self.wrngs = val }
+        else { wrngs = nil }
+
         regKey = stringFromAny(jsonData["regKey"])
 
         #if DEBUG
@@ -33,12 +43,15 @@ public struct CompanyVerificationResponse: DefaultResponse, JSOBJSerializable, D
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["regKey"])
+        return Set(["errs", "wrngs", "regKey"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
+        if errs != nil { jsonData["errs"] = errs!.jsobjRepresentation }
+        if wrngs != nil { jsonData["wrngs"] = wrngs!.jsobjRepresentation }
+
         if regKey != nil { jsonData["regKey"] = regKey! }
         return jsonData
     }
@@ -49,6 +62,12 @@ public struct CompanyVerificationResponse: DefaultResponse, JSOBJSerializable, D
     // pretty print JSON string representation:
     public func jsonString(paddingPrefix prefix: String = "", printNulls: Bool = false) -> String {
         var returnString = "{\n"
+
+        if let errs = errs { returnString.append("    \(prefix)\"errs\": \("\(errs.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"errs\": null,\n") }
+
+        if let wrngs = wrngs { returnString.append("    \(prefix)\"wrngs\": \("\(wrngs.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"wrngs\": null,\n") }
 
         if let regKey = regKey { returnString.append("    \(prefix)\"regKey\": \"\(regKey)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"regKey\": null,\n") }

@@ -11,16 +11,20 @@
 
 import Foundation
 
-public struct GetPersonalDataResponse: SessionResponse, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct GetPersonalDataResponse: SessionResponse, DefaultResponse, Information, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
     public let sessionValidityDate: Date?
+    public let errs: QuantifiableError?
+    public let wrngs: QuantifiableWarning?
 
     public let personalData: PersonalData?
 
     // Default initializer:
-    public init(sessionValidityDate: Date?, personalData: PersonalData?) {
+    public init(sessionValidityDate: Date?, errs: QuantifiableError?, wrngs: QuantifiableWarning?, personalData: PersonalData?) {
         self.sessionValidityDate = sessionValidityDate
+        self.errs = errs
+        self.wrngs = wrngs
         self.personalData = personalData
     }
 
@@ -28,6 +32,10 @@ public struct GetPersonalDataResponse: SessionResponse, JSOBJSerializable, Dicti
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
         sessionValidityDate = dateFromAny(jsonData["sessionValidityDate"])
+        if let val = QuantifiableError(jsonData: jsonData["errs"] as? JSOBJ) { self.errs = val }
+        else { errs = nil }
+        if let val = QuantifiableWarning(jsonData: jsonData["wrngs"] as? JSOBJ) { self.wrngs = val }
+        else { wrngs = nil }
 
         if let val = PersonalData(jsonData: jsonData["personalData"] as? JSOBJ) { self.personalData = val }
         else { personalData = nil }
@@ -39,13 +47,15 @@ public struct GetPersonalDataResponse: SessionResponse, JSOBJSerializable, Dicti
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["sessionValidityDate", "personalData"])
+        return Set(["sessionValidityDate", "errs", "wrngs", "personalData"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
         if sessionValidityDate != nil { jsonData["sessionValidityDate"] = stringFromDate(sessionValidityDate!) }
+        if errs != nil { jsonData["errs"] = errs!.jsobjRepresentation }
+        if wrngs != nil { jsonData["wrngs"] = wrngs!.jsobjRepresentation }
 
         if personalData != nil { jsonData["personalData"] = personalData!.jsobjRepresentation }
         return jsonData
@@ -60,6 +70,12 @@ public struct GetPersonalDataResponse: SessionResponse, JSOBJSerializable, Dicti
 
         if let sessionValidityDate = sessionValidityDate { returnString.append("    \(prefix)\"sessionValidityDate\": \"\(stringFromDate(sessionValidityDate))\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"sessionValidityDate\": null,\n") }
+
+        if let errs = errs { returnString.append("    \(prefix)\"errs\": \("\(errs.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"errs\": null,\n") }
+
+        if let wrngs = wrngs { returnString.append("    \(prefix)\"wrngs\": \("\(wrngs.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"wrngs\": null,\n") }
 
         if let personalData = personalData { returnString.append("    \(prefix)\"personalData\": \("\(personalData.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"personalData\": null,\n") }

@@ -11,16 +11,18 @@
 
 import Foundation
 
-public struct UpdatePersonalDataRequest: SessionRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct UpdatePersonalDataRequest: SessionRequest, DefaultRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
     public let session: String?
+    public let locale: String?
 
     public let personalData: PersonalData?
 
     // Default initializer:
-    public init(session: String?, personalData: PersonalData?) {
+    public init(session: String?, locale: String?, personalData: PersonalData?) {
         self.session = session
+        self.locale = locale
         self.personalData = personalData
     }
 
@@ -28,6 +30,7 @@ public struct UpdatePersonalDataRequest: SessionRequest, JSOBJSerializable, Dict
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
         session = stringFromAny(jsonData["session"])
+        locale = stringFromAny(jsonData["locale"])
 
         if let val = PersonalData(jsonData: jsonData["personalData"] as? JSOBJ) { self.personalData = val }
         else { personalData = nil }
@@ -39,13 +42,14 @@ public struct UpdatePersonalDataRequest: SessionRequest, JSOBJSerializable, Dict
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["session", "personalData"])
+        return Set(["session", "locale", "personalData"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
         if session != nil { jsonData["session"] = session! }
+        if locale != nil { jsonData["locale"] = locale! }
 
         if personalData != nil { jsonData["personalData"] = personalData!.jsobjRepresentation }
         return jsonData
@@ -60,6 +64,9 @@ public struct UpdatePersonalDataRequest: SessionRequest, JSOBJSerializable, Dict
 
         if let session = session { returnString.append("    \(prefix)\"session\": \"\(session)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"session\": null,\n") }
+
+        if let locale = locale { returnString.append("    \(prefix)\"locale\": \"\(locale)\",\n") }
+        else if printNulls { returnString.append("    \(prefix)\"locale\": null,\n") }
 
         if let personalData = personalData { returnString.append("    \(prefix)\"personalData\": \("\(personalData.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"personalData\": null,\n") }

@@ -11,10 +11,11 @@
 
 import Foundation
 
-public struct RegistrationKeyDispatchRequest: SessionRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct RegistrationKeyDispatchRequest: SessionRequest, DefaultRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
     public let session: String?
+    public let locale: String?
 
     public let noOfRegKeys: Int?
     public let qtyPerRegKey: Int?
@@ -23,8 +24,9 @@ public struct RegistrationKeyDispatchRequest: SessionRequest, JSOBJSerializable,
     public let rcptsInCc: String?
 
     // Default initializer:
-    public init(session: String?, noOfRegKeys: Int?, qtyPerRegKey: Int?, rcpts: String?, rcptsInBcc: String?, rcptsInCc: String?) {
+    public init(session: String?, locale: String?, noOfRegKeys: Int?, qtyPerRegKey: Int?, rcpts: String?, rcptsInBcc: String?, rcptsInCc: String?) {
         self.session = session
+        self.locale = locale
         self.noOfRegKeys = noOfRegKeys
         self.qtyPerRegKey = qtyPerRegKey
         self.rcpts = rcpts
@@ -36,6 +38,7 @@ public struct RegistrationKeyDispatchRequest: SessionRequest, JSOBJSerializable,
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
         session = stringFromAny(jsonData["session"])
+        locale = stringFromAny(jsonData["locale"])
 
         noOfRegKeys = jsonData["noOfRegKeys"] as? Int
         qtyPerRegKey = jsonData["qtyPerRegKey"] as? Int
@@ -50,13 +53,14 @@ public struct RegistrationKeyDispatchRequest: SessionRequest, JSOBJSerializable,
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["session", "noOfRegKeys", "qtyPerRegKey", "rcpts", "rcptsInBcc", "rcptsInCc"])
+        return Set(["session", "locale", "noOfRegKeys", "qtyPerRegKey", "rcpts", "rcptsInBcc", "rcptsInCc"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
         if session != nil { jsonData["session"] = session! }
+        if locale != nil { jsonData["locale"] = locale! }
 
         if noOfRegKeys != nil { jsonData["noOfRegKeys"] = noOfRegKeys! }
         if qtyPerRegKey != nil { jsonData["qtyPerRegKey"] = qtyPerRegKey! }
@@ -75,6 +79,9 @@ public struct RegistrationKeyDispatchRequest: SessionRequest, JSOBJSerializable,
 
         if let session = session { returnString.append("    \(prefix)\"session\": \"\(session)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"session\": null,\n") }
+
+        if let locale = locale { returnString.append("    \(prefix)\"locale\": \"\(locale)\",\n") }
+        else if printNulls { returnString.append("    \(prefix)\"locale\": null,\n") }
 
         if let noOfRegKeys = noOfRegKeys { returnString.append("    \(prefix)\"noOfRegKeys\": \(noOfRegKeys),\n") }
         else if printNulls { returnString.append("    \(prefix)\"noOfRegKeys\": null,\n") }

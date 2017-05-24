@@ -11,16 +11,18 @@
 
 import Foundation
 
-public struct DeletePoiRequest: SessionRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct DeletePoiRequest: SessionRequest, DefaultRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
     public let session: String?
+    public let locale: String?
 
     public let id: Int?
 
     // Default initializer:
-    public init(session: String?, id: Int?) {
+    public init(session: String?, locale: String?, id: Int?) {
         self.session = session
+        self.locale = locale
         self.id = id
     }
 
@@ -28,6 +30,7 @@ public struct DeletePoiRequest: SessionRequest, JSOBJSerializable, DictionaryCon
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
         session = stringFromAny(jsonData["session"])
+        locale = stringFromAny(jsonData["locale"])
 
         id = jsonData["id"] as? Int
 
@@ -38,13 +41,14 @@ public struct DeletePoiRequest: SessionRequest, JSOBJSerializable, DictionaryCon
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["session", "id"])
+        return Set(["session", "locale", "id"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
         if session != nil { jsonData["session"] = session! }
+        if locale != nil { jsonData["locale"] = locale! }
 
         if id != nil { jsonData["id"] = id! }
         return jsonData
@@ -59,6 +63,9 @@ public struct DeletePoiRequest: SessionRequest, JSOBJSerializable, DictionaryCon
 
         if let session = session { returnString.append("    \(prefix)\"session\": \"\(session)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"session\": null,\n") }
+
+        if let locale = locale { returnString.append("    \(prefix)\"locale\": \"\(locale)\",\n") }
+        else if printNulls { returnString.append("    \(prefix)\"locale\": null,\n") }
 
         if let id = id { returnString.append("    \(prefix)\"id\": \(id),\n") }
         else if printNulls { returnString.append("    \(prefix)\"id\": null,\n") }

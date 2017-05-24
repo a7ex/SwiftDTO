@@ -165,8 +165,6 @@ class XCModelTranslator {
                 paramNode = (compType.children?.filter { $0.name == "xs:sequence" })?.first?.children as? [XMLElement]
             }
 
-            print("Name: \(tName); baseClassName: \(baseClassName); param count:\(paramNode?.count ?? 0)")
-
             var rProps = [RESTProperty]()
             if let paramNode = paramNode {
                 for prop in (paramNode.filter { $0.name == "xs:element" }) {
@@ -188,7 +186,8 @@ class XCModelTranslator {
                                                    withEnumNames: enums,
                                                    withProtocolNames: protocolNames,
                                                    withProtocols: nil,
-                                                   withPrimitiveProxyNames: Set<String>())
+                                                   withPrimitiveProxyNames: Set<String>(),
+                                                   withParentRelations: parentRelations)
             tProtocols.append(thisProtocol)
         }
 
@@ -199,7 +198,8 @@ class XCModelTranslator {
                                                    withEnumNames: enums,
                                                    withProtocolNames: protocolNames,
                                                    withProtocols: tProtocols,
-                                                   withPrimitiveProxyNames: Set<String>())
+                                                   withPrimitiveProxyNames: Set<String>(),
+                                                   withParentRelations: parentRelations)
             protocols?.append(thisProtocol)
         }
 
@@ -488,12 +488,34 @@ class XCModelTranslator {
 
         classString += "\n\(ind)// DTO properties:\n"
 
-        let ppRestProps = parentProtocol?.restProperties ?? [RESTProperty]()
-        let parentPropertyNames = Set(parentProtocol?.restProperties.flatMap { $0.name } ?? [String]())
-        for property in ppRestProps {
-            classString += "\(property.declarationString)\n"
+        var parentChain = [ProtocolDeclaration]()
+        if var pp = parentProtocol {
+        parentChain.append(pp)
+            var pparentName = protocols?.first(where: { $0.name == pp.parentName })?.name
+            while pparentName != nil && pparentName?.isEmpty == false {
+                pp = (protocols?.first(where: { $0.name == pparentName! }))!
+                parentChain.append(pp)
+                pparentName = pp.parentName
+            }
         }
-        if !ppRestProps.isEmpty { classString += "\n" }
+
+//        let ppRestProps = parentProtocol?.restProperties ?? [RESTProperty]()
+//        let parentPropertyNames = Set(parentProtocol?.restProperties.flatMap { $0.name } ?? [String]())
+        var parentPropertyNames = Set<String>()
+        for thisPP in parentChain {
+            for thisRProp in thisPP.restProperties {
+                parentPropertyNames.insert(thisRProp.name)
+            }
+        }
+
+        var hasProps = false
+        for ppRestProps in parentChain {
+            for thisProp in ppRestProps.restProperties {
+                classString += "\(thisProp.declarationString)\n"
+                hasProps = true
+            }
+        }
+        if hasProps { classString += "\n" }
 
         let restprops: [RESTProperty]
         if let storedProperties = storedProperties {
@@ -517,8 +539,11 @@ class XCModelTranslator {
 
         classString += "\n\(ind)// Default initializer:\n"
         classString += "\(ind)public init("
-        for property in ppRestProps {
+
+        for ppRestProps in parentChain {
+        for property in ppRestProps.restProperties {
             classString += "\(property.defaultInitializeParameter), "
+        }
         }
 
         for property in restprops {
@@ -528,8 +553,11 @@ class XCModelTranslator {
         }
         classString = classString.substring(to: classString.index(classString.endIndex, offsetBy: -2))
         classString += ") {\n"
-        for property in ppRestProps {
+
+for ppRestProps in parentChain {
+        for property in ppRestProps.restProperties {
             classString += "\(property.defaultInitializeString)\n"
+        }
         }
 
         for property in restprops {
@@ -543,10 +571,14 @@ class XCModelTranslator {
         classString += "\(ind)public init?(jsonData: JSOBJ?) {\n"
         classString += "\(ind)\(ind)guard let jsonData = jsonData else { return nil }\n"
 
-        for property in ppRestProps {
+        hasProps = false
+        for ppRestProps in parentChain {
+        for property in ppRestProps.restProperties {
             classString += "\(property.initializeString)\n"
+            hasProps = true
         }
-        if !ppRestProps.isEmpty { classString += "\n" }
+        }
+        if hasProps { classString += "\n" }
 
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
@@ -560,9 +592,11 @@ class XCModelTranslator {
 
         classString += "\n\(ind)// all expected keys (for diagnostics in debug mode):\n"
         classString += "\(ind)public var allExpectedKeys: Set<String> {\n\(ind)\(ind)return Set(["
-        for property in ppRestProps {
+        for ppRestProps in parentChain {
+            for property in ppRestProps.restProperties {
             classString += "\"\(property.jsonProperty)\", "
             hasProperties = true
+        }
         }
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
@@ -583,10 +617,14 @@ class XCModelTranslator {
         ind += indent
         classString += "\(ind)var jsonData = JSOBJ()\n"
 
-        for property in ppRestProps {
+        hasProps = false
+        for ppRestProps in parentChain {
+        for property in ppRestProps.restProperties {
             classString += "\(property.exportString)\n"
+            hasProps = true
         }
-        if !ppRestProps.isEmpty { classString += "\n" }
+        }
+        if hasProps { classString += "\n" }
 
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
@@ -607,11 +645,15 @@ class XCModelTranslator {
         classString += "\n"
 
         hasProperties = false
-        for property in ppRestProps {
+        hasProps = false
+        for ppRestProps in parentChain {
+        for property in ppRestProps.restProperties {
             classString += "\(property.jsonString)\n"
             hasProperties = true
+            hasProps = false
         }
-        if !ppRestProps.isEmpty { classString += "\n" }
+        }
+        if hasProps { classString += "\n" }
 
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {

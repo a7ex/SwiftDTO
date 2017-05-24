@@ -11,10 +11,11 @@
 
 import Foundation
 
-public struct GetPersonsRequest: SessionRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct GetPersonsRequest: SessionRequest, DefaultRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
     public let session: String?
+    public let locale: String?
 
     public let accessForAdmUsersAllowed: Bool?
     public let alphaChar: Int?
@@ -35,8 +36,9 @@ public struct GetPersonsRequest: SessionRequest, JSOBJSerializable, DictionaryCo
     public let zipCodes: String?
 
     // Default initializer:
-    public init(session: String?, accessForAdmUsersAllowed: Bool?, alphaChar: Int?, alreadyParticipateInCampaigns: Bool?, companyIds: Int?, gender: Bool?, maxAge: Int?, minAge: Int?, mtrVehAvail: Bool?, neverLoggedIn: Bool?, occs: Int?, operation: Bool?, ptSubscrAvail: Bool?, registeredSince: Date?, roles: RoleConstant?, searchTerm: String?, tfcModes: TrafficModeConstant?, zipCodes: String?) {
+    public init(session: String?, locale: String?, accessForAdmUsersAllowed: Bool?, alphaChar: Int?, alreadyParticipateInCampaigns: Bool?, companyIds: Int?, gender: Bool?, maxAge: Int?, minAge: Int?, mtrVehAvail: Bool?, neverLoggedIn: Bool?, occs: Int?, operation: Bool?, ptSubscrAvail: Bool?, registeredSince: Date?, roles: RoleConstant?, searchTerm: String?, tfcModes: TrafficModeConstant?, zipCodes: String?) {
         self.session = session
+        self.locale = locale
         self.accessForAdmUsersAllowed = accessForAdmUsersAllowed
         self.alphaChar = alphaChar
         self.alreadyParticipateInCampaigns = alreadyParticipateInCampaigns
@@ -60,6 +62,7 @@ public struct GetPersonsRequest: SessionRequest, JSOBJSerializable, DictionaryCo
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
         session = stringFromAny(jsonData["session"])
+        locale = stringFromAny(jsonData["locale"])
 
         accessForAdmUsersAllowed = boolFromAny(jsonData["accessForAdmUsersAllowed"])
         alphaChar = jsonData["alphaChar"] as? Int
@@ -88,13 +91,14 @@ public struct GetPersonsRequest: SessionRequest, JSOBJSerializable, DictionaryCo
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["session", "accessForAdmUsersAllowed", "alphaChar", "alreadyParticipateInCampaigns", "companyIds", "gender", "maxAge", "minAge", "mtrVehAvail", "neverLoggedIn", "occs", "operation", "ptSubscrAvail", "registeredSince", "roles", "searchTerm", "tfcModes", "zipCodes"])
+        return Set(["session", "locale", "accessForAdmUsersAllowed", "alphaChar", "alreadyParticipateInCampaigns", "companyIds", "gender", "maxAge", "minAge", "mtrVehAvail", "neverLoggedIn", "occs", "operation", "ptSubscrAvail", "registeredSince", "roles", "searchTerm", "tfcModes", "zipCodes"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
         if session != nil { jsonData["session"] = session! }
+        if locale != nil { jsonData["locale"] = locale! }
 
         if accessForAdmUsersAllowed != nil { jsonData["accessForAdmUsersAllowed"] = accessForAdmUsersAllowed! }
         if alphaChar != nil { jsonData["alphaChar"] = alphaChar! }
@@ -125,6 +129,9 @@ public struct GetPersonsRequest: SessionRequest, JSOBJSerializable, DictionaryCo
 
         if let session = session { returnString.append("    \(prefix)\"session\": \"\(session)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"session\": null,\n") }
+
+        if let locale = locale { returnString.append("    \(prefix)\"locale\": \"\(locale)\",\n") }
+        else if printNulls { returnString.append("    \(prefix)\"locale\": null,\n") }
 
         if let accessForAdmUsersAllowed = accessForAdmUsersAllowed { returnString.append("    \(prefix)\"accessForAdmUsersAllowed\": \(accessForAdmUsersAllowed),\n") }
         else if printNulls { returnString.append("    \(prefix)\"accessForAdmUsersAllowed\": null,\n") }

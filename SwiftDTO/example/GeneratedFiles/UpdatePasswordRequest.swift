@@ -11,17 +11,19 @@
 
 import Foundation
 
-public struct UpdatePasswordRequest: SessionRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct UpdatePasswordRequest: SessionRequest, DefaultRequest, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
     public let session: String?
+    public let locale: String?
 
     public let currentPassword: String?
     public let newPassword: String?
 
     // Default initializer:
-    public init(session: String?, currentPassword: String?, newPassword: String?) {
+    public init(session: String?, locale: String?, currentPassword: String?, newPassword: String?) {
         self.session = session
+        self.locale = locale
         self.currentPassword = currentPassword
         self.newPassword = newPassword
     }
@@ -30,6 +32,7 @@ public struct UpdatePasswordRequest: SessionRequest, JSOBJSerializable, Dictiona
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
         session = stringFromAny(jsonData["session"])
+        locale = stringFromAny(jsonData["locale"])
 
         currentPassword = stringFromAny(jsonData["currentPassword"])
         newPassword = stringFromAny(jsonData["newPassword"])
@@ -41,13 +44,14 @@ public struct UpdatePasswordRequest: SessionRequest, JSOBJSerializable, Dictiona
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["session", "currentPassword", "newPassword"])
+        return Set(["session", "locale", "currentPassword", "newPassword"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
         if session != nil { jsonData["session"] = session! }
+        if locale != nil { jsonData["locale"] = locale! }
 
         if currentPassword != nil { jsonData["currentPassword"] = currentPassword! }
         if newPassword != nil { jsonData["newPassword"] = newPassword! }
@@ -63,6 +67,9 @@ public struct UpdatePasswordRequest: SessionRequest, JSOBJSerializable, Dictiona
 
         if let session = session { returnString.append("    \(prefix)\"session\": \"\(session)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"session\": null,\n") }
+
+        if let locale = locale { returnString.append("    \(prefix)\"locale\": \"\(locale)\",\n") }
+        else if printNulls { returnString.append("    \(prefix)\"locale\": null,\n") }
 
         if let currentPassword = currentPassword { returnString.append("    \(prefix)\"currentPassword\": \"\(currentPassword)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"currentPassword\": null,\n") }
