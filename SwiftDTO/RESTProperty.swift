@@ -235,7 +235,13 @@ struct RESTProperty {
 
     var declarationString: String {
         if isEnum {
-            return "case \(name.uppercased()) = \"\(value ?? name)\""
+            let val = value ?? name
+            if enumParentName == "String",
+                name.uppercased() == val {
+                return "case \(name.uppercased())"
+            } else {
+                return "case \(name.uppercased()) = \"\(value ?? name)\""
+            }
         }
         else {
             return "\(indent)public let \(name): \(type)\(isOptional ? "?": "")"
