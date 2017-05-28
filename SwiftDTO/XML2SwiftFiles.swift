@@ -28,6 +28,41 @@ class XML2SwiftFiles {
         generateClassFiles(inDirectory: pwd)
         generateClassFilesFromCoreData(inDirectory: pwd)
 
+        struct ParentRel {
+            let name: String
+            let children: Set<String>
+        }
+        if parser.parentRelations.count > 0 {
+
+            let keyset = Set<String>(parser.parentRelations.map { $0.parentClass })
+            var parentRels = [ParentRel]()
+            for key in keyset {
+                let subcls = parser.parentRelations.filter { $0.parentClass == key && !(keyset.contains($0.subclass)) }
+                parentRels.append(ParentRel(name: key, children: Set(subcls.map { $0.subclass })))
+            }
+
+            var parRelString = "{\n"
+            for (idx, thisPR) in parentRels.enumerated() {
+                if idx != 0 { parRelString += ",\n" }
+                parRelString += "  \"\(thisPR.name)\": [\n"
+                let sortedChildren = thisPR.children.sorted(by: { (left, right) -> Bool in
+                    let leftCType = parser.complexTypesInfos.first(where: { $0.name == left })
+                    let rightCType = parser.complexTypesInfos.first(where: { $0.name == right })
+                    return (leftCType?.restprops.count ?? 0) < (rightCType?.restprops.count ?? 0)
+                })
+                for (ind, str) in sortedChildren.enumerated() {
+                    if ind != 0 { parRelString += ",\n" }
+                    parRelString += "    \"\(str)\""
+                }
+                parRelString += "\n  ]"
+            }
+            parRelString += "\n}"
+
+            let fileurl = URL(fileURLWithPath: pwd)
+            let newUrl = fileurl.appendingPathComponent("DTOParentInfo.json")
+            writeContent(parRelString, toFileAtPath: newUrl.path)
+        }
+
         let helperClassName = "DTO_Globals"
         if let swfilePath = Bundle.main.path(forResource: helperClassName, ofType: "swift"),
             let helperClass = try? String(contentsOfFile: swfilePath, encoding: String.Encoding.utf8) {

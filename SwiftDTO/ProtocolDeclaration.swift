@@ -17,7 +17,7 @@ class ProtocolDeclaration {
     // wsdl XML uses this
     init(name: String,
          restProperties: [RESTProperty] = [RESTProperty](),
-         withParentRelations parentRelations: [ParentRelation]) {
+         withParentRelations parentRelations: Set<ParentRelation>) {
         self.name = name
         self.restProperties = restProperties
         parentName = parentRelations.first(where: { $0.subclass == name })?.parentClass ?? ""

@@ -32,7 +32,7 @@ struct RESTProperty {
     let typeIsProxyType: Bool
     let protocolInitializerType: String
     let enumParentName: String
-    let overrideInitializers: [ParentRelation]
+    let overrideInitializers: Set<ParentRelation>
 
     let indent = "    "
 
@@ -40,7 +40,7 @@ struct RESTProperty {
     init?(wsdlElement: XMLElement,
           enumParentName: String?,
           withEnumNames enums: Set<String>,
-          overrideInitializers: [ParentRelation]) {
+          overrideInitializers: Set<ParentRelation>) {
 
         self.isEnum = enumParentName != nil
         if isEnum {
@@ -226,7 +226,7 @@ struct RESTProperty {
 
         isOptional = xmlElement.attribute(forName: Constants.OptionalAttributeName)?.stringValue == "YES"
 
-        overrideInitializers = [ParentRelation]()
+        overrideInitializers = Set<ParentRelation>()
     }
 
     fileprivate var typeSingular: String {

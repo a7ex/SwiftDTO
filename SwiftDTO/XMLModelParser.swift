@@ -8,9 +8,17 @@
 
 import Foundation
 
-struct ParentRelation {
+struct ParentRelation: Hashable {
     let subclass: String
     let parentClass: String
+
+    static func ==(lhs: ParentRelation, rhs: ParentRelation) -> Bool {
+        return lhs.subclass == rhs.subclass && lhs.parentClass == rhs.parentClass
+    }
+
+    var hashValue: Int {
+        return subclass.hashValue ^ parentClass.hashValue
+    }
 }
 
 extension XMLNode {
@@ -64,6 +72,8 @@ class XMLModelParser {
     var complexTypesInfos = [ComplexTypesInfo]()
 
     var primitiveProxyNames = Set<String>()
+
+    var parentRelations = Set<ParentRelation>()
 
     // MARK: - Types
 
@@ -246,7 +256,7 @@ class XMLModelParser {
                 if let element = RESTProperty(wsdlElement: enumVal,
                                               enumParentName: enumParentName,
                                               withEnumNames: enumNames,
-                                              overrideInitializers: [ParentRelation]()) {
+                                              overrideInitializers: Set<ParentRelation>()) {
                     enumProperties.append(element)
                 }
             }
@@ -261,7 +271,6 @@ class XMLModelParser {
     private final func parseComplexTypesInWSDL(with complexTypes: [XMLNode]) {
 
         complexTypesInfos = [ComplexTypesInfo]()
-        var parentRelations = [ParentRelation]()
 
         // find all nodes, which are subclasses (have a child: "xs:extension")
         // store their baseclass names (they will become protocols)
@@ -274,7 +283,7 @@ class XMLModelParser {
                 let baseClassName = createClassNameFromType(compType.children?[0].children?[0].attributeStringValue(for: "base")) {
                 protocolNames.insert(baseClassName)
                 if let clName = createClassNameFromType(compType.attributeStringValue(for: "name")) {
-                    parentRelations.append(ParentRelation(subclass: clName, parentClass: baseClassName))
+                    parentRelations.insert(ParentRelation(subclass: clName, parentClass: baseClassName))
                 }
             }
         }
