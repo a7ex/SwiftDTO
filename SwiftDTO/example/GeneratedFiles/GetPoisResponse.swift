@@ -80,6 +80,7 @@ public struct GetPoisResponse: SessionResponse, DefaultResponse, Information, JS
         if let pois = pois { returnString.append("    \(prefix)\"pois\": \("\(pois.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"pois\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

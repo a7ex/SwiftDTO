@@ -16,10 +16,10 @@ public struct Profile: JSOBJSerializable, DictionaryConvertible, CustomStringCon
     // DTO properties:
     public let personalData: PersonalData?
     public let pois: Poi?
-    public let statPerTfcModeList: PersonalStatisticPerTrafficMode?
+    public let statPerTfcModeList: TravelStatisticPerTrafficMode?
 
     // Default initializer:
-    public init(personalData: PersonalData?, pois: Poi?, statPerTfcModeList: PersonalStatisticPerTrafficMode?) {
+    public init(personalData: PersonalData?, pois: Poi?, statPerTfcModeList: TravelStatisticPerTrafficMode?) {
         self.personalData = personalData
         self.pois = pois
         self.statPerTfcModeList = statPerTfcModeList
@@ -32,7 +32,7 @@ public struct Profile: JSOBJSerializable, DictionaryConvertible, CustomStringCon
         else { personalData = nil }
         if let val = Poi(jsonData: jsonData["pois"] as? JSOBJ) { self.pois = val }
         else { pois = nil }
-        if let val = PersonalStatisticPerTrafficMode(jsonData: jsonData["statPerTfcModeList"] as? JSOBJ) { self.statPerTfcModeList = val }
+        if let val = TravelStatisticPerTrafficMode(jsonData: jsonData["statPerTfcModeList"] as? JSOBJ) { self.statPerTfcModeList = val }
         else { statPerTfcModeList = nil }
 
         #if DEBUG
@@ -69,6 +69,7 @@ public struct Profile: JSOBJSerializable, DictionaryConvertible, CustomStringCon
 
         if let statPerTfcModeList = statPerTfcModeList { returnString.append("    \(prefix)\"statPerTfcModeList\": \("\(statPerTfcModeList.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"statPerTfcModeList\": null,\n") }
+
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))

@@ -12,8 +12,8 @@
 import Foundation
 
 public enum RoleConstant: String {
-    case MANAGER = "MANAGER"
-    case ADMINISTRATOR = "ADMINISTRATOR"
+    case MANAGER
+    case ADMINISTRATOR
 
     public static func byString(_ typeAsString: String?) -> RoleConstant? {
         switch (typeAsString ?? "").uppercased() {

@@ -224,6 +224,7 @@ public struct PersonalData: Person, JSOBJSerializable, DictionaryConvertible, Cu
         if let zipCode = zipCode { returnString.append("    \(prefix)\"zipCode\": \"\(zipCode)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"zipCode\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

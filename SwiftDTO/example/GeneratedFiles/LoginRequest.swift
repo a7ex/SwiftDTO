@@ -70,6 +70,7 @@ public struct LoginRequest: DefaultRequest, JSOBJSerializable, DictionaryConvert
         if let password = password { returnString.append("    \(prefix)\"password\": \"\(password)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"password\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

@@ -80,6 +80,7 @@ public struct GetPersonsResponse: SessionResponse, DefaultResponse, Information,
         if let pers = pers { returnString.append("    \(prefix)\"pers\": \("\(pers.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"pers\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

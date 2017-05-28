@@ -11,18 +11,27 @@
 
 import Foundation
 
-public struct Company: JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
+public struct Company: GeographicPosition, JSOBJSerializable, DictionaryConvertible, CustomStringConvertible {
 
     // DTO properties:
+    public let lat: Double?
+    public let lon: Double?
+
+    public let conEmail: String?
     public let desc: String?
     public let id: Int?
+    public let lentObjs: LentObj?
     public let name: String?
     public let website: String?
 
     // Default initializer:
-    public init(desc: String?, id: Int?, name: String?, website: String?) {
+    public init(lat: Double?, lon: Double?, conEmail: String?, desc: String?, id: Int?, lentObjs: LentObj?, name: String?, website: String?) {
+        self.lat = lat
+        self.lon = lon
+        self.conEmail = conEmail
         self.desc = desc
         self.id = id
+        self.lentObjs = lentObjs
         self.name = name
         self.website = website
     }
@@ -30,8 +39,14 @@ public struct Company: JSOBJSerializable, DictionaryConvertible, CustomStringCon
     // Object creation using JSON dictionary representation from NSJSONSerializer:
     public init?(jsonData: JSOBJ?) {
         guard let jsonData = jsonData else { return nil }
+        lat = jsonData["lat"] as? Double
+        lon = jsonData["lon"] as? Double
+
+        conEmail = stringFromAny(jsonData["conEmail"])
         desc = stringFromAny(jsonData["desc"])
         id = jsonData["id"] as? Int
+        if let val = LentObj(jsonData: jsonData["lentObjs"] as? JSOBJ) { self.lentObjs = val }
+        else { lentObjs = nil }
         name = stringFromAny(jsonData["name"])
         website = stringFromAny(jsonData["website"])
 
@@ -42,14 +57,19 @@ public struct Company: JSOBJSerializable, DictionaryConvertible, CustomStringCon
 
     // all expected keys (for diagnostics in debug mode):
     public var allExpectedKeys: Set<String> {
-        return Set(["desc", "id", "name", "website"])
+        return Set(["lat", "lon", "conEmail", "desc", "id", "lentObjs", "name", "website"])
     }
 
     // dictionary representation (for use with NSJSONSerializer or as parameters for URL request):
     public var jsobjRepresentation: JSOBJ {
         var jsonData = JSOBJ()
+        if lat != nil { jsonData["lat"] = lat! }
+        if lon != nil { jsonData["lon"] = lon! }
+
+        if conEmail != nil { jsonData["conEmail"] = conEmail! }
         if desc != nil { jsonData["desc"] = desc! }
         if id != nil { jsonData["id"] = id! }
+        if lentObjs != nil { jsonData["lentObjs"] = lentObjs!.jsobjRepresentation }
         if name != nil { jsonData["name"] = name! }
         if website != nil { jsonData["website"] = website! }
         return jsonData
@@ -62,17 +82,30 @@ public struct Company: JSOBJSerializable, DictionaryConvertible, CustomStringCon
     public func jsonString(paddingPrefix prefix: String = "", printNulls: Bool = false) -> String {
         var returnString = "{\n"
 
+        if let lat = lat { returnString.append("    \(prefix)\"lat\": \(lat),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"lat\": null,\n") }
+
+        if let lon = lon { returnString.append("    \(prefix)\"lon\": \(lon),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"lon\": null,\n") }
+
+        if let conEmail = conEmail { returnString.append("    \(prefix)\"conEmail\": \"\(conEmail)\",\n") }
+        else if printNulls { returnString.append("    \(prefix)\"conEmail\": null,\n") }
+
         if let desc = desc { returnString.append("    \(prefix)\"desc\": \"\(desc)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"desc\": null,\n") }
 
         if let id = id { returnString.append("    \(prefix)\"id\": \(id),\n") }
         else if printNulls { returnString.append("    \(prefix)\"id\": null,\n") }
 
+        if let lentObjs = lentObjs { returnString.append("    \(prefix)\"lentObjs\": \("\(lentObjs.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
+        else if printNulls { returnString.append("    \(prefix)\"lentObjs\": null,\n") }
+
         if let name = name { returnString.append("    \(prefix)\"name\": \"\(name)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"name\": null,\n") }
 
         if let website = website { returnString.append("    \(prefix)\"website\": \"\(website)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"website\": null,\n") }
+
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))

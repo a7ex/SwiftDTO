@@ -85,6 +85,7 @@ public struct RegistrationRequest: DefaultRequest, JSOBJSerializable, Dictionary
         if let secToken = secToken { returnString.append("    \(prefix)\"secToken\": \"\(secToken)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"secToken\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

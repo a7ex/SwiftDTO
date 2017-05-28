@@ -1,11 +1,20 @@
 <?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.2.10 svn-revision#919b322c92f13ad085a933e8dd6dd35d4947364b. --><xs:schema xmlns:tns="http://ws.movinglab.ts.dlr.de/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.movinglab.ts.dlr.de/">
 
-<xs:complexType name="companyVerificationRequest">
+<xs:complexType name="updatePersonalDataRequest">
+<xs:complexContent>
+<xs:extension base="tns:sessionRequest">
+<xs:sequence>
+<xs:element name="personalData" type="tns:personalData" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="sessionRequest">
 <xs:complexContent>
 <xs:extension base="tns:defaultRequest">
 <xs:sequence>
-<xs:element name="secToken" type="xs:string" minOccurs="0"/>
-<xs:element name="txtId" type="xs:string" minOccurs="0"/>
+<xs:element name="session" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -14,87 +23,6 @@
 <xs:complexType name="defaultRequest">
 <xs:sequence>
 <xs:element name="locale" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="companyVerificationResponse">
-<xs:complexContent>
-<xs:extension base="tns:defaultResponse">
-<xs:sequence>
-<xs:element name="regKey" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="defaultResponse">
-<xs:complexContent>
-<xs:extension base="tns:information">
-<xs:sequence/>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="information">
-<xs:sequence>
-<xs:element name="errs" type="tns:quantifiableError" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="wrngs" type="tns:quantifiableWarning" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="quantifiableError">
-<xs:sequence>
-<xs:element name="err" type="tns:error" minOccurs="0"/>
-<xs:element name="no" type="xs:int"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="quantifiableWarning">
-<xs:sequence>
-<xs:element name="no" type="xs:int"/>
-<xs:element name="wrng" type="tns:warning" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="loginRequest">
-<xs:complexContent>
-<xs:extension base="tns:defaultRequest">
-<xs:sequence>
-<xs:element name="email" type="xs:string" minOccurs="0"/>
-<xs:element name="password" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="loginResponse">
-<xs:complexContent>
-<xs:extension base="tns:sessionResponse">
-<xs:sequence>
-<xs:element name="passwordUpdateRecommended" type="xs:boolean" minOccurs="0"/>
-<xs:element name="personalDataUpdateRecommended" type="xs:boolean" minOccurs="0"/>
-<xs:element name="profile" type="tns:profile" minOccurs="0"/>
-<xs:element name="session" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="sessionResponse">
-<xs:complexContent>
-<xs:extension base="tns:defaultResponse">
-<xs:sequence>
-<xs:element name="sessionValidityDate" type="xs:dateTime" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="profile">
-<xs:sequence>
-<xs:element name="personalData" type="tns:personalData" minOccurs="0"/>
-<xs:element name="pois" type="tns:poi" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="statPerTfcModeList" type="tns:personalStatisticPerTrafficMode" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -144,11 +72,51 @@
 </xs:complexType>
 
 <xs:complexType name="company">
+<xs:complexContent>
+<xs:extension base="tns:geographicPosition">
 <xs:sequence>
+<xs:element name="conEmail" type="xs:string" minOccurs="0"/>
 <xs:element name="desc" type="xs:string" minOccurs="0"/>
 <xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="lentObjs" type="tns:lentObj" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="name" type="xs:string" minOccurs="0"/>
 <xs:element name="website" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="geographicPosition">
+<xs:sequence>
+<xs:element name="lat" type="xs:double" minOccurs="0"/>
+<xs:element name="lon" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="lentObj">
+<xs:complexContent>
+<xs:extension base="tns:obj">
+<xs:sequence>
+<xs:element name="availFrom" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="from" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="to" type="xs:dateTime" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="obj">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="txtId" type="xs:string" minOccurs="0"/>
+<xs:element name="type" type="tns:objType" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="objType">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -194,6 +162,98 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="sessionResponse">
+<xs:complexContent>
+<xs:extension base="tns:defaultResponse">
+<xs:sequence>
+<xs:element name="sessionValidityDate" type="xs:dateTime" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="defaultResponse">
+<xs:complexContent>
+<xs:extension base="tns:information">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="information">
+<xs:sequence>
+<xs:element name="errs" type="tns:quantifiableError" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="wrngs" type="tns:quantifiableWarning" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="quantifiableError">
+<xs:sequence>
+<xs:element name="err" type="tns:error" minOccurs="0"/>
+<xs:element name="no" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="quantifiableWarning">
+<xs:sequence>
+<xs:element name="no" type="xs:int"/>
+<xs:element name="wrng" type="tns:warning" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="companyVerificationRequest">
+<xs:complexContent>
+<xs:extension base="tns:defaultRequest">
+<xs:sequence>
+<xs:element name="secToken" type="xs:string" minOccurs="0"/>
+<xs:element name="txtId" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="companyVerificationResponse">
+<xs:complexContent>
+<xs:extension base="tns:defaultResponse">
+<xs:sequence>
+<xs:element name="regKey" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="loginRequest">
+<xs:complexContent>
+<xs:extension base="tns:defaultRequest">
+<xs:sequence>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
+<xs:element name="password" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="loginResponse">
+<xs:complexContent>
+<xs:extension base="tns:sessionResponse">
+<xs:sequence>
+<xs:element name="passwordUpdateRecommended" type="xs:boolean" minOccurs="0"/>
+<xs:element name="personalDataUpdateRecommended" type="xs:boolean" minOccurs="0"/>
+<xs:element name="profile" type="tns:profile" minOccurs="0"/>
+<xs:element name="session" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="profile">
+<xs:sequence>
+<xs:element name="personalData" type="tns:personalData" minOccurs="0"/>
+<xs:element name="pois" type="tns:poi" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="statPerTfcModeList" type="tns:travelStatisticPerTrafficMode" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="poi">
 <xs:complexContent>
 <xs:extension base="tns:geographicPosition">
@@ -208,13 +268,6 @@
 </xs:complexContent>
 </xs:complexType>
 
-<xs:complexType name="geographicPosition">
-<xs:sequence>
-<xs:element name="lat" type="xs:double" minOccurs="0"/>
-<xs:element name="lon" type="xs:double" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="tripPurpose">
 <xs:sequence>
 <xs:element name="id" type="xs:long" minOccurs="0"/>
@@ -222,9 +275,19 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="personalStatisticPerTrafficMode">
+<xs:complexType name="travelStatisticPerTrafficMode">
+<xs:complexContent>
+<xs:extension base="tns:travelStatistic">
 <xs:sequence>
 <xs:element name="tfcMode" type="tns:trafficMode" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="travelStatistic">
+<xs:sequence>
+<xs:element name="no" type="xs:long" minOccurs="0"/>
 <xs:element name="travelTime" type="xs:long" minOccurs="0"/>
 <xs:element name="travelledDist" type="xs:long" minOccurs="0"/>
 </xs:sequence>
@@ -236,16 +299,6 @@
 <xs:sequence>
 <xs:element name="currentPassword" type="xs:string" minOccurs="0"/>
 <xs:element name="newPassword" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="sessionRequest">
-<xs:complexContent>
-<xs:extension base="tns:defaultRequest">
-<xs:sequence>
-<xs:element name="session" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -279,6 +332,16 @@
 </xs:complexContent>
 </xs:complexType>
 
+<xs:complexType name="resetPasswordRequest">
+<xs:complexContent>
+<xs:extension base="tns:defaultRequest">
+<xs:sequence>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
 <xs:complexType name="addPoiRequest">
 <xs:complexContent>
 <xs:extension base="tns:abstractPoiRequest">
@@ -292,39 +355,6 @@
 <xs:extension base="tns:sessionResponse">
 <xs:sequence>
 <xs:element name="personalData" type="tns:personalData" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="registrationRequest">
-<xs:complexContent>
-<xs:extension base="tns:defaultRequest">
-<xs:sequence>
-<xs:element name="pers" type="tns:person" minOccurs="0"/>
-<xs:element name="pwd" type="xs:string" minOccurs="0"/>
-<xs:element name="regKey" type="xs:string" minOccurs="0"/>
-<xs:element name="secToken" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="updatePersonalDataRequest">
-<xs:complexContent>
-<xs:extension base="tns:sessionRequest">
-<xs:sequence>
-<xs:element name="personalData" type="tns:personalData" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="resetPasswordRequest">
-<xs:complexContent>
-<xs:extension base="tns:defaultRequest">
-<xs:sequence>
-<xs:element name="email" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -380,6 +410,19 @@
 </xs:complexContent>
 </xs:complexType>
 
+<xs:complexType name="registrationRequest">
+<xs:complexContent>
+<xs:extension base="tns:defaultRequest">
+<xs:sequence>
+<xs:element name="pers" type="tns:person" minOccurs="0"/>
+<xs:element name="pwd" type="xs:string" minOccurs="0"/>
+<xs:element name="regKey" type="xs:string" minOccurs="0"/>
+<xs:element name="secToken" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
 <xs:complexType name="deletePoiRequest">
 <xs:complexContent>
 <xs:extension base="tns:sessionRequest">
@@ -390,16 +433,35 @@
 </xs:complexContent>
 </xs:complexType>
 
+<xs:simpleType name="roleConstant">
+<xs:restriction base="xs:string">
+<xs:enumeration value="MANAGER"/>
+<xs:enumeration value="ADMINISTRATOR"/>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="trafficModeConstant">
+<xs:restriction base="xs:string">
+<xs:enumeration value="CAR"/>
+<xs:enumeration value="BICYCLE"/>
+<xs:enumeration value="WALK"/>
+<xs:enumeration value="PUBLIC_TRANSPORT"/>
+<xs:enumeration value="UNKNOWN"/>
+</xs:restriction>
+</xs:simpleType>
+
 <xs:simpleType name="error">
 <xs:restriction base="xs:string">
 <xs:enumeration value="REQ_NOT_SET"/>
 <xs:enumeration value="INTERNAL_ERROR"/>
 <xs:enumeration value="SESSION_NOT_SET"/>
 <xs:enumeration value="SESSION_INVALID_OR_EXPIRED"/>
+<xs:enumeration value="LOGIN_DT_INVALID"/>
 <xs:enumeration value="EMAIL_RCPTS_EMPTY"/>
 <xs:enumeration value="EMAIL_ADDR_NOT_SET"/>
 <xs:enumeration value="EMAIL_ADDR_TOO_LONG"/>
 <xs:enumeration value="EMAIL_ADDR_INVALID"/>
+<xs:enumeration value="EMAIL_ADDR_ALRDY_USED"/>
 <xs:enumeration value="MIN_AGE_GT_MAX_AGE"/>
 <xs:enumeration value="MIN_AGE_ST_ZERO"/>
 <xs:enumeration value="MAX_AGE_ST_ZERO"/>
@@ -408,8 +470,10 @@
 <xs:enumeration value="TFC_MD_CONST_NOT_SET"/>
 <xs:enumeration value="CMPY_TXT_ID_NOT_SET"/>
 <xs:enumeration value="CMPY_SEC_TK_NOT_SET"/>
+<xs:enumeration value="CMPY_SEC_TK_INVALID"/>
 <xs:enumeration value="CMPY_ID_NOT_SET"/>
 <xs:enumeration value="CMPY_ID_LTE_ZERO"/>
+<xs:enumeration value="CMPY_CRED_INVALID"/>
 <xs:enumeration value="TRK_NOT_SET"/>
 <xs:enumeration value="TRK_NAME_NOT_SET"/>
 <xs:enumeration value="TRK_NAME_TOO_LONG"/>
@@ -525,23 +589,6 @@
 <xs:enumeration value="Y_ACC_VAL_NOT_SET"/>
 <xs:enumeration value="Z_ACC_VAL_NOT_SET"/>
 <xs:enumeration value="ACC_DT_ALREADY_SENT"/>
-</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="roleConstant">
-<xs:restriction base="xs:string">
-<xs:enumeration value="MANAGER"/>
-<xs:enumeration value="ADMINISTRATOR"/>
-</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="trafficModeConstant">
-<xs:restriction base="xs:string">
-<xs:enumeration value="CAR"/>
-<xs:enumeration value="BICYCLE"/>
-<xs:enumeration value="WALK"/>
-<xs:enumeration value="PUBLIC_TRANSPORT"/>
-<xs:enumeration value="UNKNOWN"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:schema>

@@ -60,6 +60,7 @@ public struct Graduation: JSOBJSerializable, DictionaryConvertible, CustomString
         if let name = name { returnString.append("    \(prefix)\"name\": \"\(name)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"name\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

@@ -37,6 +37,7 @@
 /* Begin PBXFileReference section */
 		363EC5A31EBF8AC200B7C0B0 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		363EC5A41EBF8ACF00B7C0B0 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		367046411EDB071F009B392A /* xsd1_schema_info.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = xsd1_schema_info.xml; sourceTree = "<group>"; };
 		369F5BEE1EA285CD005A229A /* Readme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
 		369F5BF51EA287EC005A229A /* myDTO.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = myDTO.xcdatamodel; sourceTree = "<group>"; };
 		FA8207811DE2D7DF00333F8D /* SwiftDTO */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SwiftDTO; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -124,6 +125,7 @@
 		FAC92BD01ED597E700D6C015 /* wsdl */ = {
 			isa = PBXGroup;
 			children = (
+				367046411EDB071F009B392A /* xsd1_schema_info.xml */,
 				FAC92BD11ED597E700D6C015 /* xsd1_schema_tracking.xml */,
 				FAC92BD21ED597E700D6C015 /* xsd1_schema_user.xml */,
 			);

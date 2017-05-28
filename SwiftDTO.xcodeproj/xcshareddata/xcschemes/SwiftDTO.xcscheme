@@ -78,6 +78,10 @@
             argument = "$PROJECT_DIR/SwiftDTO/example/wsdl/xsd1_schema_tracking.xml"
             isEnabled = "YES">
          </CommandLineArgument>
+         <CommandLineArgument
+            argument = "$PROJECT_DIR/SwiftDTO/example/wsdl/xsd1_schema_info.xml"
+            isEnabled = "YES">
+         </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>

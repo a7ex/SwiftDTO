@@ -182,6 +182,7 @@ public struct GetPersonsRequest: SessionRequest, DefaultRequest, JSOBJSerializab
         if let zipCodes = zipCodes { returnString.append("    \(prefix)\"zipCodes\": \"\(zipCodes)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"zipCodes\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

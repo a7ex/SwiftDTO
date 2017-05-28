@@ -72,6 +72,7 @@ public struct CompanyVerificationResponse: DefaultResponse, Information, JSOBJSe
         if let regKey = regKey { returnString.append("    \(prefix)\"regKey\": \"\(regKey)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"regKey\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

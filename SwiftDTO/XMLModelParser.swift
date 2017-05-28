@@ -90,16 +90,20 @@ class XMLModelParser {
     func addXMLData(xmlData: XMLDocument) {
         guard let children = xmlData.children,
             !children.isEmpty else { return }
-        if children.first(where: { $0.name == "model" }) != nil {
-            for thisModel in children {
-                thisModel.detach()
-                (model as? XMLElement)?.addChild(thisModel)
+        if let newModel = children.first(where: { $0.name == "model" }) {
+            if let chldren = newModel.children {
+                for thisModel in chldren {
+                    thisModel.detach()
+                    (model as? XMLElement)?.addChild(thisModel)
+                }
             }
 
-        } else if children.first(where: { $0.name == "xs:schema" }) != nil {
-            for thisModel in children {
-                thisModel.detach()
-                (model as? XMLElement)?.addChild(thisModel)
+        } else if let newModel = children.first(where: { $0.name == "xs:schema" }) {
+            if let chldren = newModel.children {
+                for thisModel in chldren {
+                    thisModel.detach()
+                    (model as? XMLElement)?.addChild(thisModel)
+                }
             }
         }
     }

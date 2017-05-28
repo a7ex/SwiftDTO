@@ -77,6 +77,7 @@ public struct UpdatePasswordRequest: SessionRequest, DefaultRequest, JSOBJSerial
         if let newPassword = newPassword { returnString.append("    \(prefix)\"newPassword\": \"\(newPassword)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"newPassword\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

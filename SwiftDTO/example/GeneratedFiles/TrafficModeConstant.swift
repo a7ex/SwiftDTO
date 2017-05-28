@@ -12,11 +12,11 @@
 import Foundation
 
 public enum TrafficModeConstant: String {
-    case CAR = "CAR"
-    case BICYCLE = "BICYCLE"
-    case WALK = "WALK"
-    case PUBLIC_TRANSPORT = "PUBLIC_TRANSPORT"
-    case UNKNOWN = "UNKNOWN"
+    case CAR
+    case BICYCLE
+    case WALK
+    case PUBLIC_TRANSPORT
+    case UNKNOWN
 
     public static func byString(_ typeAsString: String?) -> TrafficModeConstant? {
         switch (typeAsString ?? "").uppercased() {

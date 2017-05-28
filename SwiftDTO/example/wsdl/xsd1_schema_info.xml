@@ -1,68 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.2.10 svn-revision#919b322c92f13ad085a933e8dd6dd35d4947364b. --><xs:schema xmlns:tns="http://ws.movinglab.ts.dlr.de/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.movinglab.ts.dlr.de/">
 
-<xs:complexType name="setSensorDataRequest">
-<xs:complexContent>
-<xs:extension base="tns:sessionRequest">
-<xs:sequence>
-<xs:element name="accDtList" type="tns:acceleratorData" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="objId" type="xs:string" minOccurs="0"/>
-<xs:element name="trkgDtList" type="tns:trackingData" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="sessionRequest">
-<xs:complexContent>
-<xs:extension base="tns:defaultRequest">
-<xs:sequence>
-<xs:element name="session" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="defaultRequest">
-<xs:sequence>
-<xs:element name="locale" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="acceleratorData">
-<xs:sequence>
-<xs:element name="ts" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="x" type="xs:double" minOccurs="0"/>
-<xs:element name="y" type="xs:double" minOccurs="0"/>
-<xs:element name="z" type="xs:double" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="trackingData">
-<xs:complexContent>
-<xs:extension base="tns:geographicPosition">
-<xs:sequence>
-<xs:element name="accy" type="xs:int" minOccurs="0"/>
-<xs:element name="alt" type="xs:int" minOccurs="0"/>
-<xs:element name="brg" type="xs:float" minOccurs="0"/>
-<xs:element name="spd" type="xs:float" minOccurs="0"/>
-<xs:element name="ts" type="xs:dateTime" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="geographicPosition">
-<xs:sequence>
-<xs:element name="lat" type="xs:double" minOccurs="0"/>
-<xs:element name="lon" type="xs:double" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="sessionResponse">
+<xs:complexType name="getObjectsResponse">
 <xs:complexContent>
 <xs:extension base="tns:defaultResponse">
 <xs:sequence>
-<xs:element name="sessionValidityDate" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="lentObjs" type="tns:lentObj" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="nonLentObjs" type="tns:obj" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -83,6 +26,33 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="lentObj">
+<xs:complexContent>
+<xs:extension base="tns:obj">
+<xs:sequence>
+<xs:element name="availFrom" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="from" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="to" type="xs:dateTime" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="obj">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="txtId" type="xs:string" minOccurs="0"/>
+<xs:element name="type" type="tns:objType" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="objType">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="quantifiableError">
 <xs:sequence>
 <xs:element name="err" type="tns:error" minOccurs="0"/>
@@ -97,136 +67,69 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="updateTrackRequest">
+<xs:complexType name="getStatisticResponse">
 <xs:complexContent>
-<xs:extension base="tns:abstractTrackRequest">
-<xs:sequence/>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="abstractTrackRequest">
-<xs:complexContent>
-<xs:extension base="tns:sessionRequest">
+<xs:extension base="tns:defaultResponse">
 <xs:sequence>
-<xs:element name="trk" type="tns:track" minOccurs="0"/>
+<xs:element name="stat" type="tns:overallStatistic" minOccurs="0"/>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
 
-<xs:complexType name="track">
+<xs:complexType name="overallStatistic">
+<xs:complexContent>
+<xs:extension base="tns:travelStatistic">
 <xs:sequence>
-<xs:element name="admPers" type="tns:person" minOccurs="0"/>
-<xs:element name="createdAutomatically" type="xs:boolean" minOccurs="0"/>
-<xs:element name="creationTime" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="noOfCurrentlyParticipatingCompanies" type="xs:long" minOccurs="0"/>
+<xs:element name="noOfCurrentlyParticipatingPers" type="xs:long" minOccurs="0"/>
+<xs:element name="noOfExistingObjs" type="xs:long" minOccurs="0"/>
+<xs:element name="noOfParticipatingCompanies" type="xs:long" minOccurs="0"/>
+<xs:element name="noOfParticipatingPers" type="xs:long" minOccurs="0"/>
+<xs:element name="noOfUsedObjsToday" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="travelStatistic">
+<xs:sequence>
+<xs:element name="no" type="xs:long" minOccurs="0"/>
+<xs:element name="travelTime" type="xs:long" minOccurs="0"/>
+<xs:element name="travelledDist" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getCompaniesResponse">
+<xs:complexContent>
+<xs:extension base="tns:defaultResponse">
+<xs:sequence>
+<xs:element name="companies" type="tns:company" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="company">
+<xs:complexContent>
+<xs:extension base="tns:geographicPosition">
+<xs:sequence>
+<xs:element name="conEmail" type="xs:string" minOccurs="0"/>
+<xs:element name="desc" type="xs:string" minOccurs="0"/>
 <xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="modTime" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="lentObjs" type="tns:lentObj" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="name" type="xs:string" minOccurs="0"/>
-<xs:element name="segments" type="tns:segment" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="tripPurpose" type="tns:tripPurpose" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="person">
-<xs:sequence>
-<xs:element name="email" type="xs:string" minOccurs="0"/>
-<xs:element name="firstName" type="xs:string" minOccurs="0"/>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="lastName" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="segment">
-<xs:sequence>
-<xs:element name="endTime" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="geom" type="tns:geographicPosition" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="len" type="xs:int" minOccurs="0"/>
-<xs:element name="metaDataRecs" type="tns:metaDataRecord" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="startTime" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="tfcMode" type="tns:trafficMode" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="metaDataRecord">
-<xs:sequence>
-<xs:element name="key" type="xs:string" minOccurs="0"/>
-<xs:element name="val" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="trafficMode">
-<xs:sequence>
-<xs:element name="constant" type="tns:trafficModeConstant" minOccurs="0"/>
-<xs:element name="name" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="tripPurpose">
-<xs:sequence>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="name" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="setTrackingActionRequest">
-<xs:complexContent>
-<xs:extension base="tns:sessionRequest">
-<xs:sequence>
-<xs:element name="trkgingAction" type="tns:trackingAction" minOccurs="0"/>
+<xs:element name="website" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
 
-<xs:complexType name="addTrackRequest">
-<xs:complexContent>
-<xs:extension base="tns:abstractTrackRequest">
-<xs:sequence/>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="addTrackResponse">
-<xs:complexContent>
-<xs:extension base="tns:sessionResponse">
+<xs:complexType name="geographicPosition">
 <xs:sequence>
-<xs:element name="trk" type="tns:track" minOccurs="0"/>
+<xs:element name="lat" type="xs:double" minOccurs="0"/>
+<xs:element name="lon" type="xs:double" minOccurs="0"/>
 </xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="deleteTracksRequest">
-<xs:complexContent>
-<xs:extension base="tns:sessionRequest">
-<xs:sequence>
-<xs:element name="trkIds" type="xs:long" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="getTracksRequest">
-<xs:complexContent>
-<xs:extension base="tns:sessionRequest">
-<xs:sequence>
-<xs:element name="from" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="to" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="validated" type="xs:boolean" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="getTracksResponse">
-<xs:complexContent>
-<xs:extension base="tns:sessionResponse">
-<xs:sequence>
-<xs:element name="trks" type="tns:track" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
 </xs:complexType>
 
 <xs:simpleType name="error">
@@ -368,24 +271,6 @@
 <xs:enumeration value="Y_ACC_VAL_NOT_SET"/>
 <xs:enumeration value="Z_ACC_VAL_NOT_SET"/>
 <xs:enumeration value="ACC_DT_ALREADY_SENT"/>
-</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="trafficModeConstant">
-<xs:restriction base="xs:string">
-<xs:enumeration value="CAR"/>
-<xs:enumeration value="BICYCLE"/>
-<xs:enumeration value="WALK"/>
-<xs:enumeration value="PUBLIC_TRANSPORT"/>
-<xs:enumeration value="UNKNOWN"/>
-</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="trackingAction">
-<xs:restriction base="xs:string">
-<xs:enumeration value="START"/>
-<xs:enumeration value="PAUSE"/>
-<xs:enumeration value="STOP"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:schema>

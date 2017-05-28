@@ -71,6 +71,7 @@ public struct UpdatePersonalDataRequest: SessionRequest, DefaultRequest, JSOBJSe
         if let personalData = personalData { returnString.append("    \(prefix)\"personalData\": \("\(personalData.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"personalData\": null,\n") }
 
+
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"
