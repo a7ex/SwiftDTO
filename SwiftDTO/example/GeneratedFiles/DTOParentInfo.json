@@ -1,0 +1,59 @@
+{
+  "AbstractTrackRequest": [
+    "AddTrackRequest",
+    "UpdateTrackRequest"
+  ],
+  "SessionResponse": [
+    "GetPersonsResponse",
+    "GetPersonalDataResponse",
+    "GetPoisResponse",
+    "GetTracksResponse",
+    "AddTrackResponse",
+    "LoginResponse"
+  ],
+  "SessionRequest": [
+    "DeletePoiRequest",
+    "DeleteTracksRequest",
+    "UpdatePersonalDataRequest",
+    "SetTrackingActionRequest",
+    "UpdatePasswordRequest",
+    "SetSensorDataRequest",
+    "GetTracksRequest",
+    "RegistrationKeyDispatchRequest",
+    "GetPersonsRequest"
+  ],
+  "DefaultResponse": [
+    "GetStatisticResponse",
+    "CompanyVerificationResponse",
+    "GetCompaniesResponse",
+    "GetObjectsResponse"
+  ],
+  "GeographicPosition": [
+    "TrackingData",
+    "Poi",
+    "Company"
+  ],
+  "Obj": [
+    "LentObj"
+  ],
+  "Person": [
+    "PersonalData"
+  ],
+  "AbstractPoiRequest": [
+    "UpdatePoiRequest",
+    "AddPoiRequest"
+  ],
+  "Information": [
+
+  ],
+  "TravelStatistic": [
+    "TravelStatisticPerTrafficMode",
+    "OverallStatistic"
+  ],
+  "DefaultRequest": [
+    "ResetPasswordRequest",
+    "LoginRequest",
+    "CompanyVerificationRequest",
+    "RegistrationRequest"
+  ]
+}
