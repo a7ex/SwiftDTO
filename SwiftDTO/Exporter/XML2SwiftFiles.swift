@@ -8,7 +8,11 @@
 
 import Cocoa
 
-class XML2SwiftFiles {
+protocol DTOFileGenerator {
+    func generateFiles(inFolder folderPath: String?)
+}
+
+class XML2SwiftFiles: DTOFileGenerator {
 
     let parser: XMLModelParser
 

@@ -13,11 +13,12 @@ import Foundation
 /// and all unnamed parameters go into the array "paths"
 
 struct CliArguments {
-    let help: Bool
-    let paths: [String]
-    let mode: OutputMode
     let programName: String
     let programPath: String
+    let help: Bool
+    let destination: String
+    let paths: [String]
+    let mode: OutputType
 
     init() {
         let cliArguments = CLIArgsParser.processCLIArgs(cliParams: CommandLine.arguments)
@@ -33,7 +34,8 @@ struct CliArguments {
         help = (cliParams["help"] as? Bool) ?? (cliParams["h"] as? Bool) ?? (cliParams["?"] as? Bool) ?? false
 
         // named switches:
-        mode = OutputMode.fromString(cliParams["mode"] as? String ?? cliParams["m"] as? String)
+        destination = cliParams["destination"] as? String ?? ""
+        mode = OutputType.fromString(cliParams["mode"] as? String ?? cliParams["m"] as? String)
 
         // unnamed parameters:
         paths = (cliParams[SpecialCliArgsParserKeys.unnamed.rawValue] as? [String]) ?? [String]()
@@ -42,15 +44,16 @@ struct CliArguments {
     func printHelpText() {
         print("Usage: \(programName) [options]")
         print("  -h, -?, --help:\n    Prints a help message.")
+        print("  -d, --destination:\n    The path to a directory to write the generated files to.")
         print("  -m, --mode:\n    The output mode. The format of the output files. Can be one of the follwoing values: swift (or: s), java (or: j).")
-        print("\n  all remaining parameters are considered path names\n\n")
+        print("\n  all remaining parameters are considered paths to xml input files\n\n")
     }
 }
 
-enum OutputMode: String {
+enum OutputType: String {
     case swift, java
 
-    static func fromString(_ input: String?) -> OutputMode {
+    static func fromString(_ input: String?) -> OutputType {
         guard let input = input else {
             return .swift
         }
