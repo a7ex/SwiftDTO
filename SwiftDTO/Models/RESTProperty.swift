@@ -248,6 +248,10 @@ struct RESTProperty {
         }
     }
 
+    var javaDeclarationString: String {
+        return "//TODO"
+    }
+
     var upperCasedInitializer: String {
         if isEnum {
             return "\(indent)\(indent)case \"\((value ?? name).uppercased())\":\n\(indent)\(indent)\(indent)return .\(name.uppercased())"

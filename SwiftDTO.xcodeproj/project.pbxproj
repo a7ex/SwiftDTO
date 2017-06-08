@@ -87,6 +87,7 @@
 		FAA9D4911EE9440600C75ADE /* XMLModelParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9D4861EE9436900C75ADE /* XMLModelParser.swift */; };
 		FAA9D4931EE9489C00C75ADE /* OptionalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9D4921EE9489C00C75ADE /* OptionalExtension.swift */; };
 		FAE61ADA1EE94AC000C1E9E1 /* XML2JavaFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE61AD91EE94AC000C1E9E1 /* XML2JavaFiles.swift */; };
+		FAE61AEE1EE9680600C1E9E1 /* BaseExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE61AED1EE9680600C1E9E1 /* BaseExporter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -195,6 +196,7 @@
 		FAC92BD11ED597E700D6C015 /* xsd1_schema_tracking.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = xsd1_schema_tracking.xml; sourceTree = "<group>"; };
 		FAC92BD21ED597E700D6C015 /* xsd1_schema_user.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = xsd1_schema_user.xml; sourceTree = "<group>"; };
 		FAE61AD91EE94AC000C1E9E1 /* XML2JavaFiles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XML2JavaFiles.swift; sourceTree = "<group>"; };
+		FAE61AED1EE9680600C1E9E1 /* BaseExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseExporter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -333,6 +335,7 @@
 		FAA9D47A1EE9435000C75ADE /* Exporter */ = {
 			isa = PBXGroup;
 			children = (
+				FAE61AED1EE9680600C1E9E1 /* BaseExporter.swift */,
 				FAA9D47B1EE9435000C75ADE /* XML2SwiftFiles.swift */,
 				FAE61AD91EE94AC000C1E9E1 /* XML2JavaFiles.swift */,
 			);
@@ -487,6 +490,7 @@
 				367047041EDC03DA009B392A /* LoginRequest.swift in Sources */,
 				FAA9D48B1EE943CB00C75ADE /* String+COAdditions.swift in Sources */,
 				3670471F1EDC03DA009B392A /* AddTrackRequest.swift in Sources */,
+				FAE61AEE1EE9680600C1E9E1 /* BaseExporter.swift in Sources */,
 				FA8207851DE2D7DF00333F8D /* main.swift in Sources */,
 				3670470A1EDC03DA009B392A /* PersonalData.swift in Sources */,
 				3670472A1EDC03DA009B392A /* GetPersonalDataResponse.swift in Sources */,

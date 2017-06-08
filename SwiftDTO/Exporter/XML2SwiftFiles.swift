@@ -8,19 +8,7 @@
 
 import Cocoa
 
-protocol DTOFileGenerator {
-    func generateFiles(inFolder folderPath: String?)
-}
-
-class XML2SwiftFiles: DTOFileGenerator {
-
-    let parser: XMLModelParser
-
-    init(parser: XMLModelParser) {
-        self.parser = parser
-    }
-
-    let indent = "    "
+class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
 
     final func generateFiles(inFolder folderPath: String? = nil) {
         let info = ProcessInfo.processInfo
@@ -32,162 +20,13 @@ class XML2SwiftFiles: DTOFileGenerator {
         generateClassFiles(inDirectory: pwd)
         generateClassFilesFromCoreData(inDirectory: pwd)
 
-        struct ParentRel {
-            let name: String
-            let children: Set<String>
-        }
-        if parser.parentRelations.count > 0 {
-
-            let keyset = Set<String>(parser.parentRelations.map { $0.parentClass })
-            var parentRels = [ParentRel]()
-            for key in keyset {
-                let subcls = parser.parentRelations.filter { $0.parentClass == key && !(keyset.contains($0.subclass)) }
-                parentRels.append(ParentRel(name: key, children: Set(subcls.map { $0.subclass })))
-            }
-
-            var parRelString = "{\n"
-            for (idx, thisPR) in parentRels.enumerated() {
-                if idx != 0 { parRelString += ",\n" }
-                parRelString += "  \"\(thisPR.name)\": [\n"
-                let sortedChildren = thisPR.children.sorted(by: { (left, right) -> Bool in
-                    let leftCType = parser.complexTypesInfos.first(where: { $0.name == left })
-                    let rightCType = parser.complexTypesInfos.first(where: { $0.name == right })
-                    return (leftCType?.restprops.count ?? 0) < (rightCType?.restprops.count ?? 0)
-                })
-                for (ind, str) in sortedChildren.enumerated() {
-                    if ind != 0 { parRelString += ",\n" }
-                    parRelString += "    \"\(str)\""
-                }
-                parRelString += "\n  ]"
-            }
-            parRelString += "\n}"
-
-            let fileurl = URL(fileURLWithPath: pwd)
-            let newUrl = fileurl.appendingPathComponent("DTOParentInfo.json")
-            writeContent(parRelString, toFileAtPath: newUrl.path)
-        }
-
-        let helperClassName = "DTO_Globals"
-        if let swfilePath = Bundle.main.path(forResource: helperClassName, ofType: "swift"),
-            let helperClass = try? String(contentsOfFile: swfilePath, encoding: String.Encoding.utf8) {
-            writeContent(helperClass, toFileAtPath: pathForClassName(helperClassName, inFolder: pwd))
-        }
+        createAndExportParentRelationships(inDirectory: pwd)
+        copyStaticSwiftFiles(named: ["DTO_Globals"], inDirectory: pwd)
     }
 
-    private final func generateClassFilesFromCoreData(inDirectory outputDir: String) {
-        let entities = parser.coreDataEntities
+    override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
 
-        for thisEntity in entities {
-            guard let className = thisEntity.attributeStringValue(for: "name"),
-                let unwrappedEntity = thisEntity as? XMLElement else { continue }
-            if let content = generateEnumFileFor(entity: unwrappedEntity, withName: className) {
-                writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir))
-            }
-        }
-
-        for thisEntity in entities {
-            guard let className = thisEntity.attributeStringValue(for: "name"),
-                let unwrappedEntity = thisEntity as? XMLElement else { continue }
-            if let content = generateProtocolFileForEntity(unwrappedEntity, withName: className) {
-                writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir))
-            }
-        }
-
-        for thisEntity in entities {
-            guard let className = thisEntity.attributeStringValue(for: "name"),
-                let unwrappedEntity = thisEntity as? XMLElement else { continue }
-            if let content = generateClassFileForEntity(unwrappedEntity, withName: className) {
-                writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir))
-            }
-        }
-    }
-
-    // MARK: - Helper Methods
-
-    fileprivate final func generateProtocolFileForEntity(_ entity: XMLElement, withName className: String) -> String? {
-        guard (entity.children as? [XMLElement]) != nil else { return nil }
-
-        if parser.protocolNames.contains(className) {
-            return generateProtocolFileForProtocol(className)
-        }
-        return nil
-    }
-
-    fileprivate final func generateEnumFileFor(entity: XMLElement, withName className: String) -> String? {
-        guard (entity.children as? [XMLElement]) != nil else { return nil }
-
-        if parser.enumNames.contains(className) {
-            return generateEnumFileForEntity(entity, withName: className)
-        }
-        return nil
-    }
-
-    private final func generateEnumFileForEntity(_ entity: XMLElement, withName className: String) -> String? {
-        guard let properties = entity.children as? [XMLElement] else { return nil }
-
-        let restprops = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                          enumParentName: "String",
-                                                          withEnumNames: parser.enumNames,
-                                                          withProtocolNames: parser.protocolNames,
-                                                          withProtocols: parser.protocols,
-                                                          withPrimitiveProxyNames: parser.primitiveProxyNames) }
-
-        return generateEnumFileForEntityFinally(restprops, withName: className, enumParentName: "String")
-    }
-
-    private final func generateProtocolFiles(inDirectory outputDir: String) {
-        for complexType in parser.complexTypesInfos where parser.protocolNames.contains(complexType.name) {
-            // write protocol files to disk:
-            if let content = generateProtocolFileForProtocol(complexType.name) {
-                writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir))
-            }
-        }
-    }
-
-    private final func generateClassFiles(inDirectory outputDir: String) {
-        for complexType in parser.complexTypesInfos where !parser.protocolNames.contains(complexType.name) {
-            // write DTO structs to disk:
-            let protoDeclaration = parser.protocols?.first(where: { $0.name == complexType.parentName })
-            if let content = generateClassFinally(nil,
-                                                  withName: complexType.name,
-                                                  parentProtocol: protoDeclaration,
-                                                  storedProperties: complexType.restprops) {
-                writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir))
-            }
-        }
-    }
-
-    private final func generateEnums(inDirectory outputDir: String) {
-        for enumInfo in parser.enums {
-            if let content = generateEnumFileForEntityFinally(enumInfo.restprops,
-                                                              withName: enumInfo.name,
-                                                              enumParentName: enumInfo.typeName) {
-                writeContent(content, toFileAtPath: pathForClassName(enumInfo.name, inFolder: outputDir))
-            }
-        }
-    }
-
-    private final func generateClassFileForEntity(_ entity: XMLElement, withName className: String) -> String? {
-        guard let properties = entity.children as? [XMLElement] else { return nil }
-
-        guard !parser.enumNames.contains(className),
-            !parser.protocolNames.contains(className),
-            !entity.isPrimitiveProxy else { return nil }
-
-        let parentProtocol: ProtocolDeclaration?
-        if let protocolName = entity.attribute(forName: "parentEntity")?.stringValue {
-            parentProtocol = (parser.protocols?.filter { $0.name == protocolName })?.first
-        }
-        else {
-            parentProtocol = nil
-        }
-
-        return generateClassFinally(properties, withName: className, parentProtocol: parentProtocol, storedProperties: nil)
-    }
-
-    private final func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
-
-        var classString = parser.headerStringFor(filename: className)
+        var classString = parser.headerStringFor(filename: className, fileExtension: "swift", fromWSDL: parser.coreDataEntities.isEmpty)
 
         classString += "import Foundation\n\npublic struct \(className): "
         if parentProtocol != nil {
@@ -409,9 +248,9 @@ class XML2SwiftFiles: DTOFileGenerator {
         return classString
     }
 
-    private final func generateEnumFileForEntityFinally(_ restprops: [RESTProperty], withName className: String, enumParentName: String) -> String? {
+    override func generateEnumFileForEntityFinally(_ restprops: [RESTProperty], withName className: String, enumParentName: String) -> String? {
 
-        var classString = parser.headerStringFor(filename: className)
+        var classString = parser.headerStringFor(filename: className, fileExtension: "swift", fromWSDL: parser.coreDataEntities.isEmpty)
 
         classString += "import Foundation\n\npublic enum \(className): \(enumParentName) {\n"
 
@@ -475,12 +314,12 @@ class XML2SwiftFiles: DTOFileGenerator {
         return classString
     }
 
-    private final func generateProtocolFileForProtocol(_ protocolName: String) -> String? {
+    override func generateProtocolFileForProtocol(_ protocolName: String) -> String? {
 
         guard let protocolData = (parser.protocols?.filter { $0.name == protocolName })?.first else {
             fatalError("generateProtocolFileForProtocol() was called with an argument where there is no data for in protocols array!")
         }
-        var classString = parser.headerStringFor(filename: protocolName)
+        var classString = parser.headerStringFor(filename: protocolName, fileExtension: "swift", fromWSDL: parser.coreDataEntities.isEmpty)
 
         classString += "import Foundation\n\npublic protocol \(protocolName): DictionaryConvertible {\n"
         classString += protocolData.declarationString
@@ -502,7 +341,7 @@ class XML2SwiftFiles: DTOFileGenerator {
                 classString += "\(indent)\(indent)}\n"
                 classString += "\(indent)}\n"
                 classString += "}"
-
+                
                 return classString
             }
         }
@@ -511,7 +350,7 @@ class XML2SwiftFiles: DTOFileGenerator {
         classString += "\(indent)\(indent)return \(consumer)(jsonData: json)\n"
         classString += "\(indent)}\n"
         classString += "}"
-
+        
         return classString
     }
 }
