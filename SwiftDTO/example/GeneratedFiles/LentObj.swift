@@ -92,7 +92,6 @@ public struct LentObj: Obj, JSOBJSerializable, DictionaryConvertible, CustomStri
         if let to = to { returnString.append("    \(prefix)\"to\": \"\(stringFromDate(to))\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"to\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

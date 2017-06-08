@@ -99,7 +99,6 @@ public struct Poi: GeographicPosition, JSOBJSerializable, DictionaryConvertible,
         if let tripPurpose = tripPurpose { returnString.append("    \(prefix)\"tripPurpose\": \("\(tripPurpose.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"tripPurpose\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

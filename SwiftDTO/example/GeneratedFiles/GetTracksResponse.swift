@@ -80,7 +80,6 @@ public struct GetTracksResponse: SessionResponse, DefaultResponse, Information, 
         if let trks = trks { returnString.append("    \(prefix)\"trks\": \("\(trks.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"trks\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

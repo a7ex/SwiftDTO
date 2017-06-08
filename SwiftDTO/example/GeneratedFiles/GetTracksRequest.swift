@@ -84,7 +84,6 @@ public struct GetTracksRequest: SessionRequest, DefaultRequest, JSOBJSerializabl
         if let validated = validated { returnString.append("    \(prefix)\"validated\": \(validated),\n") }
         else if printNulls { returnString.append("    \(prefix)\"validated\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

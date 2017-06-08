@@ -14,6 +14,10 @@ import Foundation
 /// adjust it for your needs, it is used for the header of each swift file
 let copyRightString = "Copyright (c) 2016 Farbflash. All rights reserved."
 
+enum OutputType {
+    case swift, java
+}
+
 if CommandLine.arguments.count < 3 {
     // Expecting a string but didn't receive it
     writeToStdError("Expected string argument defining the output folder and at least one path to an XML file!\n")

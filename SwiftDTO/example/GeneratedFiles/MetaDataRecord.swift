@@ -60,7 +60,6 @@ public struct MetaDataRecord: JSOBJSerializable, DictionaryConvertible, CustomSt
         if let val = val { returnString.append("    \(prefix)\"val\": \"\(val)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"val\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

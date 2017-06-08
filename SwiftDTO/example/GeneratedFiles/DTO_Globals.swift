@@ -28,17 +28,17 @@ public protocol JSOBJSerializable {
 
 struct DTODiagnostics {
 
+    // set the following boolean to false to also get diagnostic console output
+    // for keys, which exits in the DTO, but not in the JSON
+    // Since that is more often the case, the default for 'onlyShowAdditionKeys' is true
+    static let onlyShowAdditionKeys = true
+
     /// If in DEBUG mode we call this in order to list differences between
     /// the expected JSON and the actually received JSON
     /// If there are any, print the differences into the console
     static func analize(jsonData: JSOBJ, expectedKeys: Set<String>, inClassWithName clsName: String) {
         let allKeys = Set(jsonData.keys)
         let additionalKeys = allKeys.subtracting(expectedKeys)
-
-        // set the following boolean to false to also get diagnostic console output
-        // for keys, which exits in the DTO, but not in the JSON
-        // Since that is more often the case, the default for 'onlyShowAdditionKeys' is true
-        let onlyShowAdditionKeys = true
 
         let missingKeys = onlyShowAdditionKeys ? Set<String>(): expectedKeys.subtracting(allKeys)
         if missingKeys.isEmpty, additionalKeys.isEmpty { return }
@@ -49,7 +49,7 @@ struct DTODiagnostics {
     }
 
     static func unknownEnumCase(_ enumCase: String?, inEnum enumName: String) {
-        print("\n-------------------\nConradDTO debug data: Missing case \"\(enumCase)\" in Enum: \"\(enumName)\":")
+        print("\n-------------------\nConradDTO debug data: Missing case \"\(String(describing: enumCase))\" in Enum: \"\(enumName)\":")
         print("-------------------\n")
     }
 }

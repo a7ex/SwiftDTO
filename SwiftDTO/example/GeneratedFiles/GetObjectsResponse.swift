@@ -81,7 +81,6 @@ public struct GetObjectsResponse: DefaultResponse, Information, JSOBJSerializabl
         if let nonLentObjs = nonLentObjs { returnString.append("    \(prefix)\"nonLentObjs\": \("\(nonLentObjs.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"nonLentObjs\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

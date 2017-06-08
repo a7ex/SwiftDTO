@@ -106,7 +106,6 @@ public struct Company: GeographicPosition, JSOBJSerializable, DictionaryConverti
         if let website = website { returnString.append("    \(prefix)\"website\": \"\(website)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"website\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

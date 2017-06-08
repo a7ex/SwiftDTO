@@ -63,7 +63,6 @@ public struct ResetPasswordRequest: DefaultRequest, JSOBJSerializable, Dictionar
         if let email = email { returnString.append("    \(prefix)\"email\": \"\(email)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"email\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

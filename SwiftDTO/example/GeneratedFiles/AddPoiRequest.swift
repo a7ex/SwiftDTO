@@ -18,7 +18,6 @@ public struct AddPoiRequest: AbstractPoiRequest, SessionRequest, DefaultRequest,
     public let session: String?
     public let locale: String?
 
-
     // Default initializer:
     public init(poi: Poi?, session: String?, locale: String?) {
         self.poi = poi
@@ -33,7 +32,6 @@ public struct AddPoiRequest: AbstractPoiRequest, SessionRequest, DefaultRequest,
         else { poi = nil }
         session = stringFromAny(jsonData["session"])
         locale = stringFromAny(jsonData["locale"])
-
 
         #if DEBUG
             DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: "AddPoiRequest")
@@ -70,7 +68,6 @@ public struct AddPoiRequest: AbstractPoiRequest, SessionRequest, DefaultRequest,
 
         if let locale = locale { returnString.append("    \(prefix)\"locale\": \"\(locale)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"locale\": null,\n") }
-
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))

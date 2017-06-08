@@ -78,7 +78,6 @@ public struct TravelStatisticPerTrafficMode: TravelStatistic, JSOBJSerializable,
         if let tfcMode = tfcMode { returnString.append("    \(prefix)\"tfcMode\": \("\(tfcMode.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"tfcMode\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

@@ -98,7 +98,6 @@ public struct TrackingData: GeographicPosition, JSOBJSerializable, DictionaryCon
         if let ts = ts { returnString.append("    \(prefix)\"ts\": \"\(stringFromDate(ts))\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"ts\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

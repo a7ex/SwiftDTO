@@ -74,7 +74,6 @@ public struct AcceleratorData: JSOBJSerializable, DictionaryConvertible, CustomS
         if let z = z { returnString.append("    \(prefix)\"z\": \(z),\n") }
         else if printNulls { returnString.append("    \(prefix)\"z\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

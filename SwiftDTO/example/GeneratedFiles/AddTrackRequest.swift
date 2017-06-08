@@ -18,7 +18,6 @@ public struct AddTrackRequest: AbstractTrackRequest, SessionRequest, DefaultRequ
     public let session: String?
     public let locale: String?
 
-
     // Default initializer:
     public init(trk: Track?, session: String?, locale: String?) {
         self.trk = trk
@@ -33,7 +32,6 @@ public struct AddTrackRequest: AbstractTrackRequest, SessionRequest, DefaultRequ
         else { trk = nil }
         session = stringFromAny(jsonData["session"])
         locale = stringFromAny(jsonData["locale"])
-
 
         #if DEBUG
             DTODiagnostics.analize(jsonData: jsonData, expectedKeys: allExpectedKeys, inClassWithName: "AddTrackRequest")
@@ -70,7 +68,6 @@ public struct AddTrackRequest: AbstractTrackRequest, SessionRequest, DefaultRequ
 
         if let locale = locale { returnString.append("    \(prefix)\"locale\": \"\(locale)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"locale\": null,\n") }
-
 
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))

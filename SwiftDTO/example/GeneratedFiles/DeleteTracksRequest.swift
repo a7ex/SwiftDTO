@@ -70,7 +70,6 @@ public struct DeleteTracksRequest: SessionRequest, DefaultRequest, JSOBJSerializ
         if let trkIds = trkIds { returnString.append("    \(prefix)\"trkIds\": \(trkIds),\n") }
         else if printNulls { returnString.append("    \(prefix)\"trkIds\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

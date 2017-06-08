@@ -112,7 +112,6 @@ public struct OverallStatistic: TravelStatistic, JSOBJSerializable, DictionaryCo
         if let noOfUsedObjsToday = noOfUsedObjsToday { returnString.append("    \(prefix)\"noOfUsedObjsToday\": \(noOfUsedObjsToday),\n") }
         else if printNulls { returnString.append("    \(prefix)\"noOfUsedObjsToday\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

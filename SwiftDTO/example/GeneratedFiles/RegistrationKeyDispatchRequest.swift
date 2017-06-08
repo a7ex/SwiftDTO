@@ -98,7 +98,6 @@ public struct RegistrationKeyDispatchRequest: SessionRequest, DefaultRequest, JS
         if let rcptsInCc = rcptsInCc { returnString.append("    \(prefix)\"rcptsInCc\": \"\(rcptsInCc)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"rcptsInCc\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

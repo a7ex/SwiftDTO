@@ -73,7 +73,6 @@ public struct GetCompaniesResponse: DefaultResponse, Information, JSOBJSerializa
         if let companies = companies { returnString.append("    \(prefix)\"companies\": \("\(companies.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"companies\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

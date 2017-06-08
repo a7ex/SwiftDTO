@@ -70,7 +70,6 @@ public struct DeletePoiRequest: SessionRequest, DefaultRequest, JSOBJSerializabl
         if let id = id { returnString.append("    \(prefix)\"id\": \(id),\n") }
         else if printNulls { returnString.append("    \(prefix)\"id\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

@@ -70,7 +70,6 @@ public struct Profile: JSOBJSerializable, DictionaryConvertible, CustomStringCon
         if let statPerTfcModeList = statPerTfcModeList { returnString.append("    \(prefix)\"statPerTfcModeList\": \("\(statPerTfcModeList.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"statPerTfcModeList\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

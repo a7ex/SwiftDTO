@@ -70,7 +70,6 @@ public struct CompanyVerificationRequest: DefaultRequest, JSOBJSerializable, Dic
         if let txtId = txtId { returnString.append("    \(prefix)\"txtId\": \"\(txtId)\",\n") }
         else if printNulls { returnString.append("    \(prefix)\"txtId\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

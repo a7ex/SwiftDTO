@@ -61,7 +61,6 @@ public struct AgeGroupPerHousehold: JSOBJSerializable, DictionaryConvertible, Cu
         if let noOfPers = noOfPers { returnString.append("    \(prefix)\"noOfPers\": \(noOfPers),\n") }
         else if printNulls { returnString.append("    \(prefix)\"noOfPers\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"

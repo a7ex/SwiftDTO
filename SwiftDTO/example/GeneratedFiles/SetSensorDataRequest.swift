@@ -86,7 +86,6 @@ public struct SetSensorDataRequest: SessionRequest, DefaultRequest, JSOBJSeriali
         if let trkgDtList = trkgDtList { returnString.append("    \(prefix)\"trkgDtList\": \("\(trkgDtList.jsonString(paddingPrefix: "\(prefix)    ", printNulls: printNulls))"),\n") }
         else if printNulls { returnString.append("    \(prefix)\"trkgDtList\": null,\n") }
 
-
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: "\n"))
         returnString = returnString.trimmingCharacters(in: CharacterSet(charactersIn: ","))
         returnString += "\n\(prefix)}"
