@@ -21,7 +21,7 @@ struct CliArguments {
     let mode: OutputType
 
     init() {
-        let cliArguments = CLIArgsParser.processCLIArgs(cliParams: CommandLine.arguments)
+        let cliArguments = CLIArgsParser.processCLIArgs(cliParams: CommandLine.arguments, mapping: CliArguments.expandedPropertyName)
         self.init(with: cliArguments)
     }
 
@@ -47,6 +47,15 @@ struct CliArguments {
         print("  -d, --destination:\n    The path to a directory to write the generated files to.")
         print("  -m, --mode:\n    The output mode. The format of the output files. Can be one of the follwoing values: swift (or: s), java (or: j).")
         print("\n  all remaining parameters are considered paths to xml input files\n\n")
+    }
+
+    static func expandedPropertyName(for shortform: String) -> String {
+        switch shortform {
+        case "d": return "destination"
+        case "h", "?": return "help"
+        case "m": return "mode"
+        default: return shortform
+        }
     }
 }
 

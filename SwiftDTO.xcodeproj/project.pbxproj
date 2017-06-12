@@ -7,74 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		367046B91EDC03CF009B392A /* LentObj.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046B81EDC03CF009B392A /* LentObj.swift */; };
-		367046FE1EDC03DA009B392A /* GetPersonsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046BA1EDC03DA009B392A /* GetPersonsResponse.swift */; };
-		367046FF1EDC03DA009B392A /* GetPoisResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046BB1EDC03DA009B392A /* GetPoisResponse.swift */; };
-		367047001EDC03DA009B392A /* GetStatisticResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046BC1EDC03DA009B392A /* GetStatisticResponse.swift */; };
-		367047011EDC03DA009B392A /* GetTracksRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046BD1EDC03DA009B392A /* GetTracksRequest.swift */; };
-		367047021EDC03DA009B392A /* GetTracksResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046BE1EDC03DA009B392A /* GetTracksResponse.swift */; };
-		367047031EDC03DA009B392A /* Graduation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046BF1EDC03DA009B392A /* Graduation.swift */; };
-		367047041EDC03DA009B392A /* LoginRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C01EDC03DA009B392A /* LoginRequest.swift */; };
-		367047051EDC03DA009B392A /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C11EDC03DA009B392A /* LoginResponse.swift */; };
-		367047061EDC03DA009B392A /* MetaDataRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C21EDC03DA009B392A /* MetaDataRecord.swift */; };
-		367047071EDC03DA009B392A /* ObjType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C31EDC03DA009B392A /* ObjType.swift */; };
-		367047081EDC03DA009B392A /* Occupation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C41EDC03DA009B392A /* Occupation.swift */; };
-		367047091EDC03DA009B392A /* OverallStatistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C51EDC03DA009B392A /* OverallStatistic.swift */; };
-		3670470A1EDC03DA009B392A /* PersonalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C61EDC03DA009B392A /* PersonalData.swift */; };
-		3670470B1EDC03DA009B392A /* Poi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C71EDC03DA009B392A /* Poi.swift */; };
-		3670470C1EDC03DA009B392A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C81EDC03DA009B392A /* Profile.swift */; };
-		3670470D1EDC03DA009B392A /* RegistrationKeyDispatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046C91EDC03DA009B392A /* RegistrationKeyDispatchRequest.swift */; };
-		3670470E1EDC03DA009B392A /* RegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046CA1EDC03DA009B392A /* RegistrationRequest.swift */; };
-		3670470F1EDC03DA009B392A /* ResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046CB1EDC03DA009B392A /* ResetPasswordRequest.swift */; };
-		367047101EDC03DA009B392A /* Role.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046CC1EDC03DA009B392A /* Role.swift */; };
-		367047111EDC03DA009B392A /* SalaryLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046CD1EDC03DA009B392A /* SalaryLevel.swift */; };
-		367047121EDC03DA009B392A /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046CE1EDC03DA009B392A /* Segment.swift */; };
-		367047131EDC03DA009B392A /* SetSensorDataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046CF1EDC03DA009B392A /* SetSensorDataRequest.swift */; };
-		367047141EDC03DA009B392A /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D01EDC03DA009B392A /* Track.swift */; };
-		367047151EDC03DA009B392A /* TrackingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D11EDC03DA009B392A /* TrackingData.swift */; };
-		367047161EDC03DA009B392A /* TrafficMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D21EDC03DA009B392A /* TrafficMode.swift */; };
-		367047171EDC03DA009B392A /* TravelStatisticPerTrafficMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D31EDC03DA009B392A /* TravelStatisticPerTrafficMode.swift */; };
-		367047181EDC03DA009B392A /* TripPurpose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D41EDC03DA009B392A /* TripPurpose.swift */; };
-		367047191EDC03DA009B392A /* UpdatePasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D51EDC03DA009B392A /* UpdatePasswordRequest.swift */; };
-		3670471A1EDC03DA009B392A /* UpdatePersonalDataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D61EDC03DA009B392A /* UpdatePersonalDataRequest.swift */; };
-		3670471B1EDC03DA009B392A /* UpdatePoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D71EDC03DA009B392A /* UpdatePoiRequest.swift */; };
-		3670471C1EDC03DA009B392A /* UpdateTrackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D81EDC03DA009B392A /* UpdateTrackRequest.swift */; };
-		3670471D1EDC03DA009B392A /* AcceleratorData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046D91EDC03DA009B392A /* AcceleratorData.swift */; };
-		3670471E1EDC03DA009B392A /* AddPoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046DA1EDC03DA009B392A /* AddPoiRequest.swift */; };
-		3670471F1EDC03DA009B392A /* AddTrackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046DB1EDC03DA009B392A /* AddTrackRequest.swift */; };
-		367047201EDC03DA009B392A /* AddTrackResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046DC1EDC03DA009B392A /* AddTrackResponse.swift */; };
-		367047211EDC03DA009B392A /* AgeGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046DD1EDC03DA009B392A /* AgeGroup.swift */; };
-		367047221EDC03DA009B392A /* AgeGroupPerHousehold.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046DE1EDC03DA009B392A /* AgeGroupPerHousehold.swift */; };
-		367047231EDC03DA009B392A /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046DF1EDC03DA009B392A /* Company.swift */; };
-		367047241EDC03DA009B392A /* CompanyVerificationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046E01EDC03DA009B392A /* CompanyVerificationRequest.swift */; };
-		367047251EDC03DA009B392A /* CompanyVerificationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046E11EDC03DA009B392A /* CompanyVerificationResponse.swift */; };
-		367047261EDC03DA009B392A /* DeletePoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046E21EDC03DA009B392A /* DeletePoiRequest.swift */; };
-		367047271EDC03DA009B392A /* DeleteTracksRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046E31EDC03DA009B392A /* DeleteTracksRequest.swift */; };
-		367047281EDC03DA009B392A /* GetCompaniesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046E41EDC03DA009B392A /* GetCompaniesResponse.swift */; };
-		367047291EDC03DA009B392A /* GetObjectsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046E51EDC03DA009B392A /* GetObjectsResponse.swift */; };
-		3670472A1EDC03DA009B392A /* GetPersonalDataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046E61EDC03DA009B392A /* GetPersonalDataResponse.swift */; };
-		3670472B1EDC03DA009B392A /* GetPersonsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046E71EDC03DA009B392A /* GetPersonsRequest.swift */; };
-		3670472C1EDC03DA009B392A /* AbstractTrackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046E91EDC03DA009B392A /* AbstractTrackRequest.swift */; };
-		3670472D1EDC03DA009B392A /* SetTrackingActionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046EA1EDC03DA009B392A /* SetTrackingActionRequest.swift */; };
-		3670472E1EDC03DA009B392A /* TrackingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046EB1EDC03DA009B392A /* TrackingAction.swift */; };
-		3670472F1EDC03DA009B392A /* Obj.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046EC1EDC03DA009B392A /* Obj.swift */; };
-		367047301EDC03DA009B392A /* TravelStatistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046ED1EDC03DA009B392A /* TravelStatistic.swift */; };
-		367047311EDC03DA009B392A /* PersonalStatisticPerTrafficMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046EE1EDC03DA009B392A /* PersonalStatisticPerTrafficMode.swift */; };
-		367047321EDC03DA009B392A /* AbstractPoiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046EF1EDC03DA009B392A /* AbstractPoiRequest.swift */; };
-		367047331EDC03DA009B392A /* DefaultRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F01EDC03DA009B392A /* DefaultRequest.swift */; };
-		367047341EDC03DA009B392A /* DefaultResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F11EDC03DA009B392A /* DefaultResponse.swift */; };
-		367047351EDC03DA009B392A /* DTO_Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F21EDC03DA009B392A /* DTO_Globals.swift */; };
-		367047361EDC03DA009B392A /* GeographicPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F31EDC03DA009B392A /* GeographicPosition.swift */; };
-		367047371EDC03DA009B392A /* Information.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F41EDC03DA009B392A /* Information.swift */; };
-		367047381EDC03DA009B392A /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F51EDC03DA009B392A /* Person.swift */; };
-		367047391EDC03DA009B392A /* QuantifiableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F61EDC03DA009B392A /* QuantifiableError.swift */; };
-		3670473A1EDC03DA009B392A /* QuantifiableWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F71EDC03DA009B392A /* QuantifiableWarning.swift */; };
-		3670473B1EDC03DA009B392A /* RoleConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F81EDC03DA009B392A /* RoleConstant.swift */; };
-		3670473C1EDC03DA009B392A /* SessionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046F91EDC03DA009B392A /* SessionRequest.swift */; };
-		3670473D1EDC03DA009B392A /* SessionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046FA1EDC03DA009B392A /* SessionResponse.swift */; };
-		3670473E1EDC03DA009B392A /* TrafficModeConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046FB1EDC03DA009B392A /* TrafficModeConstant.swift */; };
-		3670473F1EDC03DA009B392A /* Warning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046FC1EDC03DA009B392A /* Warning.swift */; };
-		367047401EDC03DA009B392A /* DTOError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367046FD1EDC03DA009B392A /* DTOError.swift */; };
 		369F5BF61EA287FA005A229A /* myDTO.xcdatamodel in CopyFiles */ = {isa = PBXBuildFile; fileRef = 369F5BF51EA287EC005A229A /* myDTO.xcdatamodel */; };
 		FA8207851DE2D7DF00333F8D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8207841DE2D7DF00333F8D /* main.swift */; };
 		FAA9D4891EE943C300C75ADE /* HelperFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9D47E1EE9435900C75ADE /* HelperFunctions.swift */; };
@@ -88,6 +20,8 @@
 		FAA9D4931EE9489C00C75ADE /* OptionalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9D4921EE9489C00C75ADE /* OptionalExtension.swift */; };
 		FAE61ADA1EE94AC000C1E9E1 /* XML2JavaFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE61AD91EE94AC000C1E9E1 /* XML2JavaFiles.swift */; };
 		FAE61AEE1EE9680600C1E9E1 /* BaseExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE61AED1EE9680600C1E9E1 /* BaseExporter.swift */; };
+		FAF00F9B1EEEC76400661FC8 /* DTO_Globals.swift in CopyFiles */ = {isa = PBXBuildFile; fileRef = FAA9D4881EE9436900C75ADE /* DTO_Globals.swift */; };
+		FAF00F9C1EEEC76D00661FC8 /* Readme.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = FAA9D48C1EE943F100C75ADE /* Readme.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -97,6 +31,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
+				FAF00F9C1EEEC76D00661FC8 /* Readme.txt in CopyFiles */,
+				FAF00F9B1EEEC76400661FC8 /* DTO_Globals.swift in CopyFiles */,
 				369F5BF61EA287FA005A229A /* myDTO.xcdatamodel in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -473,86 +409,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				367047371EDC03DA009B392A /* Information.swift in Sources */,
-				367047241EDC03DA009B392A /* CompanyVerificationRequest.swift in Sources */,
-				3670471E1EDC03DA009B392A /* AddPoiRequest.swift in Sources */,
-				3670471A1EDC03DA009B392A /* UpdatePersonalDataRequest.swift in Sources */,
-				3670471B1EDC03DA009B392A /* UpdatePoiRequest.swift in Sources */,
-				367047341EDC03DA009B392A /* DefaultResponse.swift in Sources */,
-				3670470F1EDC03DA009B392A /* ResetPasswordRequest.swift in Sources */,
 				FAA9D48E1EE9440300C75ADE /* CliArguments.swift in Sources */,
-				367047331EDC03DA009B392A /* DefaultRequest.swift in Sources */,
-				367047361EDC03DA009B392A /* GeographicPosition.swift in Sources */,
-				367047301EDC03DA009B392A /* TravelStatistic.swift in Sources */,
-				367047391EDC03DA009B392A /* QuantifiableError.swift in Sources */,
-				367047291EDC03DA009B392A /* GetObjectsResponse.swift in Sources */,
-				3670470C1EDC03DA009B392A /* Profile.swift in Sources */,
-				367047041EDC03DA009B392A /* LoginRequest.swift in Sources */,
 				FAA9D48B1EE943CB00C75ADE /* String+COAdditions.swift in Sources */,
-				3670471F1EDC03DA009B392A /* AddTrackRequest.swift in Sources */,
 				FAE61AEE1EE9680600C1E9E1 /* BaseExporter.swift in Sources */,
 				FA8207851DE2D7DF00333F8D /* main.swift in Sources */,
-				3670470A1EDC03DA009B392A /* PersonalData.swift in Sources */,
-				3670472A1EDC03DA009B392A /* GetPersonalDataResponse.swift in Sources */,
-				3670472F1EDC03DA009B392A /* Obj.swift in Sources */,
-				3670473B1EDC03DA009B392A /* RoleConstant.swift in Sources */,
 				FAA9D4911EE9440600C75ADE /* XMLModelParser.swift in Sources */,
-				367047091EDC03DA009B392A /* OverallStatistic.swift in Sources */,
-				367047131EDC03DA009B392A /* SetSensorDataRequest.swift in Sources */,
-				367047221EDC03DA009B392A /* AgeGroupPerHousehold.swift in Sources */,
-				367047081EDC03DA009B392A /* Occupation.swift in Sources */,
 				FAA9D4931EE9489C00C75ADE /* OptionalExtension.swift in Sources */,
-				367047051EDC03DA009B392A /* LoginResponse.swift in Sources */,
-				367047021EDC03DA009B392A /* GetTracksResponse.swift in Sources */,
-				367047381EDC03DA009B392A /* Person.swift in Sources */,
-				367047061EDC03DA009B392A /* MetaDataRecord.swift in Sources */,
-				367047211EDC03DA009B392A /* AgeGroup.swift in Sources */,
-				367046FE1EDC03DA009B392A /* GetPersonsResponse.swift in Sources */,
 				FAA9D4901EE9440300C75ADE /* RESTProperty.swift in Sources */,
-				367047121EDC03DA009B392A /* Segment.swift in Sources */,
-				367046FF1EDC03DA009B392A /* GetPoisResponse.swift in Sources */,
-				367047111EDC03DA009B392A /* SalaryLevel.swift in Sources */,
-				367047031EDC03DA009B392A /* Graduation.swift in Sources */,
-				3670470E1EDC03DA009B392A /* RegistrationRequest.swift in Sources */,
 				FAA9D4891EE943C300C75ADE /* HelperFunctions.swift in Sources */,
-				367047181EDC03DA009B392A /* TripPurpose.swift in Sources */,
-				3670473A1EDC03DA009B392A /* QuantifiableWarning.swift in Sources */,
-				367047281EDC03DA009B392A /* GetCompaniesResponse.swift in Sources */,
-				367047071EDC03DA009B392A /* ObjType.swift in Sources */,
-				3670473C1EDC03DA009B392A /* SessionRequest.swift in Sources */,
-				367046B91EDC03CF009B392A /* LentObj.swift in Sources */,
-				3670470B1EDC03DA009B392A /* Poi.swift in Sources */,
-				3670470D1EDC03DA009B392A /* RegistrationKeyDispatchRequest.swift in Sources */,
-				367047261EDC03DA009B392A /* DeletePoiRequest.swift in Sources */,
-				367047151EDC03DA009B392A /* TrackingData.swift in Sources */,
 				FAA9D48F1EE9440300C75ADE /* ProtocolDeclaration.swift in Sources */,
-				367047201EDC03DA009B392A /* AddTrackResponse.swift in Sources */,
-				3670472C1EDC03DA009B392A /* AbstractTrackRequest.swift in Sources */,
-				367047401EDC03DA009B392A /* DTOError.swift in Sources */,
-				367047311EDC03DA009B392A /* PersonalStatisticPerTrafficMode.swift in Sources */,
-				367047101EDC03DA009B392A /* Role.swift in Sources */,
-				367047191EDC03DA009B392A /* UpdatePasswordRequest.swift in Sources */,
-				367047161EDC03DA009B392A /* TrafficMode.swift in Sources */,
-				367047001EDC03DA009B392A /* GetStatisticResponse.swift in Sources */,
-				367047141EDC03DA009B392A /* Track.swift in Sources */,
-				3670473E1EDC03DA009B392A /* TrafficModeConstant.swift in Sources */,
-				3670472E1EDC03DA009B392A /* TrackingAction.swift in Sources */,
 				FAA9D48A1EE943C600C75ADE /* CLIArgsParser.swift in Sources */,
-				3670473F1EDC03DA009B392A /* Warning.swift in Sources */,
-				3670473D1EDC03DA009B392A /* SessionResponse.swift in Sources */,
-				367047011EDC03DA009B392A /* GetTracksRequest.swift in Sources */,
-				3670472D1EDC03DA009B392A /* SetTrackingActionRequest.swift in Sources */,
-				367047351EDC03DA009B392A /* DTO_Globals.swift in Sources */,
-				367047231EDC03DA009B392A /* Company.swift in Sources */,
-				367047321EDC03DA009B392A /* AbstractPoiRequest.swift in Sources */,
-				3670472B1EDC03DA009B392A /* GetPersonsRequest.swift in Sources */,
-				3670471C1EDC03DA009B392A /* UpdateTrackRequest.swift in Sources */,
-				367047171EDC03DA009B392A /* TravelStatisticPerTrafficMode.swift in Sources */,
 				FAA9D48D1EE943FE00C75ADE /* XML2SwiftFiles.swift in Sources */,
-				3670471D1EDC03DA009B392A /* AcceleratorData.swift in Sources */,
-				367047271EDC03DA009B392A /* DeleteTracksRequest.swift in Sources */,
 				FAE61ADA1EE94AC000C1E9E1 /* XML2JavaFiles.swift in Sources */,
-				367047251EDC03DA009B392A /* CompanyVerificationResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

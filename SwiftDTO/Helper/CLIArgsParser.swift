@@ -15,7 +15,7 @@ enum SpecialCliArgsParserKeys: String {
 }
 
 struct CLIArgsParser {
-    static func processCLIArgs(cliParams: [String]) -> [String: Any] {
+    static func processCLIArgs(cliParams: [String], mapping: ((String) -> String) = { return $0 }) -> [String: Any] {
         var args = [String: Any]()
         var currentParamName = ""
         var unnamedParams = [String]()
@@ -28,7 +28,7 @@ struct CLIArgsParser {
             }
             if thisParam.hasPrefix("--") {
                 if !currentParamName.isEmpty {
-                    args[currentParamName] = true
+                    args[mapping(currentParamName)] = true
                 }
                 currentParamName = thisParam.substring(from: thisParam.characters.index(thisParam.startIndex, offsetBy: 2))
             } else if thisParam.hasPrefix("-") {
@@ -38,7 +38,7 @@ struct CLIArgsParser {
                 let num = switches.substring(to: switches.characters.index(switches.startIndex, offsetBy: 1))
                 if "0123456789".contains(num) {
                     if !currentParamName.isEmpty {
-                        args[currentParamName] = thisParam
+                        args[mapping(currentParamName)] = thisParam
                         currentParamName = ""
                     } else {
                         unnamedParams.append(thisParam)
@@ -46,12 +46,12 @@ struct CLIArgsParser {
 
                 } else {
                     if !currentParamName.isEmpty {
-                        args[currentParamName] = true
+                        args[mapping(currentParamName)] = true
                     }
 
                     for (index, thisChar) in switches.characters.enumerated() {
                         if index < switches.characters.count - 1 {
-                            args[String(thisChar)] = true
+                            args[mapping(String(thisChar))] = true
                         } else {
                             currentParamName = String(thisChar)
                         }
@@ -59,7 +59,7 @@ struct CLIArgsParser {
                 }
             } else {
                 if !currentParamName.isEmpty {
-                    args[currentParamName] = thisParam
+                    args[mapping(currentParamName)] = thisParam
                     currentParamName = ""
                 } else {
                     unnamedParams.append(thisParam)
@@ -67,7 +67,7 @@ struct CLIArgsParser {
             }
         }
         if !currentParamName.isEmpty {
-            args[currentParamName] = true
+            args[mapping(currentParamName)] = true
         }
         args[SpecialCliArgsParserKeys.unnamed.rawValue] = unnamedParams
         return args

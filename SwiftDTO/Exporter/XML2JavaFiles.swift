@@ -65,7 +65,7 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
         for property in restprops {
             classString += indent + "\(property.javaDeclarationString)\n"
         }
-        
+
         classString += "}"
         return classString
     }

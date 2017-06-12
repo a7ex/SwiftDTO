@@ -341,7 +341,7 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
                 classString += "\(indent)\(indent)}\n"
                 classString += "\(indent)}\n"
                 classString += "}"
-                
+
                 return classString
             }
         }
@@ -350,7 +350,7 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
         classString += "\(indent)\(indent)return \(consumer)(jsonData: json)\n"
         classString += "\(indent)}\n"
         classString += "}"
-        
+
         return classString
     }
 }
