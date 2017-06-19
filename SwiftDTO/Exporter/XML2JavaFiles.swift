@@ -82,9 +82,9 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
             if !firstTime { classString += ", " }
             firstTime = false
             if thisProp.isArray {
-classString += "List<\(RESTProperty.mapTypeToJava(swiftType: thisProp.primitiveType))> \(thisProp.name)"
+                classString += "List<\(RESTProperty.mapTypeToJava(swiftType: thisProp.primitiveType))> \(thisProp.name)"
             } else {
-            classString += "\(RESTProperty.mapTypeToJava(swiftType: thisProp.type)) \(thisProp.name)"
+                classString += "\(RESTProperty.mapTypeToJava(swiftType: thisProp.type)) \(thisProp.name)"
             }
         }
         for thisProp in restprops {
@@ -93,7 +93,7 @@ classString += "List<\(RESTProperty.mapTypeToJava(swiftType: thisProp.primitiveT
             if thisProp.isArray {
                 classString += "List<\(RESTProperty.mapTypeToJava(swiftType: thisProp.primitiveType))> \(thisProp.name)"
             } else {
-            classString += "\(RESTProperty.mapTypeToJava(swiftType: thisProp.type)) \(thisProp.name)"
+                classString += "\(RESTProperty.mapTypeToJava(swiftType: thisProp.type)) \(thisProp.name)"
             }
         }
         classString += ") {"
@@ -120,7 +120,7 @@ classString += "List<\(RESTProperty.mapTypeToJava(swiftType: thisProp.primitiveT
         classString += "\n\(indent)}"
         classString += "\n"
         if parentProtocol != nil {
-        classString += "\n\(indent)@Override"
+            classString += "\n\(indent)@Override"
         }
         classString += "\n\(indent)public Map<String, Object> asParameterMap() {"
         if parentProtocol != nil {
