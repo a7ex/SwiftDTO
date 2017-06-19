@@ -262,7 +262,7 @@ struct RESTProperty {
         if isEnum {
             return "\(indent)\(name.uppercased())(\"\(jsonProperty)\")"
         } else {
-            return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)private \(RESTProperty.mapTypeToJava(swiftType: type)) \(name);"
+            return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)public final \(RESTProperty.mapTypeToJava(swiftType: type)) \(name);"
         }
     }
 
