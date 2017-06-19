@@ -79,10 +79,15 @@ struct RESTProperty {
         name = propname
         jsonProperty = propname
 
-        if let propmaxOccurs = wsdlElement.attribute(forName: "maxOccurs")?.stringValue,
-            let maxOcc = Int(propmaxOccurs),
-            maxOcc > 1 {
-            isArray = true
+        if let propmaxOccurs = wsdlElement.attribute(forName: "maxOccurs")?.stringValue {
+            if let maxOcc = Int(propmaxOccurs),
+                maxOcc > 1 {
+                isArray = true
+            } else if propmaxOccurs == "unbounded" {
+                isArray = true
+            } else {
+                isArray = false
+            }
         } else {
             isArray = false
         }
@@ -116,8 +121,12 @@ struct RESTProperty {
         default:
             primType = proptype
         }
-            if isArray { type = "[\(primType)]" }
-            else { type = primType }
+
+        if isArray {
+            type = "[\(primType)]"
+        } else {
+            type = primType
+        }
 
         primitiveType = primType
         isPrimitiveType = isPrimType
@@ -262,7 +271,11 @@ struct RESTProperty {
         if isEnum {
             return "\(indent)\(name.uppercased())(\"\(jsonProperty)\")"
         } else {
-            return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)public final \(RESTProperty.mapTypeToJava(swiftType: type)) \(name);"
+            if isArray {
+                return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)public final List<\(RESTProperty.mapTypeToJava(swiftType: primitiveType))> \(name);"
+            } else {
+                return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)public final \(RESTProperty.mapTypeToJava(swiftType: type)) \(name);"
+            }
         }
     }
 

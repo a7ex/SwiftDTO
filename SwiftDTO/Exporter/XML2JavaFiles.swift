@@ -81,13 +81,20 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
         for thisProp in allRestProps {
             if !firstTime { classString += ", " }
             firstTime = false
-
+            if thisProp.isArray {
+classString += "List<\(RESTProperty.mapTypeToJava(swiftType: thisProp.primitiveType))> \(thisProp.name)"
+            } else {
             classString += "\(RESTProperty.mapTypeToJava(swiftType: thisProp.type)) \(thisProp.name)"
+            }
         }
         for thisProp in restprops {
             if !firstTime { classString += ", " }
             firstTime = false
+            if thisProp.isArray {
+                classString += "List<\(RESTProperty.mapTypeToJava(swiftType: thisProp.primitiveType))> \(thisProp.name)"
+            } else {
             classString += "\(RESTProperty.mapTypeToJava(swiftType: thisProp.type)) \(thisProp.name)"
+            }
         }
         classString += ") {"
 
