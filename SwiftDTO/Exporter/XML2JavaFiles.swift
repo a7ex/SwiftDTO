@@ -27,7 +27,10 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
 
         var classString = parser.headerStringFor(filename: className, fileExtension: "java", fromWSDL: parser.coreDataEntities.isEmpty)
 
-        classString += "include Some.Java.Classes\n\npublic class \(className)"
+        classString += "\npackage data.api.model;\n\n"
+        classString += "import com.google.gson.annotations.Expose;\n"
+        classString += "import com.google.gson.annotations.SerializedName;\n"
+        classString += "public class \(className)"
         if parentProtocol != nil {
             classString += " extends \(parentProtocol!.name)"
         }
@@ -59,13 +62,22 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
 
         var classString = parser.headerStringFor(filename: className, fileExtension: "java", fromWSDL: parser.coreDataEntities.isEmpty)
 
-        classString += "include Some.Java.Classes\n\npublic enum \(className): \(enumParentName) {\n"
+        classString += "\npackage data.api.model;\n\n"
+        classString += "public enum \(className) {\n"
 
-        var hasRelations = false
+//        var hasRelations = false
+        var first = true
         for property in restprops {
-            classString += indent + "\(property.javaDeclarationString)\n"
+            if !first { classString += ",\n" }
+            first = false
+            classString += "\(property.javaDeclarationString)"
         }
 
+        classString += "\n\tpublic final String value;"
+        classString += "\n\t\(className)(String value){\n"
+        classString += "\n\t\tthis.value = value;\n\t}"
+
+        classString += "\n"
         classString += "}"
         return classString
     }

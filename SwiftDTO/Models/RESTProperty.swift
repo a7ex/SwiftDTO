@@ -249,7 +249,11 @@ struct RESTProperty {
     }
 
     var javaDeclarationString: String {
-        return "//TODO"
+        if isEnum {
+            return "\t\(name.uppercased())(\"\(jsonProperty)\")"
+        } else {
+            return "\t@SerializedName(\"\(jsonProperty)\")\n\t@Expose\n\tprivate \(type) \(name);"
+        }
     }
 
     var upperCasedInitializer: String {
