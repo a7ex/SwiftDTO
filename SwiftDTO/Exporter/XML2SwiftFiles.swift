@@ -25,7 +25,7 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
     }
 
     override func fileExtensionForCurrentOutputType() -> String {
-        return "java"
+        return "swift"
     }
 
     override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
