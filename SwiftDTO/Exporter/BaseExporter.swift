@@ -32,12 +32,17 @@ class BaseExporter {
         return "Override 'generateProtocolFileForProtocol()' in your concrete subclass of BaseExporter!"
     }
 
+    func fileExtensionForCurrentOutputType() -> String {
+        // Override in concrete subclass. This is the default: -> swift
+        return "swift"
+    }
+
     final func generateEnums(inDirectory outputDir: String) {
         for enumInfo in parser.enums {
             if let content = generateEnumFileForEntityFinally(enumInfo.restprops,
                                                               withName: enumInfo.name,
                                                               enumParentName: enumInfo.typeName) {
-                writeContent(content, toFileAtPath: pathForClassName(enumInfo.name, inFolder: outputDir))
+                writeContent(content, toFileAtPath: pathForClassName(enumInfo.name, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
             }
         }
     }
@@ -46,7 +51,7 @@ class BaseExporter {
         for complexType in parser.complexTypesInfos where parser.protocolNames.contains(complexType.name) {
             // write protocol files to disk:
             if let content = generateProtocolFileForProtocol(complexType.name) {
-                writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir))
+                writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
             }
         }
     }
@@ -59,7 +64,7 @@ class BaseExporter {
                                                   withName: complexType.name,
                                                   parentProtocol: protoDeclaration,
                                                   storedProperties: complexType.restprops) {
-                writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir))
+                writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
             }
         }
     }
@@ -71,7 +76,7 @@ class BaseExporter {
             guard let className = thisEntity.attributeStringValue(for: "name"),
                 let unwrappedEntity = thisEntity as? XMLElement else { continue }
             if let content = generateEnumFileFor(entity: unwrappedEntity, withName: className) {
-                writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir))
+                writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
             }
         }
 
@@ -79,7 +84,7 @@ class BaseExporter {
             guard let className = thisEntity.attributeStringValue(for: "name"),
                 let unwrappedEntity = thisEntity as? XMLElement else { continue }
             if let content = generateProtocolFileForEntity(unwrappedEntity, withName: className) {
-                writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir))
+                writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
             }
         }
 
@@ -87,7 +92,7 @@ class BaseExporter {
             guard let className = thisEntity.attributeStringValue(for: "name"),
                 let unwrappedEntity = thisEntity as? XMLElement else { continue }
             if let content = generateClassFileForEntity(unwrappedEntity, withName: className) {
-                writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir))
+                writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
             }
         }
     }
@@ -182,9 +187,9 @@ class BaseExporter {
 
     final func copyStaticSwiftFiles(named filenames: [String], inDirectory folderPath: String) {
         for filename in filenames {
-            if let swfilePath = Bundle.main.path(forResource: filename, ofType: "swift"),
+            if let swfilePath = Bundle.main.path(forResource: filename, ofType: fileExtensionForCurrentOutputType()),
                 let classContents = try? String(contentsOfFile: swfilePath, encoding: String.Encoding.utf8) {
-                writeContent(classContents, toFileAtPath: pathForClassName(filename, inFolder: folderPath))
+                writeContent(classContents, toFileAtPath: pathForClassName(filename, inFolder: folderPath, fileExtension: fileExtensionForCurrentOutputType()))
             }
         }
     }

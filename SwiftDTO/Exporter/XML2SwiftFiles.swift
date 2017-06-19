@@ -24,6 +24,10 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
         copyStaticSwiftFiles(named: ["DTO_Globals"], inDirectory: pwd)
     }
 
+    override func fileExtensionForCurrentOutputType() -> String {
+        return "java"
+    }
+
     override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
 
         var classString = parser.headerStringFor(filename: className, fileExtension: "swift", fromWSDL: parser.coreDataEntities.isEmpty)

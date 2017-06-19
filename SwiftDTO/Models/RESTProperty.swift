@@ -229,6 +229,15 @@ struct RESTProperty {
         overrideInitializers = Set<ParentRelation>()
     }
 
+    static func mapTypeToJava(swiftType: String) -> String {
+        switch swiftType {
+        case "Date": return "String"
+        case "Int": return "Integer"
+        case "Bool": return "Boolean"
+        default: return swiftType
+        }
+    }
+
     fileprivate var typeSingular: String {
         return isArray ? type.trimmingCharacters(in: CharacterSet(charactersIn: "[]")): type
     }
@@ -249,10 +258,11 @@ struct RESTProperty {
     }
 
     var javaDeclarationString: String {
+        let indent = "    "
         if isEnum {
-            return "\t\(name.uppercased())(\"\(jsonProperty)\")"
+            return "\(indent)\(name.uppercased())(\"\(jsonProperty)\")"
         } else {
-            return "\t@SerializedName(\"\(jsonProperty)\")\n\t@Expose\n\tprivate \(type) \(name);"
+            return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)private \(RESTProperty.mapTypeToJava(swiftType: type)) \(name);"
         }
     }
 
