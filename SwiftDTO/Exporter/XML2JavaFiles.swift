@@ -68,7 +68,7 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
         var parent = parentProtocol
         while parent != nil {
             if let pprops = parent?.restProperties {
-                allRestProps += pprops
+                allRestProps = pprops + allRestProps
             }
             guard let protoName = parent?.parentName,
                 let protocolData = (parser.protocols?.filter { $0.name == protoName })?.first else {
@@ -111,7 +111,10 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
             classString += "\(indent)\(indent)this.\(thisProp.name) = \(thisProp.name);"
         }
         classString += "\n\(indent)}"
-        classString += "\n\n\(indent)@Override"
+        classString += "\n"
+        if parentProtocol != nil {
+        classString += "\n\(indent)@Override"
+        }
         classString += "\n\(indent)public Map<String, Object> asParameterMap() {"
         if parentProtocol != nil {
             classString += "\n\(indent)\(indent)Map<String, Object> map = super.asParameterMap();"
