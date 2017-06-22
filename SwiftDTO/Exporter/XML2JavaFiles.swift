@@ -30,20 +30,6 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
 
     override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
 
-        var classString = parser.headerStringFor(filename: className, fileExtension: fileExtensionForCurrentOutputType(), fromWSDL: parser.coreDataEntities.isEmpty)
-
-        classString += "\npackage data.api.model.GeneratedFiles;\n\n"
-        classString += "import com.google.gson.annotations.Expose;\n"
-        classString += "import com.google.gson.annotations.SerializedName;\n"
-        classString += "import java.util.HashMap;\n"
-        classString += "import java.util.Map;\n"
-
-        classString += "\npublic class \(className)"
-        if parentProtocol != nil {
-            classString += " extends \(parentProtocol!.name)"
-        }
-        classString += " {\n"
-
         let restprops: [RESTProperty]
         if let storedProperties = storedProperties {
             restprops = storedProperties
@@ -58,12 +44,7 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
             return nil
         }
 
-        for property in restprops {
-            classString += "\(property.javaDeclarationString)\n"
-        }
-
-        classString += "\n\(indent)public \(className)("
-
+        // parent class properties
         var allRestProps = [RESTProperty]()
         var parent = parentProtocol
         while parent != nil {
@@ -76,6 +57,32 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
             }
             parent = protocolData
         }
+
+        var classString = parser.headerStringFor(filename: className, fileExtension: fileExtensionForCurrentOutputType(), fromWSDL: parser.coreDataEntities.isEmpty)
+
+        classString += "\npackage data.api.model.GeneratedFiles;\n\n"
+        classString += "import com.google.gson.annotations.Expose;\n"
+        classString += "import com.google.gson.annotations.SerializedName;\n"
+        classString += "import java.util.HashMap;\n"
+        classString += "import java.util.Map;\n"
+
+        let arrayProps = restprops.filter { $0.isArray }
+        let arrayParentProps = allRestProps.filter { $0.isArray }
+        if !(arrayProps + arrayParentProps).isEmpty {
+            classString += "import java.util.List;\n"
+        }
+
+        classString += "\npublic class \(className)"
+        if parentProtocol != nil {
+            classString += " extends \(parentProtocol!.name)"
+        }
+        classString += " {\n"
+
+        for property in restprops {
+            classString += "\(property.javaDeclarationString)\n"
+        }
+
+        classString += "\n\(indent)public \(className)("
 
         var firstTime = true
         for thisProp in allRestProps {
