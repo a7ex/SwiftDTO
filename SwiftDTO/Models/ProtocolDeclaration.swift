@@ -10,18 +10,34 @@ import Foundation
 
 class ProtocolDeclaration {
     let name: String
+    let parentName: String
     let restProperties: [RESTProperty]
     var consumers = Set<String>()
 
-    init?(xmlElement: XMLElement, isEnum: Bool, withEnumNames enums: Set<String>, withProtocolNames protocolNames: Set<String>, withProtocols protocols: [ProtocolDeclaration]?,
+    // wsdl XML uses this
+    init(name: String,
+         restProperties: [RESTProperty] = [RESTProperty](),
+         withParentRelations parentRelations: Set<ParentRelation>) {
+        self.name = name
+        self.restProperties = restProperties
+        parentName = parentRelations.first(where: { $0.subclass == name })?.parentClass ?? ""
+    }
+
+    // coreData XML uses this
+    init?(xmlElement: XMLElement,
+          isEnum: Bool,
+          withEnumNames enums: Set<String>,
+          withProtocolNames protocolNames: Set<String>,
+          withProtocols protocols: [ProtocolDeclaration]?,
           withPrimitiveProxyNames primitiveProxyNames: Set<String>) {
+
         guard let name = xmlElement.attribute(forName: "name")?.stringValue else {
                 return nil
         }
         guard let properties = xmlElement.children as? [XMLElement] else { return nil }
 
         let restProps = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                            isEnum: false,
+                                                            enumParentName: nil,
                                                             withEnumNames: enums,
                                                             withProtocolNames: protocolNames,
                                                             withProtocols: protocols,
@@ -29,6 +45,7 @@ class ProtocolDeclaration {
 
         guard !restProps.isEmpty else { return nil }
 
+        parentName = ""
         self.name = name
         self.restProperties = restProps
     }

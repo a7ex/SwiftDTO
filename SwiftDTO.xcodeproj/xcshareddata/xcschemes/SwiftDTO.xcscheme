@@ -63,11 +63,27 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "$PROJECT_DIR/SwiftDTO/example/CDData.xcdatamodel/contents"
-            isEnabled = "YES">
+            argument = "$PROJECT_DIR/SwiftDTO/example/GeneratedFiles"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "$PROJECT_DIR/SwiftDTO/example/GeneratedFiles"
+            argument = "$PROJECT_DIR/SwiftDTO/example/CDData.xcdatamodel/contents"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "$PROJECT_DIR/SwiftDTO/example/wsdl/xsd1_schema_user.xml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "$PROJECT_DIR/SwiftDTO/example/wsdl/xsd1_schema_tracking.xml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "$PROJECT_DIR/SwiftDTO/example/wsdl/xsd1_schema_info.xml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-d /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/GeneratedFiles -m swift /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/wsdl/xsd1_schema_user.xml /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/wsdl/xsd1_schema_info.xml /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/wsdl/xsd1_schema_tracking.xml"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

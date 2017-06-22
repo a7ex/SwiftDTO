@@ -14,32 +14,16 @@ import Foundation
 /// adjust it for your needs, it is used for the header of each swift file
 let copyRightString = "Copyright (c) 2016 Farbflash. All rights reserved."
 
-func writeToStdError(_ str: String) {
-    let handle = FileHandle.standardError
-
-    if let data = str.data(using: String.Encoding.utf8) {
-        handle.write(data)
-    }
-}
-
-func writeToStdOut(_ str: String) {
-    let handle = FileHandle.standardOutput
-
-    if let data = "\(str)\n".data(using: String.Encoding.utf8) {
-        handle.write(data)
-    }
-}
-
-if CommandLine.arguments.count < 2 {
+let options = CliArguments()
+guard let firstInputFile = options.paths.first,
+    let targetFolder = options.destination.nonEmptyString else {
     // Expecting a string but didn't receive it
-    writeToStdError("Expected string argument defining the path to the XCModelData file!\n")
-    writeToStdError("Usage: \(CommandLine.arguments[0]) [string]\n")
+    writeToStdError("Expected string argument defining the output folder and at least one path to an XML file!\n")
+    options.printHelpText()
     exit(EXIT_FAILURE)
 }
 
-let path = CommandLine.arguments[1]
-print("\(path)")
-let url = URL(fileURLWithPath: path)
+let url = URL(fileURLWithPath: firstInputFile)
 
 // Check if the file exists, exit if not
 var error: NSError?
@@ -47,13 +31,25 @@ if !(url as NSURL).checkResourceIsReachableAndReturnError(&error) {
     exit(EXIT_FAILURE)
 }
 
-let targetFolder: String? = (CommandLine.arguments.count > 2) ? CommandLine.arguments[2]: nil
-
 do {
     let xml = try XMLDocument(contentsOf: url, options: 0)
 
-    if let parser = XCModelTranslator(xmlData: xml) {
-        parser.generateFiles(inFolder: targetFolder)
+    if let parser = XMLModelParser(xmlData: xml) {
+        // if there is more than one xml file specified
+        // add them now to the array of elements:
+        for thisPath in options.paths[1..<options.paths.count] {
+            let thisUrl = URL(fileURLWithPath: thisPath)
+            if let thisXML = try? XMLDocument(contentsOf: thisUrl, options: 0) {
+                parser.addXMLData(xmlData: thisXML)
+            }
+        }
+        parser.parseXMLFiles()
+        let generator: DTOFileGenerator
+        switch options.mode {
+        case .swift: generator = XML2SwiftFiles(parser: parser)
+        case .java: generator = XML2JavaFiles(parser: parser)
+        }
+        generator.generateFiles(inFolder: targetFolder)
     }
 }
 catch let err as NSError {

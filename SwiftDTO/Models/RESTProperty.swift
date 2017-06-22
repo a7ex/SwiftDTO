@@ -31,11 +31,119 @@ struct RESTProperty {
     let isEnumProperty: Bool
     let typeIsProxyType: Bool
     let protocolInitializerType: String
+    let enumParentName: String
+    let overrideInitializers: Set<ParentRelation>
 
     let indent = "    "
 
+    // wsdl XML uses this initializer:
+    init?(wsdlElement: XMLElement,
+          enumParentName: String?,
+          withEnumNames enums: Set<String>,
+          overrideInitializers: Set<ParentRelation>) {
+
+        self.isEnum = enumParentName != nil
+        if isEnum {
+            guard let propname = wsdlElement.attribute(forName: "value")?.stringValue,
+                !propname.isEmpty else { return nil }
+            name = propname
+            type = "String"
+            isPrimitiveType = true
+            isArray = false
+            isEnumProperty = false
+            primitiveType = type
+            protocolInitializerType = ""
+            value = propname
+            isOptional = false
+            jsonProperty = name
+            typeIsProxyType = false
+
+            if let enumParentName = enumParentName,
+                !enumParentName.isEmpty {
+                switch enumParentName {
+                case "xs:int": self.enumParentName = "Int"
+                default: self.enumParentName = "String"
+                }
+            } else {
+                self.enumParentName = "String"
+            }
+            self.overrideInitializers = overrideInitializers
+            return
+        }
+
+        guard let propname = wsdlElement.attribute(forName: "name")?.stringValue,
+            !propname.isEmpty,
+            let nsproptype = wsdlElement.attribute(forName: "type")?.stringValue,
+            !nsproptype.isEmpty else { return nil }
+
+        name = propname
+        jsonProperty = propname
+
+        if let propmaxOccurs = wsdlElement.attribute(forName: "maxOccurs")?.stringValue {
+            if let maxOcc = Int(propmaxOccurs),
+                maxOcc > 1 {
+                isArray = true
+            } else if propmaxOccurs == "unbounded" {
+                isArray = true
+            } else {
+                isArray = false
+            }
+        } else {
+            isArray = false
+        }
+
+        var opt = false
+        let propnillable = wsdlElement.attribute(forName: "nillable")?.stringValue
+        opt = (propnillable == "true")
+
+        let propminOccurs = wsdlElement.attribute(forName: "minOccurs")?.stringValue
+        if !opt { opt = (propminOccurs == "0") }
+
+        var primType = ""
+        var isPrimType = false
+        let proptype = createClassNameFromType(nsproptype) ?? nsproptype
+        switch nsproptype {
+        case "xs:int", "xs:long", "xs:unsignedShort":
+            primType = "Int"
+            isPrimType = true
+        case "xs:float", "xs:double":
+            primType = "Double"
+            isPrimType = true
+        case "xs:boolean":
+            primType = "Bool"
+            isPrimType = true
+        case "xs:date", "xs:dateTime":
+            primType = "Date"
+            isPrimType = true
+        case "xs:string":
+            primType = "String"
+            isPrimType = true
+        default:
+            primType = proptype
+        }
+
+        if isArray {
+            type = "[\(primType)]"
+        } else {
+            type = primType
+        }
+
+        primitiveType = primType
+        isPrimitiveType = isPrimType
+
+        isOptional = opt
+        protocolInitializerType = ""
+        value = nil
+        isEnumProperty = enums.contains(primType)
+        typeIsProxyType = false
+        self.enumParentName = "String"
+
+        self.overrideInitializers = overrideInitializers
+    }
+
+    // coreData XML uses this initializer:
     init?(xmlElement: XMLElement?,
-          isEnum: Bool,
+          enumParentName: String?,
           withEnumNames enums: Set<String>,
           withProtocolNames protocolNames: Set<String>,
           withProtocols protocols: [ProtocolDeclaration]?,
@@ -45,7 +153,8 @@ struct RESTProperty {
             let name = xmlElement.attribute(forName: "name")?.stringValue else { return nil }
 
         self.name = name
-        self.isEnum = isEnum
+        self.isEnum = enumParentName != nil
+        self.enumParentName = enumParentName ?? "String"
 
         // map the type
         if let ttype = xmlElement.attribute(forName: Constants.TypeAttributeName)?.stringValue {
@@ -125,6 +234,17 @@ struct RESTProperty {
         //        }
 
         isOptional = xmlElement.attribute(forName: Constants.OptionalAttributeName)?.stringValue == "YES"
+
+        overrideInitializers = Set<ParentRelation>()
+    }
+
+    static func mapTypeToJava(swiftType: String) -> String {
+        switch swiftType {
+        case "Date": return "String"
+        case "Int": return "Integer"
+        case "Bool": return "Boolean"
+        default: return swiftType
+        }
     }
 
     fileprivate var typeSingular: String {
@@ -133,10 +253,29 @@ struct RESTProperty {
 
     var declarationString: String {
         if isEnum {
-            return "case \(name.uppercased()) = \"\(value ?? name)\""
+            let val = value ?? name
+            if enumParentName == "String",
+                name.uppercased() == val {
+                return "case \(name.uppercased())"
+            } else {
+                return "case \(name.uppercased()) = \"\(value ?? name)\""
+            }
         }
         else {
             return "\(indent)public let \(name): \(type)\(isOptional ? "?": "")"
+        }
+    }
+
+    var javaDeclarationString: String {
+        let indent = "    "
+        if isEnum {
+            return "\(indent)\(name.uppercased())(\"\(jsonProperty)\")"
+        } else {
+            if isArray {
+                return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)public final List<\(RESTProperty.mapTypeToJava(swiftType: primitiveType))> \(name);"
+            } else {
+                return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)public final \(RESTProperty.mapTypeToJava(swiftType: type)) \(name);"
+            }
         }
     }
 
@@ -261,7 +400,9 @@ struct RESTProperty {
                                 return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
                             }
                             else {
-                                return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(typeSingular)(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
+                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
+                                return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
                             }
                         }
                     }
@@ -295,7 +436,9 @@ struct RESTProperty {
                                 return "\(indent)\(indent)\(name) = nil"
                             }
                             else {
-                                return "\(indent)\(indent)if let val = \(typeSingular)(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
+                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
+                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
+                                return "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
                             }
                         }
                     }

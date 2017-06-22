@@ -12,6 +12,9 @@ disabled_rules: # rule identifiers to exclude from running
   - nesting
   - cyclomatic_complexity
   - line_length
+  - identifier_name
+  - type_name
+  - redundant_string_enum_value
 opt_in_rules: # some rules are only opt-in
   # - empty_count
   - attributes
@@ -59,21 +62,21 @@ file_length:
   error: 4000
 # naming rules can set warnings/errors for min_length and max_length
 # additionally they can set excluded names
-type_name:
-  min_length: 3 # only warning
-  max_length: # warning and error
-    warning: 40
-    error: 50
-  excluded:
-    - iPhone
-    - Dog
-identifier_name:
-  min_length: # only min_length
-    error: 3 # only error
-  excluded: # excluded via string array
-    - id
-    - URL
-    - GlobalAPIKey
+#type_name:
+#  min_length: 3 # only warning
+#  max_length: # warning and error
+#    warning: 40
+#    error: 50
+#  excluded:
+#    - iPhone
+#    - Dog
+#identifier_name:
+#  min_length: # only min_length
+#    error: 3 # only error
+#  excluded: # excluded via string array
+#    - id
+#    - URL
+#    - GlobalAPIKey
 function_body_length:
   warning: 500
   error: 1000
