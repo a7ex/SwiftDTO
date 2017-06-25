@@ -49,7 +49,7 @@ struct DTODiagnostics {
     }
 
     static func unknownEnumCase(_ enumCase: String?, inEnum enumName: String) {
-        print("\n-------------------\nConradDTO debug data: Missing case \"\(enumCase)\" in Enum: \"\(enumName)\":")
+        print("\n-------------------\nConradDTO debug data: Missing case \"\(enumCase ?? "<empty enumCase>")\" in Enum: \"\(enumName)\":")
         print("-------------------\n")
     }
 }
