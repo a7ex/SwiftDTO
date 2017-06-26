@@ -9,7 +9,7 @@
 import Foundation
 
 protocol DTOFileGenerator {
-    func generateFiles(inFolder folderPath: String?)
+    func generateFiles(inFolder folderPath: String?, withParseSupport parseSupport: Bool)
 }
 
 class BaseExporter {
@@ -30,6 +30,10 @@ class BaseExporter {
 
     func generateProtocolFileForProtocol(_ protocolName: String) -> String? {
         return "Override 'generateProtocolFileForProtocol()' in your concrete subclass of BaseExporter!"
+    }
+
+    func generateParseExtensionFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
+        return "Override 'generateParseExtension()' in your concrete subclass of BaseExporter!"
     }
 
     func fileExtensionForCurrentOutputType() -> String {
@@ -56,7 +60,7 @@ class BaseExporter {
         }
     }
 
-    final func generateClassFiles(inDirectory outputDir: String) {
+    final func generateClassFiles(inDirectory outputDir: String, withParseSupport parseSupport: Bool) {
         for complexType in parser.complexTypesInfos where !parser.protocolNames.contains(complexType.name) {
             // write DTO structs to disk:
             let protoDeclaration = parser.protocols?.first(where: { $0.name == complexType.parentName })
@@ -66,10 +70,18 @@ class BaseExporter {
                                                   storedProperties: complexType.restprops) {
                 writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
             }
+            if parseSupport {
+                if let content = generateParseExtensionFinally(nil,
+                                                      withName: complexType.name,
+                                                      parentProtocol: protoDeclaration,
+                                                      storedProperties: complexType.restprops) {
+                    writeContent(content, toFileAtPath: pathForParseExtension(complexType.name, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
+                }
+            }
         }
     }
 
-    final func generateClassFilesFromCoreData(inDirectory outputDir: String) {
+    final func generateClassFilesFromCoreData(inDirectory outputDir: String, withParseSupport parseSupport: Bool) {
         let entities = parser.coreDataEntities
 
         for thisEntity in entities {
@@ -93,6 +105,16 @@ class BaseExporter {
                 let unwrappedEntity = thisEntity as? XMLElement else { continue }
             if let content = generateClassFileForEntity(unwrappedEntity, withName: className) {
                 writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
+            }
+
+            if parseSupport {
+                guard let className = thisEntity.attributeStringValue(for: "name"),
+                    let unwrappedEntity = thisEntity as? XMLElement else { continue }
+                if let content = generateParseExtensionForEntity(unwrappedEntity,
+                                                        withName: className) {
+                    let outputpath = pathForParseExtension(className, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType())
+                    writeContent(content, toFileAtPath: pathForParseExtension(className, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
+                }
             }
         }
     }
@@ -146,6 +168,24 @@ class BaseExporter {
         }
 
         return generateClassFinally(properties, withName: className, parentProtocol: parentProtocol, storedProperties: nil)
+    }
+
+    private final func generateParseExtensionForEntity(_ entity: XMLElement, withName className: String) -> String? {
+        guard let properties = entity.children as? [XMLElement] else { return nil }
+
+        guard !parser.enumNames.contains(className),
+            !parser.protocolNames.contains(className),
+            !entity.isPrimitiveProxy else { return nil }
+
+        let parentProtocol: ProtocolDeclaration?
+        if let protocolName = entity.attribute(forName: "parentEntity")?.stringValue {
+            parentProtocol = (parser.protocols?.filter { $0.name == protocolName })?.first
+        }
+        else {
+            parentProtocol = nil
+        }
+
+        return generateParseExtensionFinally(properties, withName: className, parentProtocol: parentProtocol, storedProperties: nil)
     }
 
     final func createAndExportParentRelationships(inDirectory folderPath: String) {

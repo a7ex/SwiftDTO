@@ -84,6 +84,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-d /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/GeneratedFiles -m swift /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/wsdl/xsd1_schema_user.xml /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/wsdl/xsd1_schema_info.xml /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/wsdl/xsd1_schema_tracking.xml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-d /Users/alex/Work/Premium/XcodeProject/premium-ios-git/premium/shared/DTOModels/GeneratedFiles -m swift --parse -- /Users/alex/Work/Premium/XcodeProject/premium-ios-git/premium/shared/DTOModels/DTOGenerator/myDTO.xcdatamodel/contents"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

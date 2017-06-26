@@ -56,3 +56,12 @@ func pathForClassName(_ className: String, inFolder target: String?, fileExtensi
     let newUrl = fileurl.appendingPathComponent(className).appendingPathExtension(fileExtension)
     return newUrl.path
 }
+
+func pathForParseExtension(_ className: String, inFolder target: String?, fileExtension: String = "swift") -> String? {
+    guard let target = target else { return nil }
+    let fileurl = URL(fileURLWithPath: target)
+    let newUrl = fileurl
+        .appendingPathComponent("\(className)+Parse")
+        .appendingPathExtension(fileExtension)
+    return newUrl.path
+}

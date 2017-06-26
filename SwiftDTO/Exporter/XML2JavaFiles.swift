@@ -9,17 +9,16 @@
 import Cocoa
 
 class XML2JavaFiles: BaseExporter, DTOFileGenerator {
-
     static let indent = "    "
 
-    final func generateFiles(inFolder folderPath: String? = nil) {
+    final func generateFiles(inFolder folderPath: String? = nil, withParseSupport parseSupport: Bool = false) {
         let info = ProcessInfo.processInfo
         let workingDirectory = info.environment["PWD"]
         let pwd = (folderPath ?? workingDirectory)!
 
         generateEnums(inDirectory: pwd)
-        generateClassFiles(inDirectory: pwd)
-        generateClassFilesFromCoreData(inDirectory: pwd)
+        generateClassFiles(inDirectory: pwd, withParseSupport: parseSupport)
+        generateClassFilesFromCoreData(inDirectory: pwd, withParseSupport: parseSupport)
         generateProtocolFiles(inDirectory: pwd)
         createAndExportParentRelationships(inDirectory: pwd)
     }

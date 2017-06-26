@@ -49,7 +49,8 @@ do {
         case .swift: generator = XML2SwiftFiles(parser: parser)
         case .java: generator = XML2JavaFiles(parser: parser)
         }
-        generator.generateFiles(inFolder: targetFolder)
+
+        generator.generateFiles(inFolder: targetFolder, withParseSupport: options.parseSupport)
     }
 }
 catch let err as NSError {
