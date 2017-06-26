@@ -310,13 +310,13 @@ struct RESTProperty {
         if !isOptional,
             value == nil {
             if type == "String" {
-                returnIfNil = "\(indent)\(indent)guard let val = stringFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)guard let val = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
             } else if type == "Date" {
-                returnIfNil = "\(indent)\(indent)guard let val = dateFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)guard let val = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
             } else if type == "Bool" {
-                returnIfNil = "\(indent)\(indent)guard let val = stringFromBool(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)guard let val = stringFromBool(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
             } else if isPrimitiveType {
-                returnIfNil = "\(indent)\(indent)guard let val = jsonData[\"\(jsonProperty)\"] as? \(type) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)guard let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type) else { return  nil }\n"
             } else {
                 returnIfNil = "\n\(indent)\(indent)else { return nil }"
             }
@@ -350,7 +350,7 @@ struct RESTProperty {
                 if !returnIfNil.isEmpty {
                     return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                 } else {
-                    return "\(indent)\(indent)\(name) = dateFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                    return "\(indent)\(indent)\(name) = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
                 }
             }
             else {
@@ -358,20 +358,20 @@ struct RESTProperty {
                     if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
-                        return "\(indent)\(indent)\(name) = stringFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
                     }
                 } else if type == "Bool" {
                     if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
-                        return "\(indent)\(indent)\(name) = boolFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = boolFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
                     }
                 }
                 else {
                     if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
-                        return "\(indent)\(indent)\(name) = jsonData[\"\(jsonProperty)\"] as? \(type)\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type)\(defaultValueSuffix)"
                     }
                 }
             }
@@ -385,24 +385,24 @@ struct RESTProperty {
             }
             if isArray {
                 if isEnum {
-                    return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
+                    return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
                 }
                 else {
                     if isEnumProperty {
-                        return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
+                        return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
                     }
                     else {
                         if typeIsProxyType {
-                            return "\(indent)\(indent)if let val = jsonData[\"\(jsonProperty)\"] as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
+                            return "\(indent)\(indent)if let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
                         }
                         else {
                             if !protocolInitializerType.isEmpty {
-                                return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
                             }
                             else {
                                 // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
                                 let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
-                                return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
                             }
                         }
                     }
@@ -411,22 +411,22 @@ struct RESTProperty {
             else {
                 if isEnum {
                     if !defaultValueSuffix.isEmpty {
-                        return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String)\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
                     } else {
-                        return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String) { self.\(name) = val }\(returnIfNil)"
+                        return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
                     }
                 }
                 else {
                     if isEnumProperty {
                         if !defaultValueSuffix.isEmpty {
-                            return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String)\(defaultValueSuffix)"
+                            return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
                         } else {
-                            return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String) { self.\(name) = val }\(returnIfNil)"
+                            return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
                         }
                     }
                     else {
                         if !protocolInitializerType.isEmpty {
-                            return "\(indent)\(indent)if let val = \(protocolInitializerType).createWith(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
+                            return "\(indent)\(indent)if let val = \(protocolInitializerType).createWith(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
                         }
                         else {
                             if typeSingular == "NSAttributedString" {
@@ -438,7 +438,7 @@ struct RESTProperty {
                             else {
                                 // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
                                 let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
-                                return "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
+                                return "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
                             }
                         }
                     }
@@ -452,13 +452,13 @@ struct RESTProperty {
         if !isOptional,
             value == nil {
             if type == "String" {
-                returnIfNil = "\(indent)\(indent)\(indent)guard let val = stringFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)\(indent)guard let val = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
             } else if type == "Date" {
-                returnIfNil = "\(indent)\(indent)\(indent)guard let val = dateFromAny(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)\(indent)guard let val = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
             } else if type == "Bool" {
-                returnIfNil = "\(indent)\(indent)\(indent)guard let val = stringFromBool(jsonData[\"\(jsonProperty)\"]) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)\(indent)guard let val = stringFromBool(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
             } else if isPrimitiveType {
-                returnIfNil = "\(indent)\(indent)\(indent)guard let val = jsonData[\"\(jsonProperty)\"] as? \(type) else { return  nil }\n"
+                returnIfNil = "\(indent)\(indent)\(indent)guard let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type) else { return  nil }\n"
             } else {
                 returnIfNil = "\n\(indent)\(indent)\(indent)else { return nil }"
             }
@@ -496,7 +496,7 @@ struct RESTProperty {
                 } else if !returnIfNil.isEmpty {
                     return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                 } else {
-                    return "\(indent)\(indent)\(name) = dateFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                    return "\(indent)\(indent)\(name) = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
                 }
             }
             else {
@@ -506,20 +506,20 @@ struct RESTProperty {
                     } else if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
-                        return "\(indent)\(indent)\(name) = stringFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
                     }
                 } else if type == "Bool" {
                     if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
-                        return "\(indent)\(indent)\(name) = boolFromAny(jsonData[\"\(jsonProperty)\"])\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = boolFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
                     }
                 }
                 else {
                     if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
-                        return "\(indent)\(indent)\(name) = jsonData[\"\(jsonProperty)\"] as? \(type)\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type)\(defaultValueSuffix)"
                     }
                 }
             }
@@ -533,25 +533,25 @@ struct RESTProperty {
             }
             if isArray {
                 if isEnum {
-                    return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
+                    return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
                 }
                 else {
                     if isEnumProperty {
-                        return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
+                        return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
                     }
                     else {
                         if typeIsProxyType {
-                            return "\(indent)\(indent)if let val = jsonData[\"\(jsonProperty)\"] as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
+                            return "\(indent)\(indent)if let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
                         }
                         else {
                             if !protocolInitializerType.isEmpty {
-                                return "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
                             }
                             else {
                                 // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
                                 let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
-                                let jsarr = "\(indent)\(indent)if let val = ((jsonData[\"\(jsonProperty)\"] as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }"
-                                let parsearr = "\n\(indent)\(indent)\(indent)else if let val = ((jsonData[\"\(jsonProperty)\"] as? [PFObject])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }"
+                                let jsarr = "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }"
+                                let parsearr = "\n\(indent)\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }"
                                 return "\(jsarr)\(parsearr)\(returnIfNil)"
                             }
                         }
@@ -561,22 +561,22 @@ struct RESTProperty {
             else {
                 if isEnum {
                     if !defaultValueSuffix.isEmpty {
-                        return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String)\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
                     } else {
-                        return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String) { self.\(name) = val }\(returnIfNil)"
+                        return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
                     }
                 }
                 else {
                     if isEnumProperty {
                         if !defaultValueSuffix.isEmpty {
-                            return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String)\(defaultValueSuffix)"
+                            return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
                         } else {
-                            return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData[\"\(jsonProperty)\"] as? String) { self.\(name) = val }\(returnIfNil)"
+                            return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
                         }
                     }
                     else {
                         if !protocolInitializerType.isEmpty {
-                            return "\(indent)\(indent)if let val = \(protocolInitializerType).createWith(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
+                            return "\(indent)\(indent)if let val = \(protocolInitializerType).createWith(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
                         }
                         else {
                             if typeSingular == "NSAttributedString" {
@@ -588,8 +588,8 @@ struct RESTProperty {
                             else {
                                 // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
                                 let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
-                                let jsarr = "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData[\"\(jsonProperty)\"] as? JSOBJ) { self.\(name) = val }"
-                                let parsearr = "\n\(indent)\(indent)\(indent)else if let val = \(initializerType)(parseData: jsonData[\"\(jsonProperty)\"] as? PFObject) { self.\(name) = val }"
+                                let jsarr = "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }"
+                                let parsearr = "\n\(indent)\(indent)\(indent)else if let val = \(initializerType)(parseData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? PFObject) { self.\(name) = val }"
                                 return "\(jsarr)\(parsearr)\(returnIfNil)"
                             }
                         }
@@ -603,16 +603,16 @@ struct RESTProperty {
         if isPrimitiveType {
             if type == "Date" {
                 if isOptional {
-                    return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = stringFromDate(\(name)!) }"
+                    return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = stringFromDate(\(name)!) }"
                 } else {
-                    return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = stringFromDate(\(name))"
+                    return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = stringFromDate(\(name))"
                 }
             }
             else {
                 if isOptional {
-                    return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = \(name)! }"
+                    return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)! }"
                 } else {
-                    return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = \(name)"
+                    return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)"
                 }
             }
         }
@@ -620,32 +620,32 @@ struct RESTProperty {
             if isArray {
                 if isEnum {
                     if isOptional {
-                        return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = \(name)!.flatMap { $0.rawValue } }\n"
+                        return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)!.flatMap { $0.rawValue } }\n"
                     } else {
-                        return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = \(name).flatMap { $0.rawValue }\n"
+                        return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name).flatMap { $0.rawValue }\n"
                     }
                 }
                 else {
                     if isEnumProperty {
                         if isOptional {
-                            return "\(indent)\(indent)if let \(name) = \(name) {\n\(indent)\(indent)\(indent)var tmp = [String]()\n\(indent)\(indent)\(indent)for this in \(name) { tmp.append(this.rawValue) }\n\(indent)\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = tmp\n\(indent)\(indent)}"
+                            return "\(indent)\(indent)if let \(name) = \(name) {\n\(indent)\(indent)\(indent)var tmp = [String]()\n\(indent)\(indent)\(indent)for this in \(name) { tmp.append(this.rawValue) }\n\(indent)\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = tmp\n\(indent)\(indent)}"
                         } else {
-                            return "\(indent)\(indent)var tmp = [String]()\n\(indent)\(indent)for this in \(name) { tmp.append(this.rawValue) }\n\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = tmp"
+                            return "\(indent)\(indent)var tmp = [String]()\n\(indent)\(indent)for this in \(name) { tmp.append(this.rawValue) }\n\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = tmp"
                         }
                     }
                     else {
                         if typeIsProxyType {
                             if isOptional {
-                                return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = \(name)! }\n"
+                                return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)! }\n"
                             } else {
-                                return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = \(name)\n"
+                                return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)\n"
                             }
                         }
                         else {
                             if isOptional {
-                                return "\(indent)\(indent)if let \(name) = \(name) {\n\(indent)\(indent)\(indent)var tmp = [JSOBJ]()\n\(indent)\(indent)\(indent)for this in \(name) { tmp.append(this.jsobjRepresentation) }\n\(indent)\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = tmp\n\(indent)\(indent)}"
+                                return "\(indent)\(indent)if let \(name) = \(name) {\n\(indent)\(indent)\(indent)var tmp = [JSOBJ]()\n\(indent)\(indent)\(indent)for this in \(name) { tmp.append(this.jsobjRepresentation) }\n\(indent)\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = tmp\n\(indent)\(indent)}"
                             } else {
-                                return "\(indent)\(indent)var tmp = [JSOBJ]()\n\(indent)\(indent)for this in \(name) { tmp.append(this.jsobjRepresentation) }\n\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = tmp"
+                                return "\(indent)\(indent)var tmp = [JSOBJ]()\n\(indent)\(indent)for this in \(name) { tmp.append(this.jsobjRepresentation) }\n\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = tmp"
                             }
                         }
                     }
@@ -654,17 +654,17 @@ struct RESTProperty {
             else {
                 if isEnum {
                     if isOptional {
-                        return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = \(name)!.rawValue }"
+                        return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)!.rawValue }"
                     } else {
-                        return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = \(name).rawValue"
+                        return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name).rawValue"
                     }
                 }
                 else {
                     if isEnumProperty {
                         if isOptional {
-                            return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = \(name)!.rawValue }"
+                            return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)!.rawValue }"
                         } else {
-                            return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = \(name).rawValue"
+                            return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name).rawValue"
                         }
                     }
                     else {
@@ -676,9 +676,9 @@ struct RESTProperty {
                         }
                         else {
                             if isOptional {
-                                return "\(indent)\(indent)if \(name) != nil { jsonData[\"\(jsonProperty)\"] = \(name)!.jsobjRepresentation }"
+                                return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)!.jsobjRepresentation }"
                             } else {
-                                return "\(indent)\(indent)jsonData[\"\(jsonProperty)\"] = \(name).jsobjRepresentation"
+                                return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name).jsobjRepresentation"
                             }
                         }
                     }

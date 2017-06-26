@@ -22,6 +22,7 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
 
         createAndExportParentRelationships(inDirectory: pwd)
         copyStaticSwiftFiles(named: ["DTO_Globals"], inDirectory: pwd)
+        copyStaticSwiftFiles(named: ["Dictionary+Keypath"], inDirectory: pwd)
     }
 
     override func fileExtensionForCurrentOutputType() -> String {
