@@ -35,3 +35,23 @@ extension Dictionary where Key == String {
         return val
     }
 }
+
+extension Dictionary where Key == String, Value == Any {
+    mutating func setValue(_ value: Any, forKeyPath keyPath: String) {
+        guard !keyPath.isEmpty else { return }
+        let keys = keyPath.components(separatedBy: ".")
+        if keys.count > 1 {
+            var subdict: [String: Any]
+            if let val = self[keys.first!] as? [String: Any] {
+                subdict = val
+            } else {
+                subdict = [String: Any]()
+            }
+            let newKey = keys.suffix(from: 1).joined(separator: ".")
+            subdict.setValue(value, forKeyPath: newKey)
+            self[keys.first!] = subdict
+        } else {
+            self[keys.first!] = value
+        }
+    }
+}

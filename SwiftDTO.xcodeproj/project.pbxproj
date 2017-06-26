@@ -227,7 +227,7 @@
 		FA8207791DE2D7DF00333F8D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0810;
+				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Farbflash;
 				TargetAttributes = {

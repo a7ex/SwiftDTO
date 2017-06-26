@@ -603,16 +603,16 @@ struct RESTProperty {
         if isPrimitiveType {
             if type == "Date" {
                 if isOptional {
-                    return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = stringFromDate(\(name)!) }"
+                    return "\(indent)\(indent)if \(name) != nil { jsonData.setValue(stringFromDate(\(name)!), forKeyPath: \"\(jsonProperty)\") }"
                 } else {
-                    return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = stringFromDate(\(name))"
+                    return "\(indent)\(indent)jsonData.setValue(stringFromDate(\(name)), forKeyPath: \"\(jsonProperty)\")"
                 }
             }
             else {
                 if isOptional {
-                    return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)! }"
+                    return "\(indent)\(indent)if \(name) != nil { jsonData.setValue(\(name)!, forKeyPath: \"\(jsonProperty)\") }"
                 } else {
-                    return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)"
+                    return "\(indent)\(indent)jsonData.setValue(\(name), forKeyPath: \"\(jsonProperty)\")"
                 }
             }
         }
@@ -620,32 +620,32 @@ struct RESTProperty {
             if isArray {
                 if isEnum {
                     if isOptional {
-                        return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)!.flatMap { $0.rawValue } }\n"
+                        return "\(indent)\(indent)if \(name) != nil { jsonData.setValue(\(name)!.flatMap { $0.rawValue }, forKeyPath: \"\(jsonProperty)\") }\n"
                     } else {
-                        return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name).flatMap { $0.rawValue }\n"
+                        return "\(indent)\(indent)jsonData.setValue(\(name).flatMap { $0.rawValue }, forKeyPath: \"\(jsonProperty)\")\n"
                     }
                 }
                 else {
                     if isEnumProperty {
                         if isOptional {
-                            return "\(indent)\(indent)if let \(name) = \(name) {\n\(indent)\(indent)\(indent)var tmp = [String]()\n\(indent)\(indent)\(indent)for this in \(name) { tmp.append(this.rawValue) }\n\(indent)\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = tmp\n\(indent)\(indent)}"
+                            return "\(indent)\(indent)if let \(name) = \(name) {\n\(indent)\(indent)\(indent)var tmp = [String]()\n\(indent)\(indent)\(indent)for this in \(name) { tmp.append(this.rawValue) }\n\(indent)\(indent)\(indent)jsonData.setValue(tmp, forKeyPath: \"\(jsonProperty)\")\n\(indent)\(indent)}"
                         } else {
-                            return "\(indent)\(indent)var tmp = [String]()\n\(indent)\(indent)for this in \(name) { tmp.append(this.rawValue) }\n\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = tmp"
+                            return "\(indent)\(indent)var tmp = [String]()\n\(indent)\(indent)for this in \(name) { tmp.append(this.rawValue) }\n\(indent)\(indent)jsonData.setValue(tmp, forKeyPath: \"\(jsonProperty)\")"
                         }
                     }
                     else {
                         if typeIsProxyType {
                             if isOptional {
-                                return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)! }\n"
+                                return "\(indent)\(indent)if \(name) != nil { jsonData.setValue(\(name)!, forKeyPath: \"\(jsonProperty)\") }\n"
                             } else {
-                                return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)\n"
+                                return "\(indent)\(indent)jsonData.setValue(\(name), forKeyPath: \"\(jsonProperty)\")\n"
                             }
                         }
                         else {
                             if isOptional {
-                                return "\(indent)\(indent)if let \(name) = \(name) {\n\(indent)\(indent)\(indent)var tmp = [JSOBJ]()\n\(indent)\(indent)\(indent)for this in \(name) { tmp.append(this.jsobjRepresentation) }\n\(indent)\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = tmp\n\(indent)\(indent)}"
+                                return "\(indent)\(indent)if let \(name) = \(name) {\n\(indent)\(indent)\(indent)var tmp = [JSOBJ]()\n\(indent)\(indent)\(indent)for this in \(name) { tmp.append(this.jsobjRepresentation) }\n\(indent)\(indent)\(indent)jsonData.setValue(tmp, forKeyPath: \"\(jsonProperty)\")\n\(indent)\(indent)}"
                             } else {
-                                return "\(indent)\(indent)var tmp = [JSOBJ]()\n\(indent)\(indent)for this in \(name) { tmp.append(this.jsobjRepresentation) }\n\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = tmp"
+                                return "\(indent)\(indent)var tmp = [JSOBJ]()\n\(indent)\(indent)for this in \(name) { tmp.append(this.jsobjRepresentation) }\n\(indent)\(indent)jsonData.setValue(tmp, forKeyPath: \"\(jsonProperty)\")"
                             }
                         }
                     }
@@ -654,17 +654,17 @@ struct RESTProperty {
             else {
                 if isEnum {
                     if isOptional {
-                        return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)!.rawValue }"
+                        return "\(indent)\(indent)if \(name) != nil { jsonData.setValue(\(name)!.rawValue, forKeyPath: \"\(jsonProperty)\") }"
                     } else {
-                        return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name).rawValue"
+                        return "\(indent)\(indent)jsonData.setValue(\(name).rawValue, forKeyPath: \"\(jsonProperty)\")"
                     }
                 }
                 else {
                     if isEnumProperty {
                         if isOptional {
-                            return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)!.rawValue }"
+                            return "\(indent)\(indent)if \(name) != nil { jsonData.setValue(\(name)!.rawValue, forKeyPath: \"\(jsonProperty)\") }"
                         } else {
-                            return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name).rawValue"
+                            return "\(indent)\(indent)jsonData.setValue(\(name).rawValue, forKeyPath: \"\(jsonProperty)\")"
                         }
                     }
                     else {
@@ -676,9 +676,9 @@ struct RESTProperty {
                         }
                         else {
                             if isOptional {
-                                return "\(indent)\(indent)if \(name) != nil { jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name)!.jsobjRepresentation }"
+                                return "\(indent)\(indent)if \(name) != nil { jsonData.setValue(\(name)!.jsobjRepresentation, forKeyPath: \"\(jsonProperty)\") }"
                             } else {
-                                return "\(indent)\(indent)jsonData.value(forKeyPath: \"\(jsonProperty)\") = \(name).jsobjRepresentation"
+                                return "\(indent)\(indent)jsonData.setValue(\(name).jsobjRepresentation, forKeyPath: \"\(jsonProperty)\")"
                             }
                         }
                     }
