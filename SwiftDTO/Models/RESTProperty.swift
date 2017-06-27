@@ -527,9 +527,9 @@ struct RESTProperty {
         else {
             if !isOptional,
                 value == nil {
-                returnIfNil = "\n\(indent)\(indent)\(indent)else { return nil }"
+                returnIfNil = "\n\(indent)\(indent)else { return nil }"
             } else {
-                returnIfNil = "\n\(indent)\(indent)\(indent)else { \(name) = nil }"
+                returnIfNil = "\n\(indent)\(indent)else { \(name) = nil }"
             }
             if isArray {
                 if isEnum {
@@ -551,7 +551,7 @@ struct RESTProperty {
                                 // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
                                 let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
                                 let jsarr = "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }"
-                                let parsearr = "\n\(indent)\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }"
+                                let parsearr = "\n\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }"
                                 return "\(jsarr)\(parsearr)\(returnIfNil)"
                             }
                         }
@@ -589,7 +589,7 @@ struct RESTProperty {
                                 // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
                                 let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
                                 let jsarr = "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }"
-                                let parsearr = "\n\(indent)\(indent)\(indent)else if let val = \(initializerType)(parseData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? PFObject) { self.\(name) = val }"
+                                let parsearr = "\n\(indent)\(indent)else if let val = \(initializerType)(parseData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? PFObject) { self.\(name) = val }"
                                 return "\(jsarr)\(parsearr)\(returnIfNil)"
                             }
                         }
