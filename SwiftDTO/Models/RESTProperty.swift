@@ -33,6 +33,7 @@ struct RESTProperty {
     let protocolInitializerType: String
     let enumParentName: String
     let overrideInitializers: Set<ParentRelation>
+    let embedParseSDKSupport: Bool
 
     let indent = "    "
 
@@ -40,8 +41,10 @@ struct RESTProperty {
     init?(wsdlElement: XMLElement,
           enumParentName: String?,
           withEnumNames enums: Set<String>,
-          overrideInitializers: Set<ParentRelation>) {
+          overrideInitializers: Set<ParentRelation>,
+          embedParseSDKSupport: Bool) {
 
+        self.embedParseSDKSupport = embedParseSDKSupport
         self.isEnum = enumParentName != nil
         if isEnum {
             guard let propname = wsdlElement.attribute(forName: "value")?.stringValue,
@@ -147,7 +150,8 @@ struct RESTProperty {
           withEnumNames enums: Set<String>,
           withProtocolNames protocolNames: Set<String>,
           withProtocols protocols: [ProtocolDeclaration]?,
-          withPrimitiveProxyNames proxyNames: Set<String>) {
+          withPrimitiveProxyNames proxyNames: Set<String>,
+          embedParseSDKSupport: Bool) {
 
         guard let xmlElement = xmlElement,
             let name = xmlElement.attribute(forName: "name")?.stringValue else { return nil }
@@ -155,6 +159,7 @@ struct RESTProperty {
         self.name = name
         self.isEnum = enumParentName != nil
         self.enumParentName = enumParentName ?? "String"
+        self.embedParseSDKSupport = embedParseSDKSupport
 
         // map the type
         if let ttype = xmlElement.attribute(forName: Constants.TypeAttributeName)?.stringValue {
