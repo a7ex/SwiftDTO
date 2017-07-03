@@ -310,298 +310,19 @@ struct RESTProperty {
         return "\(name): \(type)\(isOptional ? "?": "")"
     }
 
+    private enum Outputmode {
+        case jsobj, parse
+    }
+
     var initializeString: String {
-        var returnIfNil = ""
-        if !isOptional,
-            value == nil {
-            if type == "String" {
-                returnIfNil = "\(indent)\(indent)guard let val = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
-            } else if type == "Date" {
-                returnIfNil = "\(indent)\(indent)guard let val = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
-            } else if type == "Bool" {
-                returnIfNil = "\(indent)\(indent)guard let val = stringFromBool(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
-            } else if isPrimitiveType {
-                returnIfNil = "\(indent)\(indent)guard let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type) else { return  nil }\n"
-            } else {
-                returnIfNil = "\n\(indent)\(indent)else { return nil }"
-            }
-        }
-
-        var defaultValueSuffix = ""
-        if value != nil {
-            if type == "Date" {
-                defaultValueSuffix = value!
-            } else if type == "String" {
-                defaultValueSuffix = " ?? \"\(value!)\""
-            } else if type == "Int" {
-                if let val = Int(value!) {
-                    defaultValueSuffix = " ?? \(val)"
-                }
-            } else if type == "Double" {
-                if let val = Double(value!) {
-                    defaultValueSuffix = " ?? \(val)"
-                }
-            } else if type == "Bool" {
-                if value == "YES" || value == "true" {
-                    defaultValueSuffix = " ?? true"
-                } else if value == "NO" || value == "false" {
-                    defaultValueSuffix = " ?? false"
-                }
-            }
-        }
-
-        if isPrimitiveType {
-            if type == "Date" {
-                if !returnIfNil.isEmpty {
-                    return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
-                } else {
-                    return "\(indent)\(indent)\(name) = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
-                }
-            }
-            else {
-                if type == "String" { // exception for String, because if a property of type string is e.g. "true" it will appear as boolean after NSJSONSerialization :-(
-                    if !returnIfNil.isEmpty {
-                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
-                    } else {
-                        return "\(indent)\(indent)\(name) = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
-                    }
-                } else if type == "Bool" {
-                    if !returnIfNil.isEmpty {
-                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
-                    } else {
-                        return "\(indent)\(indent)\(name) = boolFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
-                    }
-                }
-                else {
-                    if !returnIfNil.isEmpty {
-                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
-                    } else {
-                        return "\(indent)\(indent)\(name) = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type)\(defaultValueSuffix)"
-                    }
-                }
-            }
-        }
-        else {
-            if !isOptional,
-                value == nil {
-                returnIfNil = "\n\(indent)\(indent)else { return nil }"
-            } else {
-                returnIfNil = "\n\(indent)\(indent)else { \(name) = nil }"
-            }
-            if isArray {
-                if isEnum {
-                    return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
-                }
-                else {
-                    if isEnumProperty {
-                        return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
-                    }
-                    else {
-                        if typeIsProxyType {
-                            return "\(indent)\(indent)if let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
-                        }
-                        else {
-                            if !protocolInitializerType.isEmpty {
-                                return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
-                            }
-                            else {
-                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
-                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
-                                return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                if isEnum {
-                    if !defaultValueSuffix.isEmpty {
-                        return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
-                    } else {
-                        return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
-                    }
-                }
-                else {
-                    if isEnumProperty {
-                        if !defaultValueSuffix.isEmpty {
-                            return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
-                        } else {
-                            return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
-                        }
-                    }
-                    else {
-                        if !protocolInitializerType.isEmpty {
-                            return "\(indent)\(indent)if let val = \(protocolInitializerType).createWith(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
-                        }
-                        else {
-                            if typeSingular == "NSAttributedString" {
-                                return "\(indent)\(indent)\(name) = nil"
-                            }
-                            else if typeSingular == "CGSize" {
-                                return "\(indent)\(indent)\(name) = nil"
-                            }
-                            else {
-                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
-                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
-                                return "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        return initializeString(for: .jsobj)
     }
 
     var parseInitializeString: String {
-        var returnIfNil = ""
-        if !isOptional,
-            value == nil {
-            if type == "String" {
-                returnIfNil = "\(indent)\(indent)\(indent)guard let val = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
-            } else if type == "Date" {
-                returnIfNil = "\(indent)\(indent)\(indent)guard let val = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
-            } else if type == "Bool" {
-                returnIfNil = "\(indent)\(indent)\(indent)guard let val = stringFromBool(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
-            } else if isPrimitiveType {
-                returnIfNil = "\(indent)\(indent)\(indent)guard let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type) else { return  nil }\n"
-            } else {
-                returnIfNil = "\n\(indent)\(indent)\(indent)else { return nil }"
-            }
+        if !embedParseSDKSupport {
+            fatalError("Something is wrong here: parseInitializeString was called but embedParseSDKSupport != true!")
         }
-
-        var defaultValueSuffix = ""
-        if value != nil {
-            if type == "Date" {
-                defaultValueSuffix = value!
-            } else if type == "String" {
-                defaultValueSuffix = " ?? \"\(value!)\""
-            } else if type == "Int" {
-                if let val = Int(value!) {
-                    defaultValueSuffix = " ?? \(val)"
-                }
-            } else if type == "Double" {
-                if let val = Double(value!) {
-                    defaultValueSuffix = " ?? \(val)"
-                }
-            } else if type == "Bool" {
-                if value == "YES" || value == "true" {
-                    defaultValueSuffix = " ?? true"
-                } else if value == "NO" || value == "false" {
-                    defaultValueSuffix = " ?? false"
-                }
-            }
-        }
-
-        if isPrimitiveType {
-            if type == "Date" {
-                if name == "createdAt" {
-                    return "\(indent)\(indent)\(name) = jsonData.createdAt"
-                } else if name == "updatedAt" {
-                    return "\(indent)\(indent)\(name) = jsonData.updatedAt"
-                } else if !returnIfNil.isEmpty {
-                    return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
-                } else {
-                    return "\(indent)\(indent)\(name) = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
-                }
-            }
-            else {
-                if type == "String" { // exception for String, because if a property of type string is e.g. "true" it will appear as boolean after NSJSONSerialization :-(
-                    if name == "objectId" {
-                        return "\(indent)\(indent)\(name) = jsonData.objectId"
-                    } else if !returnIfNil.isEmpty {
-                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
-                    } else {
-                        return "\(indent)\(indent)\(name) = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
-                    }
-                } else if type == "Bool" {
-                    if !returnIfNil.isEmpty {
-                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
-                    } else {
-                        return "\(indent)\(indent)\(name) = boolFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
-                    }
-                }
-                else {
-                    if !returnIfNil.isEmpty {
-                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
-                    } else {
-                        return "\(indent)\(indent)\(name) = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type)\(defaultValueSuffix)"
-                    }
-                }
-            }
-        }
-        else {
-            if !isOptional,
-                value == nil {
-                returnIfNil = "\n\(indent)\(indent)else { return nil }"
-            } else {
-                returnIfNil = "\n\(indent)\(indent)else { \(name) = nil }"
-            }
-            if isArray {
-                if isEnum {
-                    return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
-                }
-                else {
-                    if isEnumProperty {
-                        return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
-                    }
-                    else {
-                        if typeIsProxyType {
-                            return "\(indent)\(indent)if let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
-                        }
-                        else {
-                            if !protocolInitializerType.isEmpty {
-                                return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }\(returnIfNil)"
-                            }
-                            else {
-                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
-                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
-                                let jsarr = "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }"
-                                let parsearr = "\n\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }"
-                                return "\(jsarr)\(parsearr)\(returnIfNil)"
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                if isEnum {
-                    if !defaultValueSuffix.isEmpty {
-                        return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
-                    } else {
-                        return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
-                    }
-                }
-                else {
-                    if isEnumProperty {
-                        if !defaultValueSuffix.isEmpty {
-                            return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
-                        } else {
-                            return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
-                        }
-                    }
-                    else {
-                        if !protocolInitializerType.isEmpty {
-                            return "\(indent)\(indent)if let val = \(protocolInitializerType).createWith(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }\(returnIfNil)"
-                        }
-                        else {
-                            if typeSingular == "NSAttributedString" {
-                                return "\(indent)\(indent)\(name) = nil"
-                            }
-                            else if typeSingular == "CGSize" {
-                                return "\(indent)\(indent)\(name) = nil"
-                            }
-                            else {
-                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
-                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
-                                let jsarr = "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }"
-                                let parsearr = "\n\(indent)\(indent)else if let val = \(initializerType)(parseData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? PFObject) { self.\(name) = val }"
-                                return "\(jsarr)\(parsearr)\(returnIfNil)"
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        return initializeString(for: .parse)
     }
 
     var exportString: String {
@@ -805,6 +526,182 @@ struct RESTProperty {
                                 + "\n\(indent)\(indent)else if printNulls { returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": null,\\n\") }\n"
                         } else {
                             return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": \\(\"\\(\(name).jsonString(paddingPrefix: \"\\(prefix)\(indent)\", printNulls: printNulls))\"),\\n\")"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func initializeString(for outputmode: Outputmode) -> String {
+        var returnIfNil = ""
+        if !isOptional,
+            value == nil {
+            var indentrun = "\(indent)\(indent)"
+            if embedParseSDKSupport { indentrun = "\(indentrun)\(indent)"}
+            if type == "String" {
+                returnIfNil = "\(indentrun)guard let val = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
+            } else if type == "Date" {
+                returnIfNil = "\(indentrun)guard let val = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
+            } else if type == "Bool" {
+                returnIfNil = "\(indentrun)guard let val = stringFromBool(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
+            } else if isPrimitiveType {
+                returnIfNil = "\(indentrun)guard let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type) else { return  nil }\n"
+            } else {
+                returnIfNil = "\n\(indentrun)else { return nil }"
+            }
+        }
+
+        var defaultValueSuffix = ""
+        if value != nil {
+            if type == "Date" {
+                defaultValueSuffix = value!
+            } else if type == "String" {
+                defaultValueSuffix = " ?? \"\(value!)\""
+            } else if type == "Int" {
+                if let val = Int(value!) {
+                    defaultValueSuffix = " ?? \(val)"
+                }
+            } else if type == "Double" {
+                if let val = Double(value!) {
+                    defaultValueSuffix = " ?? \(val)"
+                }
+            } else if type == "Bool" {
+                if value == "YES" || value == "true" {
+                    defaultValueSuffix = " ?? true"
+                } else if value == "NO" || value == "false" {
+                    defaultValueSuffix = " ?? false"
+                }
+            }
+        }
+
+        if isPrimitiveType {
+            if type == "Date" {
+                if name == "createdAt",
+                    embedParseSDKSupport {
+                    return "\(indent)\(indent)\(name) = jsonData.createdAt"
+                } else if name == "updatedAt",
+                    embedParseSDKSupport {
+                    return "\(indent)\(indent)\(name) = jsonData.updatedAt"
+                } else if !returnIfNil.isEmpty {
+                    return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                } else {
+                    return "\(indent)\(indent)\(name) = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
+                }
+            }
+            else {
+                if type == "String" { // exception for String, because if a property of type string is e.g. "true" it will appear as boolean after NSJSONSerialization :-(
+                    if name == "objectId",
+                        embedParseSDKSupport,
+                        outputmode == .parse {
+                        return "\(indent)\(indent)\(name) = jsonData.objectId"
+                    } else if !returnIfNil.isEmpty {
+                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                    } else {
+                        return "\(indent)\(indent)\(name) = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
+                    }
+                } else if type == "Bool" {
+                    if !returnIfNil.isEmpty {
+                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                    } else {
+                        return "\(indent)\(indent)\(name) = boolFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
+                    }
+                }
+                else {
+                    if !returnIfNil.isEmpty {
+                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                    } else {
+                        return "\(indent)\(indent)\(name) = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type)\(defaultValueSuffix)"
+                    }
+                }
+            }
+        }
+        else {
+            if !isOptional,
+                value == nil {
+                returnIfNil = "\n\(indent)\(indent)else { return nil }"
+            } else {
+                returnIfNil = "\n\(indent)\(indent)else { \(name) = nil }"
+            }
+            if isArray {
+                if isEnum {
+                    return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
+                }
+                else {
+                    if isEnumProperty {
+                        return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
+                    }
+                    else {
+                        if typeIsProxyType {
+                            return "\(indent)\(indent)if let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
+                        }
+                        else {
+                            if !protocolInitializerType.isEmpty {
+                                let retVal = "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }"
+                                if embedParseSDKSupport {
+                                    return "\(retVal)\n\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(protocolInitializerType).createWith(parseData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                }
+                                return "\(retVal)\(returnIfNil)"
+                            }
+                            else {
+                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
+                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
+                                let retVal = "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }"
+                                if embedParseSDKSupport {
+                                    if primitiveType == "ParseFileReference" {
+                                        return "\(retVal)\n\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFFile])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                    }
+                                    return "\(retVal)\n\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                }
+                                return "\(retVal)\(returnIfNil)"
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                if isEnum {
+                    if !defaultValueSuffix.isEmpty {
+                        return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
+                    } else {
+                        return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
+                    }
+                }
+                else {
+                    if isEnumProperty {
+                        if !defaultValueSuffix.isEmpty {
+                            return "\(indent)\(indent)\(name) = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String)\(defaultValueSuffix)"
+                        } else {
+                            return "\(indent)\(indent)if let val = \(typeSingular).byString(jsonData.value(forKeyPath: \"\(jsonProperty)\") as? String) { self.\(name) = val }\(returnIfNil)"
+                        }
+                    }
+                    else {
+                        if !protocolInitializerType.isEmpty {
+                            let retVal = "\(indent)\(indent)if let val = \(protocolInitializerType).createWith(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }"
+                            if embedParseSDKSupport {
+                                return "\(retVal)\n\(indent)\(indent)else if let val = \(protocolInitializerType).createWith(parseData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? PFObject) { self.\(name) = val }\(returnIfNil)"
+                            }
+                            return "\(retVal)\(returnIfNil)"
+                        }
+                        else {
+                            if typeSingular == "NSAttributedString" {
+                                return "\(indent)\(indent)\(name) = nil"
+                            }
+                            else if typeSingular == "CGSize" {
+                                return "\(indent)\(indent)\(name) = nil"
+                            }
+                            else {
+                                // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
+                                let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
+                                let retVal = "\(indent)\(indent)if let val = \(initializerType)(jsonData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSOBJ) { self.\(name) = val }"
+                                if embedParseSDKSupport {
+                                    if primitiveType == "ParseFileReference" {
+                                        return "\(retVal)\n\(indent)\(indent)else if let val = \(initializerType)(parseData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? PFFile) { self.\(name) = val }\(returnIfNil)"
+                                    }
+                                    return "\(retVal)\n\(indent)\(indent)else if let val = \(initializerType)(parseData: jsonData.value(forKeyPath: \"\(jsonProperty)\") as? PFObject) { self.\(name) = val }\(returnIfNil)"
+                                }
+                                return "\(retVal)\(returnIfNil)"
+                            }
                         }
                     }
                 }

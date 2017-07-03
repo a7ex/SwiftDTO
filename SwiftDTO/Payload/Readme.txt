@@ -70,6 +70,12 @@ As attributes and relationships must always start with a lowercase character and
 the convention is, that corresponding relationships start with an arbitrary character followed by the name of the attribute.
 So if you have two enum cases like: "circle" and "rect", the corresponding relationships would be for example "xCIRCLE" or "rCIRCLE" or whatever you want as prefix,
 
+--------------------------------------------
+Parse file references:
+if parse output is enabled, then an entity with the exact name "ParseFileReference" will be treated as such.
+It will use a PFFile object in its default init(parseData:) initializer and use the "name" and "url" attributes directly from the PFFile object.
+
+in the initializer with a a PFObject init(parseData:) an attribute with the exact name "objectId" will be mapped directly to PFObject.objectId
 
 --------------------------------------------
 IMPORTANT NOTE:

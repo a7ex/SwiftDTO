@@ -20,7 +20,7 @@ class BaseExporter {
         self.parser = parser
     }
 
-    func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
+    func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?, parseSupport: Bool) -> String? {
         return "Override 'generateProtocolFileForProtocol()' in your concrete subclass of BaseExporter!"
     }
 
@@ -67,7 +67,8 @@ class BaseExporter {
             if let content = generateClassFinally(nil,
                                                   withName: complexType.name,
                                                   parentProtocol: protoDeclaration,
-                                                  storedProperties: complexType.restprops) {
+                                                  storedProperties: complexType.restprops,
+                                                  parseSupport: parseSupport) {
                 writeContent(content, toFileAtPath: pathForClassName(complexType.name, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
             }
             if parseSupport {
@@ -103,7 +104,7 @@ class BaseExporter {
         for thisEntity in entities {
             guard let className = thisEntity.attributeStringValue(for: "name"),
                 let unwrappedEntity = thisEntity as? XMLElement else { continue }
-            if let content = generateClassFileForEntity(unwrappedEntity, withName: className) {
+            if let content = generateClassFileForEntity(unwrappedEntity, withName: className, parseSupport: parseSupport) {
                 writeContent(content, toFileAtPath: pathForClassName(className, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
             }
 
@@ -113,7 +114,7 @@ class BaseExporter {
                 if let content = generateParseExtensionForEntity(unwrappedEntity,
                                                         withName: className) {
                     let outputpath = pathForParseExtension(className, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType())
-                    writeContent(content, toFileAtPath: pathForParseExtension(className, inFolder: outputDir, fileExtension: fileExtensionForCurrentOutputType()))
+                    writeContent(content, toFileAtPath: outputpath)
                 }
             }
         }
@@ -147,12 +148,13 @@ class BaseExporter {
                                                           withEnumNames: parser.enumNames,
                                                           withProtocolNames: parser.protocolNames,
                                                           withProtocols: parser.protocols,
-                                                          withPrimitiveProxyNames: parser.primitiveProxyNames) }
+                                                          withPrimitiveProxyNames: parser.primitiveProxyNames,
+                                                          embedParseSDKSupport: false) }
 
         return generateEnumFileForEntityFinally(restprops, withName: className, enumParentName: "String")
     }
 
-    private final func generateClassFileForEntity(_ entity: XMLElement, withName className: String) -> String? {
+    private final func generateClassFileForEntity(_ entity: XMLElement, withName className: String, parseSupport: Bool) -> String? {
         guard let properties = entity.children as? [XMLElement] else { return nil }
 
         guard !parser.enumNames.contains(className),
@@ -167,7 +169,7 @@ class BaseExporter {
             parentProtocol = nil
         }
 
-        return generateClassFinally(properties, withName: className, parentProtocol: parentProtocol, storedProperties: nil)
+        return generateClassFinally(properties, withName: className, parentProtocol: parentProtocol, storedProperties: nil, parseSupport: parseSupport)
     }
 
     private final func generateParseExtensionForEntity(_ entity: XMLElement, withName className: String) -> String? {

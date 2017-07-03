@@ -263,7 +263,8 @@ class XMLModelParser {
                 if let element = RESTProperty(wsdlElement: enumVal,
                                               enumParentName: enumParentName,
                                               withEnumNames: enumNames,
-                                              overrideInitializers: Set<ParentRelation>()) {
+                                              overrideInitializers: Set<ParentRelation>(),
+                                              embedParseSDKSupport: false) {
                     enumProperties.append(element)
                 }
             }
@@ -319,7 +320,8 @@ class XMLModelParser {
                     if let element = RESTProperty(wsdlElement: prop,
                                                   enumParentName: nil,
                                                   withEnumNames: enumNames,
-                                                  overrideInitializers: parentRelations) {
+                                                  overrideInitializers: parentRelations,
+                                                  embedParseSDKSupport: false) {
                         rProps.append(element)
                     }
                 }
