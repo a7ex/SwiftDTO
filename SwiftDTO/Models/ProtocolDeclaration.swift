@@ -41,7 +41,8 @@ class ProtocolDeclaration {
                                                             withEnumNames: enums,
                                                             withProtocolNames: protocolNames,
                                                             withProtocols: protocols,
-                                                            withPrimitiveProxyNames: primitiveProxyNames) }
+                                                            withPrimitiveProxyNames: primitiveProxyNames,
+                                                            embedParseSDKSupport: false) }
 
         guard !restProps.isEmpty else { return nil }
 

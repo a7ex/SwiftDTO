@@ -19,6 +19,7 @@ struct CliArguments {
     let destination: String
     let paths: [String]
     let mode: OutputType
+    let parseSupport: Bool
 
     init() {
         let cliArguments = CLIArgsParser.processCLIArgs(cliParams: CommandLine.arguments, mapping: CliArguments.expandedPropertyName)
@@ -39,6 +40,8 @@ struct CliArguments {
 
         // unnamed parameters:
         paths = (cliParams[SpecialCliArgsParserKeys.unnamed.rawValue] as? [String]) ?? [String]()
+
+        parseSupport = (cliParams["parse"] as? Bool) ?? (cliParams["p"] as? Bool) ?? false
     }
 
     func printHelpText() {
@@ -46,6 +49,7 @@ struct CliArguments {
         print("  -h, -?, --help:\n    Prints a help message.")
         print("  -d, --destination:\n    The path to a directory to write the generated files to.")
         print("  -m, --mode:\n    The output mode. The format of the output files. Can be one of the follwoing values: swift (or: s), java (or: j).")
+        print("  -p, --parse:\n    Add also code to handle Parse objects.")
         print("\n  all remaining parameters are considered paths to xml input files\n\n")
     }
 
@@ -54,6 +58,7 @@ struct CliArguments {
         case "d": return "destination"
         case "h", "?": return "help"
         case "m": return "mode"
+        case "p": return "parse"
         default: return shortform
         }
     }

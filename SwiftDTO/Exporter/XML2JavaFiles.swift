@@ -9,17 +9,16 @@
 import Cocoa
 
 class XML2JavaFiles: BaseExporter, DTOFileGenerator {
-
     static let indent = "    "
 
-    final func generateFiles(inFolder folderPath: String? = nil) {
+    final func generateFiles(inFolder folderPath: String? = nil, withParseSupport parseSupport: Bool = false) {
         let info = ProcessInfo.processInfo
         let workingDirectory = info.environment["PWD"]
         let pwd = (folderPath ?? workingDirectory)!
 
         generateEnums(inDirectory: pwd)
-        generateClassFiles(inDirectory: pwd)
-        generateClassFilesFromCoreData(inDirectory: pwd)
+        generateClassFiles(inDirectory: pwd, withParseSupport: parseSupport)
+        generateClassFilesFromCoreData(inDirectory: pwd, withParseSupport: parseSupport)
         generateProtocolFiles(inDirectory: pwd)
         createAndExportParentRelationships(inDirectory: pwd)
     }
@@ -28,7 +27,7 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
         return "java"
     }
 
-    override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
+    override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?, parseSupport: Bool) -> String? {
 
         let restprops: [RESTProperty]
         if let storedProperties = storedProperties {
@@ -39,7 +38,8 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
                                                           withEnumNames: parser.enumNames,
                                                           withProtocolNames: parser.protocolNames,
                                                           withProtocols: parser.protocols,
-                                                          withPrimitiveProxyNames: parser.primitiveProxyNames) }
+                                                          withPrimitiveProxyNames: parser.primitiveProxyNames,
+                                                          embedParseSDKSupport: parseSupport) }
         } else {
             return nil
         }
@@ -152,7 +152,7 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
         }
 
         let parentProtocol = (parser.protocols?.filter { $0.name == protocolData.parentName })?.first
-        return generateClassFinally(nil, withName: protocolName, parentProtocol: parentProtocol, storedProperties: protocolData.restProperties)
+        return generateClassFinally(nil, withName: protocolName, parentProtocol: parentProtocol, storedProperties: protocolData.restProperties, parseSupport: false)
     }
 
     override func generateEnumFileForEntityFinally(_ restprops: [RESTProperty], withName className: String, enumParentName: String) -> String? {

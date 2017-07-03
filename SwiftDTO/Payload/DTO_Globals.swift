@@ -65,9 +65,11 @@ struct DTODiagnostics {
  */
 func dateFromAny(_ dateObj: Any?) -> Date? {
     let helper = ConversionHelper()
+    if let date = dateObj as? Date { return date }
     if let inputString = dateObj as? String { return helper.dateFromString(inputString) }
     if let doubleVal = dateObj as? Double { return helper.dateFromDouble(doubleVal) }
     if let intVal = dateObj as? Int { return helper.dateFromLong(intVal) }
+    if let parseDate = dateObj as? JSOBJ { return helper.dateFromParse(parseDate) }
     return nil
 }
 
@@ -136,6 +138,7 @@ struct ConversionHelper {
     fileprivate func dateFromString(_ dateString: String?) -> Date? {
         guard let inputString = dateString else { return nil }
         let dateFormatter = DateFormatter()
+        if let retVal = dateFormatter.date(from: inputString) { return retVal }
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.ssZZZZZ"
         if let retVal = dateFormatter.date(from: inputString) { return retVal }
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZZZ"
@@ -163,6 +166,15 @@ struct ConversionHelper {
             return nil
         }
         return Date(timeIntervalSince1970: TimeInterval(timestamp))
+    }
+
+    fileprivate func dateFromParse(_ parsedate: JSOBJ?) -> Date? {
+        guard let parsedate = parsedate else {
+            return nil
+        }
+//        "__type": "Date",
+//        "iso": "2017-07-04T00:00:00.000Z"
+        return dateFromString(parsedate["iso"] as? String)
     }
 }
 

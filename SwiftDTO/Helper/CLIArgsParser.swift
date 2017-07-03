@@ -19,6 +19,7 @@ struct CLIArgsParser {
         var args = [String: Any]()
         var currentParamName = ""
         var unnamedParams = [String]()
+        var endparsing = false
         for (index, thisParam) in cliParams.enumerated() {
             guard index != 0 else {
                 let url = URL(fileURLWithPath: thisParam)
@@ -26,11 +27,19 @@ struct CLIArgsParser {
                 args[SpecialCliArgsParserKeys.programName.rawValue] = url.lastPathComponent
                 continue
             }
+            guard endparsing == false else {
+                unnamedParams.append(thisParam)
+                continue
+            }
             if thisParam.hasPrefix("--") {
                 if !currentParamName.isEmpty {
                     args[mapping(currentParamName)] = true
                 }
                 currentParamName = thisParam.substring(from: thisParam.characters.index(thisParam.startIndex, offsetBy: 2))
+            } else if thisParam == "--" {
+                endparsing = true
+            } else if thisParam == "-" {
+                endparsing = true
             } else if thisParam.hasPrefix("-") {
                 let switches = thisParam.substring(from: thisParam.characters.index(thisParam.startIndex, offsetBy: 1))
 
