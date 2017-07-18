@@ -27,7 +27,7 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
         return "java"
     }
 
-    override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?, parseSupport: Bool) -> String? {
+    override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
 
         let restprops: [RESTProperty]
         if let storedProperties = storedProperties {
@@ -39,7 +39,7 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
                                                           withProtocolNames: parser.protocolNames,
                                                           withProtocols: parser.protocols,
                                                           withPrimitiveProxyNames: parser.primitiveProxyNames,
-                                                          embedParseSDKSupport: parseSupport) }
+                                                          embedParseSDKSupport: false) }
         } else {
             return nil
         }
@@ -152,7 +152,7 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
         }
 
         let parentProtocol = (parser.protocols?.filter { $0.name == protocolData.parentName })?.first
-        return generateClassFinally(nil, withName: protocolName, parentProtocol: parentProtocol, storedProperties: protocolData.restProperties, parseSupport: false)
+        return generateClassFinally(nil, withName: protocolName, parentProtocol: parentProtocol, storedProperties: protocolData.restProperties)
     }
 
     override func generateEnumFileForEntityFinally(_ restprops: [RESTProperty], withName className: String, enumParentName: String) -> String? {

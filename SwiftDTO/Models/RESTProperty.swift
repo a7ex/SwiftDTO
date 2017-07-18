@@ -37,6 +37,68 @@ struct RESTProperty {
 
     let indent = "    "
 
+    private static func replaceReservedIdentifiers(_ propname: String) -> String {
+        switch propname {
+        case "var":
+            return "varObject"
+        case "let":
+            return "letObject"
+        default:
+            return propname
+        }
+    }
+    private static func resolvePropName(_ propname: String, inXMLNode xmlNode: XMLElement?) -> (String, String) {
+        guard let xmlNode = xmlNode else {
+            return (replaceReservedIdentifiers(propname), propname)
+        }
+
+        // Override 1 to 1 name mapping by defining custom property for json property:
+        let overrideName: String
+        if let children = xmlNode.children as? [XMLElement],
+            let userInfo = children.first(where: { $0.name == Constants.UserInfoKeyName }),
+            let jsProps = userInfo.children as? [XMLElement] {
+
+            let jsProp = jsProps.first(where: { $0.attribute(forName: "key")?.stringValue == Constants.JsonPropertyOverrideName })
+            overrideName = "\(jsProp?.attribute(forName: "value")?.stringValue ?? propname)"
+        }
+        else {
+            overrideName = propname
+        }
+        return (propname, overrideName)
+    }
+
+    // special case, where enums have no enum cases...that's weird and wrong,
+    // but since the output must compile, we need a "dummy" vaue here (.none)
+    init?(enumPropName: String,
+          enumParentName: String?,
+          overrideInitializers: Set<ParentRelation>,
+          embedParseSDKSupport: Bool) {
+        self.embedParseSDKSupport = embedParseSDKSupport
+        isEnum = true
+        name = enumPropName.uppercased()
+        jsonProperty = enumPropName
+        type = "String"
+        isPrimitiveType = true
+        isArray = false
+        isEnumProperty = false
+        primitiveType = type
+        protocolInitializerType = ""
+        value = jsonProperty
+        isOptional = false
+        typeIsProxyType = false
+
+        if let enumParentName = enumParentName,
+            !enumParentName.isEmpty {
+            switch enumParentName {
+            case "xs:int": self.enumParentName = "Int"
+            default: self.enumParentName = "String"
+            }
+        } else {
+            self.enumParentName = "String"
+        }
+        self.overrideInitializers = overrideInitializers
+    }
+
     // wsdl XML uses this initializer:
     init?(wsdlElement: XMLElement,
           enumParentName: String?,
@@ -49,7 +111,7 @@ struct RESTProperty {
         if isEnum {
             guard let propname = wsdlElement.attribute(forName: "value")?.stringValue,
                 !propname.isEmpty else { return nil }
-            name = propname
+            (name, jsonProperty) = RESTProperty.resolvePropName(propname, inXMLNode: nil)
             type = "String"
             isPrimitiveType = true
             isArray = false
@@ -58,7 +120,6 @@ struct RESTProperty {
             protocolInitializerType = ""
             value = propname
             isOptional = false
-            jsonProperty = name
             typeIsProxyType = false
 
             if let enumParentName = enumParentName,
@@ -79,8 +140,7 @@ struct RESTProperty {
             let nsproptype = wsdlElement.attribute(forName: "type")?.stringValue,
             !nsproptype.isEmpty else { return nil }
 
-        name = propname
-        jsonProperty = propname
+        (name, jsonProperty) = RESTProperty.resolvePropName(propname, inXMLNode: nil)
 
         if let propmaxOccurs = wsdlElement.attribute(forName: "maxOccurs")?.stringValue {
             if let maxOcc = Int(propmaxOccurs),
@@ -154,9 +214,10 @@ struct RESTProperty {
           embedParseSDKSupport: Bool) {
 
         guard let xmlElement = xmlElement,
-            let name = xmlElement.attribute(forName: "name")?.stringValue else { return nil }
+            let propname = xmlElement.attribute(forName: "name")?.stringValue else { return nil }
 
-        self.name = name
+        (name, jsonProperty) = RESTProperty.resolvePropName(propname, inXMLNode: xmlElement)
+
         self.isEnum = enumParentName != nil
         self.enumParentName = enumParentName ?? "String"
         self.embedParseSDKSupport = embedParseSDKSupport
@@ -218,25 +279,6 @@ struct RESTProperty {
         }
 
         typeIsProxyType = proxyNames.contains(isArray ? type.trimmingCharacters(in: CharacterSet(charactersIn: "[]")): type)
-
-        // Override 1 to 1 name mapping by defining custom property for json property:
-        if let children = xmlElement.children as? [XMLElement],
-            let userInfo = children.first(where: { $0.name == Constants.UserInfoKeyName }),
-            let jsProps = userInfo.children as? [XMLElement] {
-
-            let jsProp = jsProps.first(where: { $0.attribute(forName: "key")?.stringValue == Constants.JsonPropertyOverrideName })
-            jsonProperty = "\(jsProp?.attribute(forName: "value")?.stringValue ??  name)"
-        }
-        else {
-            jsonProperty = name
-        }
-
-        //        if typeIsProxyType {
-        //            print("type: \(type) is contained in: \(proxyNames)")
-        //        }
-        //        else {
-        //            print("type: \(type) is NOT contained in: \(proxyNames)")
-        //        }
 
         isOptional = xmlElement.attribute(forName: Constants.OptionalAttributeName)?.stringValue == "YES"
 

@@ -269,10 +269,17 @@ class XMLModelParser {
                 }
             }
 
-            if enumProperties.count > 0 {
-                enumNames.insert(enumName)
-                enums.append(EnumInfo(name: enumName, typeName: enumParentName, restprops: enumProperties))
+            if enumProperties.isEmpty { // odd there are ENUMs without any enum case...?!?!?
+                if let element = RESTProperty(enumPropName: "NONE",
+                                              enumParentName: enumParentName,
+                                              overrideInitializers: Set<ParentRelation>(),
+                                              embedParseSDKSupport: false) {
+                    enumProperties.append(element)
+                }
             }
+
+            enumNames.insert(enumName)
+            enums.append(EnumInfo(name: enumName, typeName: enumParentName, restprops: enumProperties))
         }
     }
 
