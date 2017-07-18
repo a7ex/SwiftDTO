@@ -1,17 +1,23 @@
 # SwiftDTO
 
-![Overview](/images/json2swift.jpg)
+## Overview
 
 Generate swift DTO files from CoreData model
 
 A macOS command line tool that generates Swift data models based on one or more CoreData model files in XML format.
 Much in the same way as you can generate CoreData classes within Xcode ("Create NSManagedObject subclass...").
 
+There is a switch to generate Parse SDK compatible models as well.
+
+There is also support for soap services. SwiftDTO can take an xml (xsd URL in wsdl soap description) file with the object description and create the appropriate model classes.
+(Contact me for another CLI tool to create service classes from the corresponding wsdl files)
+
 Written in Swift 3.
 
 ## Features
 
 - Processes XML files, which represent a CoreData model, which was created with Xcodes CoreData editor
+  Alternatively you can provide a soap WSDL file
 - Generates immutable Swift struct definitions
 - Converts JSON Date representations to Swift Date objects
 
