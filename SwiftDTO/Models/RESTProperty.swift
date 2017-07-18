@@ -37,36 +37,6 @@ struct RESTProperty {
 
     let indent = "    "
 
-    private static func replaceReservedIdentifiers(_ propname: String) -> String {
-        switch propname {
-        case "var":
-            return "varObject"
-        case "let":
-            return "letObject"
-        default:
-            return propname
-        }
-    }
-    private static func resolvePropName(_ propname: String, inXMLNode xmlNode: XMLElement?) -> (String, String) {
-        guard let xmlNode = xmlNode else {
-            return (replaceReservedIdentifiers(propname), propname)
-        }
-
-        // Override 1 to 1 name mapping by defining custom property for json property:
-        let overrideName: String
-        if let children = xmlNode.children as? [XMLElement],
-            let userInfo = children.first(where: { $0.name == Constants.UserInfoKeyName }),
-            let jsProps = userInfo.children as? [XMLElement] {
-
-            let jsProp = jsProps.first(where: { $0.attribute(forName: "key")?.stringValue == Constants.JsonPropertyOverrideName })
-            overrideName = "\(jsProp?.attribute(forName: "value")?.stringValue ?? propname)"
-        }
-        else {
-            overrideName = propname
-        }
-        return (propname, overrideName)
-    }
-
     // special case, where enums have no enum cases...that's weird and wrong,
     // but since the output must compile, we need a "dummy" vaue here (.none)
     init?(enumPropName: String,
@@ -749,5 +719,35 @@ struct RESTProperty {
                 }
             }
         }
+    }
+
+    private static func replaceReservedIdentifiers(_ propname: String) -> String {
+        switch propname {
+        case "var":
+            return "varObject"
+        case "let":
+            return "letObject"
+        default:
+            return propname
+        }
+    }
+    private static func resolvePropName(_ propname: String, inXMLNode xmlNode: XMLElement?) -> (String, String) {
+        guard let xmlNode = xmlNode else {
+            return (replaceReservedIdentifiers(propname), propname)
+        }
+
+        // Override 1 to 1 name mapping by defining custom property for json property:
+        let overrideName: String
+        if let children = xmlNode.children as? [XMLElement],
+            let userInfo = children.first(where: { $0.name == Constants.UserInfoKeyName }),
+            let jsProps = userInfo.children as? [XMLElement] {
+
+            let jsProp = jsProps.first(where: { $0.attribute(forName: "key")?.stringValue == Constants.JsonPropertyOverrideName })
+            overrideName = "\(jsProp?.attribute(forName: "value")?.stringValue ?? propname)"
+        }
+        else {
+            overrideName = propname
+        }
+        return (propname, overrideName)
     }
 }

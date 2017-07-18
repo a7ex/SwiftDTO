@@ -29,11 +29,62 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
         return "swift"
     }
 
-    override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
+    private final func onlyPrimitives(in restprops: [RESTProperty], parentChain: [ProtocolDeclaration]) -> Bool {
+        for thisProp in restprops {
+            if !thisProp.isPrimitiveType { return false }
+        }
+        for ppRestProps in parentChain {
+            for thisProp in ppRestProps.restProperties {
+                if !thisProp.isPrimitiveType { return false }
+            }
+        }
+        return true
+    }
+
+    override func generateClassFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?, parseSupport: Bool) -> String? {
+
+        var parentChain = [ProtocolDeclaration]()
+        if var pp = parentProtocol {
+            parentChain.append(pp)
+            var pparentName = parser.protocols?.first(where: { $0.name == pp.parentName })?.name
+            while pparentName != nil && pparentName?.isEmpty == false {
+                pp = (parser.protocols?.first(where: { $0.name == pparentName! }))!
+                parentChain.append(pp)
+                pparentName = pp.parentName
+            }
+        }
+
+        var parentPropertyNames = Set<String>()
+        for thisPP in parentChain {
+            for thisRProp in thisPP.restProperties {
+                parentPropertyNames.insert(thisRProp.name)
+            }
+        }
+
+        let restprops: [RESTProperty]
+        if let storedProperties = storedProperties {
+            restprops = storedProperties
+        } else if let properties = properties {
+            restprops = properties.flatMap { RESTProperty(xmlElement: $0,
+                                                          enumParentName: nil,
+                                                          withEnumNames: parser.enumNames,
+                                                          withProtocolNames: parser.protocolNames,
+                                                          withProtocols: parser.protocols,
+                                                          withPrimitiveProxyNames: parser.primitiveProxyNames,
+                                                          embedParseSDKSupport: parseSupport) }
+        } else {
+            return nil
+        }
 
         var classString = parser.headerStringFor(filename: className, fileExtension: "swift", fromWSDL: parser.coreDataEntities.isEmpty)
 
-        classString += "import Foundation\n\npublic struct \(className): "
+        classString += "import Foundation\n"
+        if parseSupport {
+            if !onlyPrimitives(in: restprops, parentChain: parentChain) {
+                classString += "import Parse\n"
+            }
+        }
+        classString += "\npublic struct \(className): "
         if parentProtocol != nil {
             classString += parentProtocol!.name + ", "
             if let pprotName = parentProtocol?.parentName,
@@ -54,24 +105,6 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
 
         classString += "\n\(ind)// DTO properties:\n"
 
-        var parentChain = [ProtocolDeclaration]()
-        if var pp = parentProtocol {
-            parentChain.append(pp)
-            var pparentName = parser.protocols?.first(where: { $0.name == pp.parentName })?.name
-            while pparentName != nil && pparentName?.isEmpty == false {
-                pp = (parser.protocols?.first(where: { $0.name == pparentName! }))!
-                parentChain.append(pp)
-                pparentName = pp.parentName
-            }
-        }
-
-        var parentPropertyNames = Set<String>()
-        for thisPP in parentChain {
-            for thisRProp in thisPP.restProperties {
-                parentPropertyNames.insert(thisRProp.name)
-            }
-        }
-
         var hasProps = false
         for ppRestProps in parentChain {
             for thisProp in ppRestProps.restProperties {
@@ -80,21 +113,6 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
             }
         }
         if hasProps { classString += "\n" }
-
-        let restprops: [RESTProperty]
-        if let storedProperties = storedProperties {
-            restprops = storedProperties
-        } else if let properties = properties {
-            restprops = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                          enumParentName: nil,
-                                                          withEnumNames: parser.enumNames,
-                                                          withProtocolNames: parser.protocolNames,
-                                                          withProtocols: parser.protocols,
-                                                          withPrimitiveProxyNames: parser.primitiveProxyNames,
-                                                          embedParseSDKSupport: false) }
-        } else {
-            return nil
-        }
 
         for property in restprops {
             if !parentPropertyNames.contains(property.name) {
@@ -254,65 +272,82 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
         return classString
     }
 
+    private final func parseFileReferenceBody(indent: String) -> String {
+        return "\(indent)name = jsonData.name\n\(indent)url = jsonData.url\n"
+    }
+
     override func generateParseExtensionFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
 
 //        return generateParseExtensionFinallyWithFetchIfNeeded(properties, withName: className, parentProtocol: parentProtocol, storedProperties: storedProperties)
 
         let ind = indent
 
-        var classString = parser.headerStringFor(filename: "\(className)+Extension", fileExtension: "swift", fromWSDL: parser.coreDataEntities.isEmpty)
-
-        classString += "import Foundation\nimport Parse\n\npublic extension \(className) {"
-
-        classString += "\n\(ind)public init?(parseData: PFObject?) {"
-        classString += "\n\(ind)\(ind)guard let jsonData = parseData else { return nil }"
-        classString += "\n"
-
-        var parentChain = [ProtocolDeclaration]()
-        if var pp = parentProtocol {
-            parentChain.append(pp)
-            var pparentName = parser.protocols?.first(where: { $0.name == pp.parentName })?.name
-            while pparentName != nil && pparentName?.isEmpty == false {
-                pp = (parser.protocols?.first(where: { $0.name == pparentName! }))!
-                parentChain.append(pp)
-                pparentName = pp.parentName
-            }
-        }
-
-        var parentPropertyNames = Set<String>()
-        for thisPP in parentChain {
-            for thisRProp in thisPP.restProperties {
-                parentPropertyNames.insert(thisRProp.name)
-            }
-        }
-
-        var hasProps = false
-        for ppRestProps in parentChain {
-            for thisProp in ppRestProps.restProperties {
-                classString += "\(thisProp.parseInitializeString)\n"
-                hasProps = true
-            }
-        }
-        if hasProps { classString += "\n" }
-
         let restprops: [RESTProperty]
         if let storedProperties = storedProperties {
             restprops = storedProperties
         } else if let properties = properties {
-            restprops = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                          enumParentName: nil,
-                                                          withEnumNames: parser.enumNames,
-                                                          withProtocolNames: parser.protocolNames,
-                                                          withProtocols: parser.protocols,
-                                                          withPrimitiveProxyNames: parser.primitiveProxyNames,
-                                                          embedParseSDKSupport: true) }
+            restprops = properties.flatMap { RESTProperty(
+                xmlElement: $0,
+                enumParentName: nil,
+                withEnumNames: parser.enumNames,
+                withProtocolNames: parser.protocolNames,
+                withProtocols: parser.protocols,
+                withPrimitiveProxyNames: parser.primitiveProxyNames,
+                embedParseSDKSupport: true)
+            }
         } else {
             return nil
         }
 
-        for property in restprops {
-            if !parentPropertyNames.contains(property.name) {
-                classString += "\(property.parseInitializeString)\n"
+        var classString = parser.headerStringFor(filename: "\(className)+Extension", fileExtension: "swift", fromWSDL: parser.coreDataEntities.isEmpty)
+
+        classString += "import Foundation\nimport Parse\n\npublic extension \(className) {"
+
+        if className == "ParseFileReference" {
+            classString += "\n\(ind)public init?(parseData: PFFile?) {"
+        } else {
+            classString += "\n\(ind)public init?(parseData: PFObject?) {"
+        }
+        classString += "\n\(ind)\(ind)guard let jsonData = parseData else { return nil }"
+        classString += "\n"
+
+        let fileprop = (restprops.filter { $0.jsonProperty == "__type" }).first
+
+        if (className == "ParseFileReference" || fileprop?.value == "File") {
+            classString += parseFileReferenceBody(indent: "\(ind)\(ind)")
+        } else {
+
+            var parentChain = [ProtocolDeclaration]()
+            if var pp = parentProtocol {
+                parentChain.append(pp)
+                var pparentName = parser.protocols?.first(where: { $0.name == pp.parentName })?.name
+                while pparentName != nil && pparentName?.isEmpty == false {
+                    pp = (parser.protocols?.first(where: { $0.name == pparentName! }))!
+                    parentChain.append(pp)
+                    pparentName = pp.parentName
+                }
+            }
+
+            var parentPropertyNames = Set<String>()
+            for thisPP in parentChain {
+                for thisRProp in thisPP.restProperties {
+                    parentPropertyNames.insert(thisRProp.name)
+                }
+            }
+
+            var hasProps = false
+            for ppRestProps in parentChain {
+                for thisProp in ppRestProps.restProperties {
+                    classString += "\(thisProp.parseInitializeString)\n"
+                    hasProps = true
+                }
+            }
+            if hasProps { classString += "\n" }
+
+            for property in restprops {
+                if !parentPropertyNames.contains(property.name) {
+                    classString += "\(property.parseInitializeString)\n"
+                }
             }
         }
 
@@ -329,56 +364,65 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
 
         classString += "import Foundation\nimport Parse\n\npublic extension \(className) {"
 
-        classString += "\n\(ind)public init?(parseData: PFObject?) {"
+        if className == "ParseFileReference" {
+            classString += "\n\(ind)public init?(parseData: PFFile?) {"
+        } else {
+            classString += "\n\(ind)public init?(parseData: PFObject?) {"
+        }
         classString += "\n\(ind)\(ind)guard let jsonData = parseData else { return nil }"
         classString += "\n\(ind)\(ind)do {"
         classString += "\n\(ind)\(ind)\(ind)try jsonData.fetchIfNeeded()\n"
 
-        var parentChain = [ProtocolDeclaration]()
-        if var pp = parentProtocol {
-            parentChain.append(pp)
-            var pparentName = parser.protocols?.first(where: { $0.name == pp.parentName })?.name
-            while pparentName != nil && pparentName?.isEmpty == false {
-                pp = (parser.protocols?.first(where: { $0.name == pparentName! }))!
-                parentChain.append(pp)
-                pparentName = pp.parentName
-            }
-        }
-
-        var parentPropertyNames = Set<String>()
-        for thisPP in parentChain {
-            for thisRProp in thisPP.restProperties {
-                parentPropertyNames.insert(thisRProp.name)
-            }
-        }
-
-        var hasProps = false
-        for ppRestProps in parentChain {
-            for thisProp in ppRestProps.restProperties {
-                classString += "\(ind)\(thisProp.parseInitializeString)\n"
-                hasProps = true
-            }
-        }
-        if hasProps { classString += "\n" }
-
-        let restprops: [RESTProperty]
-        if let storedProperties = storedProperties {
-            restprops = storedProperties
-        } else if let properties = properties {
-            restprops = properties.flatMap { RESTProperty(xmlElement: $0,
-                                                          enumParentName: nil,
-                                                          withEnumNames: parser.enumNames,
-                                                          withProtocolNames: parser.protocolNames,
-                                                          withProtocols: parser.protocols,
-                                                          withPrimitiveProxyNames: parser.primitiveProxyNames,
-                                                          embedParseSDKSupport: true) }
+        if className == "ParseFileReference" {
+            classString += parseFileReferenceBody(indent: "\(ind)\(ind)\(ind)")
         } else {
-            return nil
-        }
 
-        for property in restprops {
-            if !parentPropertyNames.contains(property.name) {
-                classString += "\(ind)\(property.parseInitializeString)\n"
+            var parentChain = [ProtocolDeclaration]()
+            if var pp = parentProtocol {
+                parentChain.append(pp)
+                var pparentName = parser.protocols?.first(where: { $0.name == pp.parentName })?.name
+                while pparentName != nil && pparentName?.isEmpty == false {
+                    pp = (parser.protocols?.first(where: { $0.name == pparentName! }))!
+                    parentChain.append(pp)
+                    pparentName = pp.parentName
+                }
+            }
+
+            var parentPropertyNames = Set<String>()
+            for thisPP in parentChain {
+                for thisRProp in thisPP.restProperties {
+                    parentPropertyNames.insert(thisRProp.name)
+                }
+            }
+
+            var hasProps = false
+            for ppRestProps in parentChain {
+                for thisProp in ppRestProps.restProperties {
+                    classString += "\(ind)\(thisProp.parseInitializeString)\n"
+                    hasProps = true
+                }
+            }
+            if hasProps { classString += "\n" }
+
+            let restprops: [RESTProperty]
+            if let storedProperties = storedProperties {
+                restprops = storedProperties
+            } else if let properties = properties {
+                restprops = properties.flatMap { RESTProperty(xmlElement: $0,
+                                                              enumParentName: nil,
+                                                              withEnumNames: parser.enumNames,
+                                                              withProtocolNames: parser.protocolNames,
+                                                              withProtocols: parser.protocols,
+                                                              withPrimitiveProxyNames: parser.primitiveProxyNames,
+                                                              embedParseSDKSupport: true) }
+            } else {
+                return nil
+            }
+
+            for property in restprops {
+                if !parentPropertyNames.contains(property.name) {
+                    classString += "\(ind)\(property.parseInitializeString)\n"
+                }
             }
         }
 
