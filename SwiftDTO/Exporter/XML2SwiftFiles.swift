@@ -278,7 +278,7 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
 
     override func generateParseExtensionFinally(_ properties: [XMLElement]?, withName className: String, parentProtocol: ProtocolDeclaration?, storedProperties: [RESTProperty]?) -> String? {
 
-        //        return generateParseExtensionFinallyWithFetchIfNeeded(properties, withName: className, parentProtocol: parentProtocol, storedProperties: storedProperties)
+//        return generateParseExtensionFinallyWithFetchIfNeeded(properties, withName: className, parentProtocol: parentProtocol, storedProperties: storedProperties)
 
         let ind = indent
 
