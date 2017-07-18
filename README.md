@@ -41,8 +41,6 @@ Or build the tool in Xcode yourself:
 - Build the project
 - Open a Finder window to the executable file
 
-![How to find the executable](/images/show_in_finder.png)
-
 - Drag `SwiftDTO` from the Finder window to your desktop
 
 ## How to install it
@@ -72,7 +70,7 @@ Open a Terminal window and pass `SwiftDTO` a file path to a CoreData model XML f
 ```
 SwiftDTO /path/to/some/CDData.xcdatamodel/contents
 ```
-The tool creates the swift files in the working directory, unless you specify an output folder as the second command line argument.
+The tool creates the swift files in the working directory, unless you specify an output folder as command line argument.
 
 The source code download includes an `example` directory with a `CDData` CoreData file so that you can test it out.
 
@@ -82,6 +80,12 @@ For each entity found in the provided CoreData XML file `SwiftDTO` creates a swi
 - the corresponding struct for the DTO (Data Transfer Object)
 - the corresponding enum type, if the entity is marked as being an enum (User Info for that entity has a key "isEnum" with a value of "1").
 - the corresponding protocol, if the entity is an abstract entity
+
+Use:
+```
+SwiftDTO --help
+```
+for a description of accepted CLI parameters.
 
 
 
