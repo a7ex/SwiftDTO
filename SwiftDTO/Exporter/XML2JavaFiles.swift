@@ -70,6 +70,11 @@ class XML2JavaFiles: BaseExporter, DTOFileGenerator {
         let arrayParentProps = allRestProps.filter { $0.isArray }
         if !(arrayProps + arrayParentProps).isEmpty {
             classString += "import java.util.List;\n"
+
+            // This is also a non-standard hack. We need that because soap does mess up our arrays types
+            //TODO: find a better solution for this hack here and the equivalent hack in RESTProperty
+            classString += "import com.google.gson.annotations.JsonAdapter;\n"
+            classString += "import util.AlwaysListTypeAdapterFactory;\n"
         }
 
         classString += "\npublic class \(className)"
