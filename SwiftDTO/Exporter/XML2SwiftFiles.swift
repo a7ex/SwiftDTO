@@ -30,12 +30,12 @@ class XML2SwiftFiles: BaseExporter, DTOFileGenerator {
     }
 
     private final func onlyPrimitives(in restprops: [RESTProperty], parentChain: [ProtocolDeclaration]) -> Bool {
-        for thisProp in restprops {
-            if !thisProp.isPrimitiveType { return false }
+        for thisProp in restprops where !thisProp.isPrimitiveType {
+            return false
         }
         for ppRestProps in parentChain {
-            for thisProp in ppRestProps.restProperties {
-                if !thisProp.isPrimitiveType { return false }
+            for thisProp in ppRestProps.restProperties where !thisProp.isPrimitiveType {
+                return false
             }
         }
         return true

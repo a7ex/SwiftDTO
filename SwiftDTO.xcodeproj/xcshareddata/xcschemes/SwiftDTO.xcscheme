@@ -83,7 +83,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-d /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/GeneratedFiles2 -m swift /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/wsdl/xsd1_schema_user.xml /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/wsdl/xsd1_schema_info.xml /Users/alex/Work/DLR/XcodeProject/MovingLab/DLRModels/wsdl/xsd1_schema_tracking.xml"
+            argument = "-d /Users/alex/Work/DLR/XcodeProject/MovingLab/SwiftModules/DLRModels/GeneratedFiles -m swift /Users/alex/Work/DLR/XcodeProject/MovingLab/SwiftModules/DLRModels/wsdl/xsd1_schema_user.xml /Users/alex/Work/DLR/XcodeProject/MovingLab/SwiftModules/DLRModels/wsdl/xsd1_schema_info.xml /Users/alex/Work/DLR/XcodeProject/MovingLab/SwiftModules/DLRModels/wsdl/xsd1_schema_tracking.xml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

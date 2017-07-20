@@ -546,6 +546,17 @@ struct RESTProperty {
     }
 
     private func initializeString(for outputmode: Outputmode) -> String {
+
+        // arrays do have another helper method to initialize
+        // reason: some backends do not give us back arrays,
+        // if the array would have only a single element (xml - soap!)
+        let helperFunctionName: String
+        if isArray {
+            helperFunctionName = "arrayValue"
+        } else {
+            helperFunctionName = "value"
+        }
+
         var returnIfNil = ""
         if !isOptional,
             value == nil {
@@ -558,7 +569,7 @@ struct RESTProperty {
             } else if type == "Bool" {
                 returnIfNil = "\(indentrun)guard let val = stringFromBool(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
             } else if isPrimitiveType {
-                returnIfNil = "\(indentrun)guard let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type) else { return  nil }\n"
+                returnIfNil = "\(indentrun)guard let val = jsonData.\(helperFunctionName)(forKeyPath: \"\(jsonProperty)\") as? \(type) else { return  nil }\n"
             } else {
                 returnIfNil = "\n\(indentrun)else { return nil }"
             }
@@ -623,7 +634,7 @@ struct RESTProperty {
                     if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
-                        return "\(indent)\(indent)\(name) = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? \(type)\(defaultValueSuffix)"
+                        return "\(indent)\(indent)\(name) = jsonData.\(helperFunctionName)(forKeyPath: \"\(jsonProperty)\") as? \(type)\(defaultValueSuffix)"
                     }
                 }
             }
@@ -637,33 +648,33 @@ struct RESTProperty {
             }
             if isArray {
                 if isEnum {
-                    return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
+                    return "\(indent)\(indent)if let val = ((jsonData.arrayValue(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
                 }
                 else {
                     if isEnumProperty {
-                        return "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
+                        return "\(indent)\(indent)if let val = ((jsonData.arrayValue(forKeyPath: \"\(jsonProperty)\") as? [String])?.flatMap { \(typeSingular).byString($0) }) { self.\(name) = val }\(returnIfNil)"
                     }
                     else {
                         if typeIsProxyType {
-                            return "\(indent)\(indent)if let val = jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
+                            return "\(indent)\(indent)if let val = jsonData.arrayValue(forKeyPath: \"\(jsonProperty)\") as? [\(typeSingular)] { self.\(name) = val }\(returnIfNil)"
                         }
                         else {
                             if !protocolInitializerType.isEmpty {
-                                let retVal = "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }"
+                                let retVal = "\(indent)\(indent)if let val = ((jsonData.arrayValue(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(protocolInitializerType).createWith(jsonData: $0) }) { self.\(name) = val }"
                                 if embedParseSDKSupport {
-                                    return "\(retVal)\n\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(protocolInitializerType).createWith(parseData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                    return "\(retVal)\n\(indent)\(indent)else if let val = ((jsonData.arrayValue(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(protocolInitializerType).createWith(parseData: $0) }) { self.\(name) = val }\(returnIfNil)"
                                 }
                                 return "\(retVal)\(returnIfNil)"
                             }
                             else {
                                 // now we replace the initializer, if it happens to be protocolType with a random "subclass" of this protocol, as we can not initialize protocol types
                                 let initializerType = overrideInitializers.first(where: { $0.parentClass == typeSingular })?.subclass ?? typeSingular
-                                let retVal = "\(indent)\(indent)if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }"
+                                let retVal = "\(indent)\(indent)if let val = ((jsonData.arrayValue(forKeyPath: \"\(jsonProperty)\") as? JSARR)?.flatMap { \(initializerType)(jsonData: $0) }) { self.\(name) = val }"
                                 if embedParseSDKSupport {
                                     if primitiveType == "ParseFileReference" {
-                                        return "\(retVal)\n\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFFile])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                        return "\(retVal)\n\(indent)\(indent)else if let val = ((jsonData.arrayValue(forKeyPath: \"\(jsonProperty)\") as? [PFFile])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }\(returnIfNil)"
                                     }
-                                    return "\(retVal)\n\(indent)\(indent)else if let val = ((jsonData.value(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }\(returnIfNil)"
+                                    return "\(retVal)\n\(indent)\(indent)else if let val = ((jsonData.arrayValue(forKeyPath: \"\(jsonProperty)\") as? [PFObject])?.flatMap { \(initializerType)(parseData: $0) }) { self.\(name) = val }\(returnIfNil)"
                                 }
                                 return "\(retVal)\(returnIfNil)"
                             }
