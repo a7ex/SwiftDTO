@@ -35,10 +35,6 @@ struct RESTProperty {
     let overrideInitializers: Set<ParentRelation>
     let embedParseSDKSupport: Bool
 
-    // for data from soap service we need a special tweak,
-    // because arrays from soap are not arrays, if they only contain one single element :-(
-    let dataComesFromSoapService: Bool
-
     let indent = "    "
 
     // special case, where enums have no enum cases...that's weird and wrong,
@@ -71,7 +67,6 @@ struct RESTProperty {
             self.enumParentName = "String"
         }
         self.overrideInitializers = overrideInitializers
-        dataComesFromSoapService = false // not relevant here
     }
 
     // wsdl XML uses this initializer:
@@ -81,7 +76,6 @@ struct RESTProperty {
           overrideInitializers: Set<ParentRelation>,
           embedParseSDKSupport: Bool) {
 
-        dataComesFromSoapService = true // special tweak needed, because arrays from soap are not arrays, if they only contain one single element :-(
         self.embedParseSDKSupport = embedParseSDKSupport
         self.isEnum = enumParentName != nil
         if isEnum {
@@ -192,8 +186,6 @@ struct RESTProperty {
         guard let xmlElement = xmlElement,
             let propname = xmlElement.attribute(forName: "name")?.stringValue else { return nil }
 
-        dataComesFromSoapService = false
-
         (name, jsonProperty) = RESTProperty.resolvePropName(propname, inXMLNode: xmlElement)
 
         self.isEnum = enumParentName != nil
@@ -297,12 +289,7 @@ struct RESTProperty {
             return "\(indent)\(name.uppercased())(\"\(jsonProperty)\")"
         } else {
             if isArray {
-                var jDeclString = "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n"
-                if dataComesFromSoapService {
-                    jDeclString += "\(indent)@JsonAdapter(AlwaysListTypeAdapterFactory.class)\n"
-                }
-                jDeclString += "\(indent)public final List<\(RESTProperty.mapTypeToJava(swiftType: primitiveType))> \(name);"
-                return jDeclString
+                return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)public final List<\(RESTProperty.mapTypeToJava(swiftType: primitiveType))> \(name);"
             } else {
                 return "\(indent)@SerializedName(\"\(jsonProperty)\")\n\(indent)@Expose\n\(indent)public final \(RESTProperty.mapTypeToJava(swiftType: type)) \(name);"
             }
