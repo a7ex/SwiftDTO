@@ -125,6 +125,82 @@ func boolFromAny(_ jsonObject: Any?) -> Bool? {
     return nil
 }
 
+/**
+ Try to convert an Any value to an Int
+ 
+ Unfortunately some backends send Ints or Doubles as Strings
+ or, in the current case,
+ Parse Cloud functions do that :-(
+ So we need to "force" Ints, if any possible.
+ Sure we could do that by overloading the value(forKeyPath) method
+ but overloading doesn't do much else than two differently named functions
+ would do, performance wise, instead overloading just helps to write less, "cleaner", code
+ But this is automated code anyway... nobody should need to read and understand it :-)
+
+ - parameter jsonObject: Any or nil (one value in the dictionary, which NSJSONSerialization produces)
+
+ - returns: Int or nil
+ */
+func intFromAny(_ jsonObject: Any?) -> Int? {
+    if let val = jsonObject as? Int { return val }
+    if let val = jsonObject as? Double {
+        return val.integerValue
+    }
+    if let val = jsonObject as? String {
+        let fmt = NumberFormatter()
+        if let numValue = fmt.number(from: val) {
+        return numValue.intValue
+        }
+        fmt.locale = Locale(identifier: "de_DE") // a locale, which uses ',' as float delimiter
+        if let numValue = fmt.number(from: val) {
+            return numValue.intValue
+        }
+    }
+    return nil
+}
+
+/**
+ Try to convert an Any value to a Double
+
+ Unfortunately some backends send Ints or Doubles as Strings
+ or, in the current case,
+ Parse Cloud functions do that :-(
+ So we need to "force" Double, if any possible.
+ Sure we could do that by overloading the value(forKeyPath) method
+ but overloading doesn't do much else than two differently named functions
+ would do, performance wise, instead overloading just helps to write less, "cleaner", code
+ But this is automated code anyway... nobody should need to read and understand it :-)
+
+ - parameter jsonObject: Any or nil (one value in the dictionary, which NSJSONSerialization produces)
+
+ - returns: Int or nil
+ */
+func doubleFromAny(_ jsonObject: Any?) -> Double? {
+    if let val = jsonObject as? Double { return val }
+    if let val = jsonObject as? Int { return Double(val) }
+    if let val = jsonObject as? String {
+        let fmt = NumberFormatter()
+        if let numValue = fmt.number(from: val) {
+            return numValue.doubleValue
+        }
+        fmt.locale = Locale(identifier: "de_DE") // a locale, which uses ',' as float delimiter
+        if let numValue = fmt.number(from: val) {
+            return numValue.doubleValue
+        }
+    }
+    return nil
+}
+
+extension Double {
+    var integerValue: Int? {
+        if self > Double(Int.min) && self < Double(Int.max) {
+            return Int(self)
+        } else {
+            return nil
+        }
+    }
+}
+
 struct ConversionHelper {
     /**
      Try to convert a string representing a date to a NSDate object

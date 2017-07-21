@@ -562,39 +562,49 @@ struct RESTProperty {
             value == nil {
             var indentrun = "\(indent)\(indent)"
             if embedParseSDKSupport { indentrun = "\(indentrun)\(indent)"}
-            if type == "String" {
+            switch type {
+            case "String":
                 returnIfNil = "\(indentrun)guard let val = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
-            } else if type == "Date" {
+            case "Date":
                 returnIfNil = "\(indentrun)guard let val = dateFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
-            } else if type == "Bool" {
+            case "Bool":
                 returnIfNil = "\(indentrun)guard let val = stringFromBool(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
-            } else if isPrimitiveType {
-                returnIfNil = "\(indentrun)guard let val = jsonData.\(helperFunctionName)(forKeyPath: \"\(jsonProperty)\") as? \(type) else { return  nil }\n"
-            } else {
-                returnIfNil = "\n\(indentrun)else { return nil }"
+            case "Int":
+                returnIfNil = "\(indentrun)guard let val = intFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
+            case "Double":
+                returnIfNil = "\(indentrun)guard let val = doubleFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\")) else { return  nil }\n"
+            default:
+                if isPrimitiveType {
+                    returnIfNil = "\(indentrun)guard let val = jsonData.\(helperFunctionName)(forKeyPath: \"\(jsonProperty)\") as? \(type) else { return  nil }\n"
+                } else {
+                    returnIfNil = "\n\(indentrun)else { return nil }"
+                }
             }
         }
 
         var defaultValueSuffix = ""
         if value != nil {
-            if type == "Date" {
+            switch type {
+            case "Date":
                 defaultValueSuffix = value!
-            } else if type == "String" {
+            case "String":
                 defaultValueSuffix = " ?? \"\(value!)\""
-            } else if type == "Int" {
+            case "Int":
                 if let val = Int(value!) {
                     defaultValueSuffix = " ?? \(val)"
                 }
-            } else if type == "Double" {
+            case "Double":
                 if let val = Double(value!) {
                     defaultValueSuffix = " ?? \(val)"
                 }
-            } else if type == "Bool" {
+            case "Bool":
                 if value == "YES" || value == "true" {
                     defaultValueSuffix = " ?? true"
                 } else if value == "NO" || value == "false" {
                     defaultValueSuffix = " ?? false"
                 }
+            default:
+                break
             }
         }
 
@@ -613,7 +623,8 @@ struct RESTProperty {
                 }
             }
             else {
-                if type == "String" { // exception for String, because if a property of type string is e.g. "true" it will appear as boolean after NSJSONSerialization :-(
+                switch type {
+                case "String": // exception for String, because if a property of type string is e.g. "true" it will appear as boolean after NSJSONSerialization :-(
                     if name == "objectId",
                         embedParseSDKSupport,
                         outputmode == .parse {
@@ -623,14 +634,25 @@ struct RESTProperty {
                     } else {
                         return "\(indent)\(indent)\(name) = stringFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
                     }
-                } else if type == "Bool" {
+                case "Bool":
                     if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
                         return "\(indent)\(indent)\(name) = boolFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
                     }
-                }
-                else {
+                case "Int":
+                    if !returnIfNil.isEmpty {
+                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                    } else {
+                        return "\(indent)\(indent)\(name) = intFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
+                    }
+                case "Double":
+                    if !returnIfNil.isEmpty {
+                        return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
+                    } else {
+                        return "\(indent)\(indent)\(name) = doubleFromAny(jsonData.value(forKeyPath: \"\(jsonProperty)\"))\(defaultValueSuffix)"
+                    }
+                default:
                     if !returnIfNil.isEmpty {
                         return "\(returnIfNil)\(indent)\(indent)self.\(name) = val"
                     } else {
