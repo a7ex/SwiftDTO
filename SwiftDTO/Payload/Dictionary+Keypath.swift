@@ -34,6 +34,36 @@ extension Dictionary where Key == String {
         }
         return val
     }
+    func arrayValue(forKeyPath keyPath: String) -> [Any]? {
+        guard !keyPath.isEmpty else { return nil }
+        let keys = keyPath.components(separatedBy: ".")
+        guard let firstKey = keys.first,
+            let val = self[firstKey] else { return nil }
+        if keys.count > 1 {
+            if let arr = val as? [Any],
+                let index = Int(keys[1]),
+                index > -1,
+                index < arr.count {
+                if keys.count > 2 {
+                    let newKey = keys.suffix(from: 2).joined(separator: ".")
+                    return (arr[index] as? [String: Any])?.arrayValue(forKeyPath: newKey)
+                } else {
+                    return forceArray(for: arr[index])
+                }
+            } else if let dict = val as? [String: Any] {
+                let newKey = keys.suffix(from: 1).joined(separator: ".")
+                return dict.arrayValue(forKeyPath: newKey)
+            } else {
+                return nil
+            }
+        }
+        return forceArray(for: val)
+    }
+    private func forceArray(for obj: Any?) -> [Any]? {
+        guard let obj = obj else { return nil }
+        guard let arrObj = obj as? [Any] else { return [obj] }
+        return arrObj
+    }
 }
 
 extension Dictionary where Key == String, Value == Any {
