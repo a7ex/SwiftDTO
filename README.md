@@ -2,7 +2,7 @@
 
 ## Overview
 
-Generate swift DTO files from CoreData model
+Generate swift DTO files from CoreData model or from a Soap WSDL
 
 A macOS command line tool that generates Swift data models based on one or more CoreData model files in XML format.
 Much in the same way as you can generate CoreData classes within Xcode ("Create NSManagedObject subclass...").
@@ -12,13 +12,15 @@ There is a switch to generate Parse SDK compatible models as well.
 There is also support for soap services. SwiftDTO can take an xml (xsd URL in wsdl soap description) file with the object description and create the appropriate model classes.
 (Contact me for another CLI tool to create service classes from the corresponding wsdl files)
 
+Further there is now a java exporter, in order to export the same models for Android. However the java support for now just outputs the model files. It does not contain any code to convert the models to classes. Until now in our x-platform projects, Android always used a JSON Parser library and the only thing we needed were very simple model classes (and a bunch of @ annotations, which of course vary from one JSON Parser library to the other). Of course the java export can (and if one day neccessary WILL) be enhanced to do much the same as the swift code. which is no need for any JSON parser library. And of course the swift export can as well be simplified to just the model description, if the project uses a swift JSON library (in that case a good starting point would be the java export). There is a group "Exporter", where you can add your own subclasses of **BaseExporter**, in a similar way as the two existing **XML2SwiftFiles** and **XML2JavaFiles**. There is no need to change anything else.
+
 Written in Swift 3.
 
 ## Features
 
 - Processes XML files, which represent a CoreData model, which was created with Xcodes CoreData editor
   Alternatively you can provide a soap WSDL file
-- Generates immutable Swift struct definitions
+- Generates immutable Swift struct definitions or java model classes.
 - Converts JSON Date representations to Swift Date objects
 
 ## What is code generation?
