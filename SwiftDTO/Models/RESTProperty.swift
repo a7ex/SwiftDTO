@@ -475,11 +475,17 @@ struct RESTProperty {
                 }
                 else {
                     if typeIsProxyType {
+                        let quotedType: String
+                        if primitiveType == "String" {
+                            quotedType = "\\\"\\(thisObj)\\\""
+                        } else {
+                            quotedType = "\\(thisObj)"
+                        }
                         if isOptional {
                             return "\(indent)\(indent)if let \(name) = \(name) {\n"
                                 + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
                                 + "\(indent)\(indent)\(indent)for thisObj in \(name) {\n"
-                                + "\(indent)\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\\(\"\\(\"\\(prefix)\(indent)\(indent)\" + \"\\(thisObj)\")\"),\\n\")\n"
+                                + "\(indent)\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\(quotedType),\\n\")\n"
                                 + "\(indent)\(indent)\(indent)}\n"
                                 + "\(indent)\(indent)\(indent)if !\(name).isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }\n"
                                 + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)],\\n\")\n"
@@ -487,7 +493,7 @@ struct RESTProperty {
                         } else {
                             return "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)\\\"\(jsonProperty)\\\": [\\n\")\n"
                                 + "\(indent)\(indent)for thisObj in \(name) {\n"
-                                + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\\(\"\\(\"\\(prefix)\(indent)\(indent)\" + \"\\(thisObj)\")\"),\\n\")\n"
+                                + "\(indent)\(indent)\(indent)returnString.append(\"\(indent)\(indent)\\(prefix)\(quotedType),\\n\")\n"
                                 + "\(indent)\(indent)}\n"
                                 + "\(indent)\(indent)if !\(name).isEmpty { returnString.remove(at: returnString.characters.index(returnString.endIndex, offsetBy: -2)) }\n"
                                 + "\(indent)\(indent)returnString.append(\"\(indent)\\(prefix)],\\n\")\n"

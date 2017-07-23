@@ -15,6 +15,16 @@ import Foundation
 let copyRightString = "Copyright (c) 2016 Farbflash. All rights reserved."
 
 let options = CliArguments()
+
+if options.help {
+    options.printHelpText()
+    exit(EXIT_SUCCESS)
+}
+if options.version {
+    options.printVersion()
+    exit(EXIT_SUCCESS)
+}
+
 guard let firstInputFile = options.paths.first,
     let targetFolder = options.destination.nonEmptyString else {
     // Expecting a string but didn't receive it
