@@ -183,6 +183,10 @@ func doubleFromAny(_ jsonObject: Any?) -> Double? {
         if let numValue = fmt.number(from: val) {
             return numValue.doubleValue
         }
+        fmt.locale = Locale(identifier: "en_US") // a locale, which uses '.' as float delimiter
+        if let numValue = fmt.number(from: val) {
+            return numValue.doubleValue
+        }
         fmt.locale = Locale(identifier: "de_DE") // a locale, which uses ',' as float delimiter
         if let numValue = fmt.number(from: val) {
             return numValue.doubleValue
