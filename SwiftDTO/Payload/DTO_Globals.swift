@@ -219,7 +219,7 @@ struct ConversionHelper {
         guard let inputString = dateString else { return nil }
         let dateFormatter = DateFormatter()
         if let retVal = dateFormatter.date(from: inputString) { return retVal }
-        dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.ssZZZZZ"
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.SZZZZZ"
         if let retVal = dateFormatter.date(from: inputString) { return retVal }
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZZZ"
         if let retVal = dateFormatter.date(from: inputString) { return retVal }
